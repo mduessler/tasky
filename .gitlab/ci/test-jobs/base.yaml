@@ -21,3 +21,5 @@
     EMAIL_HOST_PASSWORD: $EMAIL_HOST_PASSWORD
   services:
     - postgres:18.4-alpine
+  before_script:
+    - cd task_management_system
