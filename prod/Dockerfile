@@ -4,8 +4,6 @@ ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-ENV DISPLAY=:99
-
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 WORKDIR /app
@@ -14,30 +12,22 @@ RUN python -m pip install --no-cache-dir poetry==2.1.1 poetry-plugin-export && \
     poetry config virtualenvs.create false
 
 COPY pyproject.toml poetry.lock ./
-RUN poetry export -f requirements.txt --without-hashes --with dev > requirements.txt
+RUN poetry export -f requirements.txt --without-hashes > requirements.txt
 
-FROM python:3.13-slim-bookworm AS devel
+FROM python:3.13-alpine AS prod
 
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN addgroup -S tms && adduser -S tms -G tms
+ENV TMS_HOME=/home/tms/web
 
-RUN mkdir -p /home/tms
-ENV HOME=/home/tms
-
-RUN adduser --system --group tms
-
-ENV TMS_HOME=$HOME/web
 WORKDIR $TMS_HOME
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    netcat-traditional \
+RUN apk add --no-cache \
     curl \
-    && rm -rf /var/lib/apt/lists/*
+    netcat-openbsd
 
 COPY --from=build /app/requirements.txt ./
+
 RUN pip install --no-cache-dir -r requirements.txt
-
 COPY ./task_management_system/ ./
-
-WORKDIR $TMS_HOME
 
 ENTRYPOINT ["/home/tms/web/entrypoint"]

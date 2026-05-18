@@ -22,7 +22,7 @@ services:
       start_period: 30s
   db-dev:
     container_name: tms-db-dev
-    image: postgres
+    image: postgres:18.4-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data-dev
     environment:
@@ -52,7 +52,7 @@ services:
       timeout: 5s
       start_period: 30s
   redis:
-    image: redis:alpine
+    image: redis:8.6.3-alpine
     container_name: tms-redis-dev
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]

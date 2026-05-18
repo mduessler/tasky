@@ -1,0 +1,4 @@
+test:task:
+  extends: .test-base
+  script:
+    - pytest tests/task/ -n auto

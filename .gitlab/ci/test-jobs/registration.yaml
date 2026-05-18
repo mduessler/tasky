@@ -1,0 +1,7 @@
+test:registration:
+  extends: .test-base
+  services:
+    - postgres:18.4-alpine
+    - redis:8.6.3-alpine
+  script:
+    - pytest tests/registration/ -n auto
