@@ -23,3 +23,6 @@ build-dev-image:
         .
     - docker push $DEV_IMAGE
     - docker push $DEV_IMAGE_LATEST
+  rules:
+    - if: $CI_COMMIT_BRANCH == "dev"
+    - if: $CI_COMMIT_BRANCH == "main"
