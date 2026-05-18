@@ -1,0 +1,4 @@
+test:user:
+  extends: .test-base
+  script:
+    - pytest tests/user/ -n auto

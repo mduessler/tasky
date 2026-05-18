@@ -36,7 +36,7 @@ class TestRestFramework:
 
     def test_media_type(self):
         expected = JSONParser
-        assert self.rf_settings.DEFAULT_PARSER_CLASS == [expected]
+        assert self.rf_settings["DEFAULT_PARSER_CLASS"] == [expected]
 
     def test_throttle_rates_integrity(self):
 
