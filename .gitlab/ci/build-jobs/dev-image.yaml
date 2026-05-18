@@ -1,4 +1,4 @@
-build-dev-image:
+build:dev-image:
   stage: build
   image: docker:29
   services:
