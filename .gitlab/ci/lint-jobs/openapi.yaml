@@ -2,7 +2,7 @@ openapi:
   stage: lint
   image: $DEV_IMAGE_LATEST
   needs:
-    - build-dev-image
+    - build:dev-image
   variables:
     PRE_COMMIT_HOME: ${CI_PROJECT_DIR}/.pre-commit-cache
   script:
