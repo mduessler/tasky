@@ -20,3 +20,29 @@ The pipeline is divided into four stages that run sequentially:
 | `lint`     | Runs code quality checks and validates the OpenAPI schema |
 | `test`     | Runs the test suite in parallel across all apps           |
 | `security` | Scans Python dependencies and the production image        |
+
+### File Structure
+
+The pipeline configuration is split across multiple files for readability:
+
+```
+.gitlab-ci.yml               # Entry point: stages, global variables, includes
+.gitlab/ci/
+  build-jobs/
+    dev-image.yaml           # build-dev-image job
+    prod-image.yaml          # build-prod-image job
+  lint-jobs/
+    lint.yaml                # lint job
+    openapi.yaml             # openapi job
+  test-jobs/
+    base.yaml                # .test-base hidden job (shared config)
+    registration.yaml        # test-registration job
+    task.yaml                # test-task job
+    task_management_system.yaml
+    tms_auth.yaml
+    user.yaml
+  security-jobs/
+    pip-audit.yaml           # security job
+    trivy.yaml               # scan-prod-image job
+```
+
