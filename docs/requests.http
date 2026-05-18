@@ -1,0 +1,245 @@
+# Tasky API — HTTP Requests
+# Compatible with VS Code REST Client, JetBrains HTTP Client
+#
+# All requests are based on seed data from make seed-dev.
+# Focus: Task 1 "Website Redesign" — has all 4 membership roles and notes.
+#
+# Task 1 Members:
+#   User 1  max@example.com   / customXXXX1  → OWNER    (membership id=1)
+#   User 2  kevin@example.com / customXXXX2  → ADMIN    (membership id=2) — inactive
+#   User 3  sara@example.com  / customXXXX3  → MEMBER   (membership id=3)
+#   User 4  admin@gameapp.de  / customXXXX4  → VIEWER   (membership id=4)
+#
+# Task 1 Notes:
+#   Note 1  "Kickoff meeting done."  — author: User 1 (Max)
+#   Note 2  "Wireframes drafted."    — author: User 3 (Sara)
+#   Note 3  "UI review scheduled."   — author: User 2 (Kevin)
+#   Note 4  "Design approved."       — author: User 4 (Admin)
+#
+# Usage:
+# 1. make run-dev
+# 2. make seed-dev
+# 3. Execute Login → copy tokens into variables below
+
+@base_url = http://localhost:8080/api
+@access_token = <paste-access-token-here>
+@refresh_token = <paste-refresh-token-here>
+
+###############################################################################
+# AUTH
+###############################################################################
+
+### Login — as Max (User 1, OWNER of Task 1)
+POST {{base_url}}/auth/login/
+Content-Type: application/json
+
+{
+  "email": "max@example.com",
+  "password": "customXXXX1"
+}
+
+### Login — as Jonas (User 14, Superuser)
+POST {{base_url}}/auth/login/
+Content-Type: application/json
+
+{
+  "email": "jonas@example.com",
+  "password": "customXXXX14"
+}
+
+### Refresh Token
+POST {{base_url}}/auth/refresh/
+Content-Type: application/json
+
+{
+  "refresh": "{{refresh_token}}"
+}
+
+### Logout
+POST {{base_url}}/auth/logout/
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "refresh": "{{refresh_token}}"
+}
+
+### Register
+POST {{base_url}}/auth/register/
+Content-Type: application/json
+
+{
+  "username": "newuser",
+  "email": "newuser@example.com",
+  "email_verification": "newuser@example.com",
+  "password": "SecurePassword123",
+  "password_verification": "SecurePassword123",
+  "first_name": "New",
+  "last_name": "User"
+}
+
+### Activate
+POST {{base_url}}/auth/activate/
+Content-Type: application/json
+
+{
+  "email": "newuser@example.com",
+  "token": "<6-digit-token-from-mailtrap>"
+}
+
+###############################################################################
+# TASKS
+###############################################################################
+
+### List Tasks
+GET {{base_url}}/v1/task/
+Authorization: Bearer {{access_token}}
+
+### Get Task 1 — Website Redesign
+GET {{base_url}}/v1/task/1/
+Authorization: Bearer {{access_token}}
+
+### Create Task
+POST {{base_url}}/v1/task/
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "title": "Website Redesign",
+  "description": "Complete overhaul of the company website UI/UX",
+  "status": "todo"
+}
+
+### Update Task 1
+PATCH {{base_url}}/v1/task/1/
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "title": "Website Redesign v2",
+  "description": "Complete overhaul of the company website UI/UX",
+  "status": "doing"
+}
+
+### Delete Task 1
+DELETE {{base_url}}/v1/task/1/
+Authorization: Bearer {{access_token}}
+
+###############################################################################
+# TASK MEMBERSHIPS
+###############################################################################
+
+### List Memberships of Task 1
+GET {{base_url}}/v1/task/1/memberships/
+Authorization: Bearer {{access_token}}
+
+### Add Member to Task 1 (User 5 — Lena)
+POST {{base_url}}/v1/task/1/membership/
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "user_id": 5,
+  "task": 1,
+  "role": "member"
+}
+
+### List All Memberships
+GET {{base_url}}/v1/membership/
+Authorization: Bearer {{access_token}}
+
+### Get Membership 1 (Max — OWNER of Task 1)
+GET {{base_url}}/v1/membership/1/
+Authorization: Bearer {{access_token}}
+
+### Update Membership 3 (Sara — MEMBER → ADMIN)
+PATCH {{base_url}}/v1/membership/3/
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "role": "admin"
+}
+
+### Delete Membership 3 (Sara — remove from Task 1)
+DELETE {{base_url}}/v1/membership/3/
+Authorization: Bearer {{access_token}}
+
+###############################################################################
+# TASK NOTES
+###############################################################################
+
+### List Notes of Task 1
+GET {{base_url}}/v1/task/1/notes/
+Authorization: Bearer {{access_token}}
+
+### Create Note on Task 1
+POST {{base_url}}/v1/task/1/note/
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "note": "Kickoff meeting done.",
+  "author_id": 1,
+  "task": 1
+}
+
+### List All Notes
+GET {{base_url}}/v1/note/
+Authorization: Bearer {{access_token}}
+
+### Get Note 1 (authored by Max)
+GET {{base_url}}/v1/note/1/
+Authorization: Bearer {{access_token}}
+
+### Update Note 1
+PATCH {{base_url}}/v1/note/1/
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "note": "Kickoff meeting done. All stakeholders present."
+}
+
+### Delete Note 1
+DELETE {{base_url}}/v1/note/1/
+Authorization: Bearer {{access_token}}
+
+###############################################################################
+# USERS
+###############################################################################
+
+### List Users
+GET {{base_url}}/v1/user/
+Authorization: Bearer {{access_token}}
+
+### Get User 1 — Max (SELF)
+GET {{base_url}}/v1/user/1/
+Authorization: Bearer {{access_token}}
+
+### Update User 1 — Max (SELF)
+PATCH {{base_url}}/v1/user/1/
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "first_name": "Max",
+  "last_name": "Mustermann",
+  "username": "ZockerHeld99"
+}
+
+### Delete User 1 — Max (SELF)
+DELETE {{base_url}}/v1/user/1/
+Authorization: Bearer {{access_token}}
+
+### Get Tasks of User 1
+GET {{base_url}}/v1/user/1/tasks/
+Authorization: Bearer {{access_token}}
+
+### Get Memberships of User 1
+GET {{base_url}}/v1/user/1/task_memberships/
+Authorization: Bearer {{access_token}}
+
+### Get Notes of User 1
+GET {{base_url}}/v1/user/1/task_notes/
+Authorization: Bearer {{access_token}}

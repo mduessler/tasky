@@ -1,0 +1,156 @@
+[
+  {
+    "id": 1,
+    "password": "customXXXX1",
+    "is_superuser": false,
+    "username": "ZockerHeld99",
+    "first_name": "Max",
+    "last_name": "Mustermann",
+    "email": "max@example.com",
+    "is_staff": false,
+    "is_active": true
+  },
+  {
+    "id": 2,
+    "password": "customXXXX2",
+    "is_superuser": false,
+    "username": "NoobMaster",
+    "first_name": "Kevin",
+    "last_name": "Müller",
+    "email": "kevin@example.com",
+    "is_staff": false,
+    "is_active": false
+  },
+  {
+    "id": 3,
+    "password": "customXXXX3",
+    "is_superuser": false,
+    "username": "PixelQueen",
+    "first_name": "Sara",
+    "last_name": "Schmidt",
+    "email": "sara@example.com",
+    "is_staff": false,
+    "is_active": true
+  },
+  {
+    "id": 4,
+    "password": "customXXXX4",
+    "is_superuser": false,
+    "username": "AdminPower",
+    "first_name": "Admin",
+    "last_name": "User",
+    "email": "admin@gameapp.de",
+    "is_staff": false,
+    "is_active": true
+  },
+  {
+    "id": 5,
+    "password": "customXXXX5",
+    "is_superuser": false,
+    "username": "GameMaster101",
+    "first_name": "Lena",
+    "last_name": "Weber",
+    "email": "lena@example.com",
+    "is_staff": false,
+    "is_active": true
+  },
+  {
+    "id": 6,
+    "password": "customXXXX6",
+    "is_superuser": false,
+    "username": "SpeedyGamer",
+    "first_name": "Tom",
+    "last_name": "Hoffmann",
+    "email": "tom@example.com",
+    "is_staff": false,
+    "is_active": true
+  },
+  {
+    "id": 7,
+    "password": "customXXXX7",
+    "is_superuser": false,
+    "username": "DragonSlayer",
+    "first_name": "Anna",
+    "last_name": "Fischer",
+    "email": "anna@example.com",
+    "is_staff": false,
+    "is_active": true
+  },
+  {
+    "id": 8,
+    "password": "customXXXX8",
+    "is_superuser": false,
+    "username": "StealthNinja",
+    "first_name": "Ben",
+    "last_name": "Klein",
+    "email": "ben@example.com",
+    "is_staff": false,
+    "is_active": true
+  },
+  {
+    "id": 9,
+    "password": "customXXXX9",
+    "is_superuser": false,
+    "username": "PixelWizard",
+    "first_name": "Clara",
+    "last_name": "Schulz",
+    "email": "clara@example.com",
+    "is_staff": false,
+    "is_active": true
+  },
+  {
+    "id": 10,
+    "password": "customXXXX10",
+    "is_superuser": false,
+    "username": "RetroGamer",
+    "first_name": "David",
+    "last_name": "Neumann",
+    "email": "david@example.com",
+    "is_staff": false,
+    "is_active": true
+  },
+  {
+    "id": 11,
+    "password": "customXXXX11",
+    "is_superuser": false,
+    "username": "ArcadeQueen",
+    "first_name": "Eva",
+    "last_name": "Richter",
+    "email": "eva@example.com",
+    "is_staff": false,
+    "is_active": true
+  },
+  {
+    "id": 12,
+    "password": "customXXXX12",
+    "is_superuser": false,
+    "username": "ConsoleKing",
+    "first_name": "Felix",
+    "last_name": "Wolf",
+    "email": "felix@example.com",
+    "is_staff": false,
+    "is_active": true
+  },
+  {
+    "id": 13,
+    "password": "customXXXX13",
+    "is_superuser": false,
+    "username": "QuestHero",
+    "first_name": "Hannah",
+    "last_name": "Becker",
+    "email": "hannah@example.com",
+    "is_staff": false,
+    "is_active": true
+  },
+  {
+    "id": 14,
+    "password": "customXXXX14",
+    "is_superuser": true,
+    "username": "MegaGamerX",
+    "first_name": "Jonas",
+    "last_name": "Schneider",
+    "email": "jonas@example.com",
+    "is_staff": false,
+    "is_active": true
+  }
+]

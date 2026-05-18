@@ -1,0 +1,30 @@
+from task.models import Role
+
+from task_management_system.core.permissions import BasePermission
+
+
+class TaskNotePermissions(BasePermission):  # type: ignore[misc]
+    update_permissions = {
+        Role.OWNER: {"note"},
+        Role.ADMIN: {"note"},
+        Role.MEMBER: set(),
+        Role.VIEWER: set(),
+    }
+    delete_permissions = {
+        Role.OWNER: True,
+        Role.ADMIN: True,
+        Role.MEMBER: False,
+        Role.VIEWER: False,
+    }
+    create_permissions = {
+        Role.OWNER: True,
+        Role.ADMIN: True,
+        Role.MEMBER: True,
+        Role.VIEWER: False,
+    }
+    view_permissions = {
+        Role.OWNER: True,
+        Role.ADMIN: True,
+        Role.MEMBER: True,
+        Role.VIEWER: True,
+    }

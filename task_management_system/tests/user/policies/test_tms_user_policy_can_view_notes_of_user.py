@@ -1,0 +1,97 @@
+import pytest
+from tests.utils import assert_log
+from user.policies import TmsUserPolicy
+
+
+@pytest.mark.django_db
+class TestCanViewUserNotes:
+    @pytest.mark.parametrize(
+        "actor_fixture",
+        [
+            "member_is_owner",
+            "member_is_admin",
+            "member_is_member",
+            "member_is_viewer",
+            "superuser_is_not_member",
+            "user_is_not_member",
+        ],
+    )
+    def test_user_can_view_own_notes(self, actor_fixture, request, caplog_loguru):
+        actor, _ = request.getfixturevalue(actor_fixture)
+        result = TmsUserPolicy.can_view_notes_of_user(actor, actor)
+
+        assert result is True
+
+        log_record = caplog_loguru.records[-1]
+        assert_log(
+            log_record,
+            "Permission granted: User can view it's own task notes.",
+            "DEBUG",
+            user=actor.id,
+        )
+
+    @pytest.mark.parametrize(
+        "user_fixture",
+        [
+            "member_is_owner",
+            "member_is_admin",
+            "member_is_member",
+            "member_is_viewer",
+            "user_is_not_member",
+        ],
+    )
+    def test_superuser_can_view_notes_of_user(
+        self, superuser, user_fixture, request, caplog_loguru
+    ):
+        user, _ = request.getfixturevalue(user_fixture)
+        result = TmsUserPolicy.can_view_notes_of_user(superuser, user)
+
+        assert result is True
+
+        log_record = caplog_loguru.records[-1]
+        assert_log(
+            log_record,
+            "Permission granted: Actor is superuser and can view user task notes.",
+            "INFO",
+            user=user.id,
+        )
+
+    @pytest.mark.parametrize(
+        "actor_fixture",
+        [
+            "member_is_owner",
+            "member_is_admin",
+            "member_is_member",
+            "member_is_viewer",
+            "user_is_not_member",
+        ],
+    )
+    @pytest.mark.parametrize(
+        "user_fixture",
+        [
+            "member_is_owner",
+            "member_is_admin",
+            "member_is_member",
+            "member_is_viewer",
+            "user_is_not_member",
+        ],
+    )
+    def test_user_can_not_view_other_user_notes(
+        self, actor_fixture, user_fixture, request, caplog_loguru
+    ):
+        if actor_fixture == user_fixture:
+            return
+
+        actor, _ = request.getfixturevalue(actor_fixture)
+        user, _ = request.getfixturevalue(user_fixture)
+        result = TmsUserPolicy.can_view_notes_of_user(actor, user)
+
+        assert result is False
+
+        log_record = caplog_loguru.records[-1]
+        assert_log(
+            log_record,
+            "Permission denied: Actor is not allowed to view user notes.",
+            "DEBUG",
+            user=user.id,
+        )

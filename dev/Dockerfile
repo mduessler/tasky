@@ -1,0 +1,45 @@
+FROM python:3.13-slim-bookworm AS build
+
+ENV PIP_DISABLE_PIP_VERSION_CHECK 1
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+ENV DISPLAY=:99
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+WORKDIR /app
+
+RUN python -m pip install --no-cache-dir poetry==2.1.1 poetry-plugin-export && \
+    poetry config virtualenvs.create false
+
+COPY pyproject.toml poetry.lock ./
+RUN poetry export -f requirements.txt --without-hashes --with dev > requirements.txt
+
+FROM python:3.13-slim-bookworm AS devel
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+RUN mkdir -p /home/tms
+ENV HOME=/home/tms
+
+RUN adduser --system --group tms
+
+ENV TMS_HOME=$HOME/web
+WORKDIR $TMS_HOME
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    netcat-traditional \
+    curl \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y --no-install-recommends nodejs \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=build /app/requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY ./task_management_system/ ./
+
+WORKDIR $TMS_HOME
+
+ENTRYPOINT ["/home/tms/web/entrypoint"]
