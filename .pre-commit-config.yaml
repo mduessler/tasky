@@ -1,9 +1,5 @@
 default_language_version:
   python: python3.13
-exclude: |
-  (?x)^(
-    task_management_system/node_modules/
-  )
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0

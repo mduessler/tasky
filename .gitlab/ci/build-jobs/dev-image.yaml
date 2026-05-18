@@ -1,0 +1,21 @@
+build-dev-image:
+  stage: build
+  image: docker:29
+  services:
+    - docker:29-dind
+  rules:
+    - if: $CI_COMMIT_BRANCH == "dev"
+    - if: $CI_COMMIT_BRANCH == "main"
+  variables:
+    DOCKER_TLS_CERTDIR: "/certs"
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - |
+      docker build \
+        -f dev/Dockerfile.ci \
+        -t $DEV_IMAGE \
+        -t $DEV_IMAGE_LATEST \
+        .
+    - docker push $DEV_IMAGE
+    - docker push $DEV_IMAGE_LATEST
