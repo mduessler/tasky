@@ -60,3 +60,16 @@ resource "aws_route_table_association" "private" {
   subnet_id      = aws_subnet.private.id
   route_table_id = aws_route_table.private.id
 }
+
+resource "aws_security_group" "runner" {
+  name        = "gitlab-runner-sg"
+  description = "Security Group for GitLab Runner - outbound only"
+  vpc_id      = aws_vpc.main.id
+
+  egress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
