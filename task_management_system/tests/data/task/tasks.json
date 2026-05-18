@@ -1,0 +1,122 @@
+[
+  {
+    "model": "task.task",
+    "pk": 1,
+    "fields": {
+      "title": "Website Redesign",
+      "description": "Complete overhaul of the company website UI/UX",
+      "status": "todo",
+      "created_at": "2026-01-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "task.task",
+    "pk": 2,
+    "fields": {
+      "title": "Mobile App Development",
+      "description": "Build MVP for Android and iOS",
+      "status": "doing",
+      "created_at": "2026-01-02T11:00:00Z"
+    }
+  },
+  {
+    "model": "task.task",
+    "pk": 3,
+    "fields": {
+      "title": "Backend API",
+      "description": "Develop REST API with authentication",
+      "status": "todo",
+      "created_at": "2026-01-03T09:30:00Z"
+    }
+  },
+  {
+    "model": "task.task",
+    "pk": 4,
+    "fields": {
+      "title": "Marketing Campaign",
+      "description": "Launch social media ads",
+      "status": "done",
+      "created_at": "2026-01-04T08:00:00Z"
+    }
+  },
+  {
+    "model": "task.task",
+    "pk": 5,
+    "fields": {
+      "title": "Database Optimization",
+      "description": "Improve query performance",
+      "status": "doing",
+      "created_at": "2026-01-05T14:00:00Z"
+    }
+  },
+  {
+    "model": "task.task",
+    "pk": 6,
+    "fields": {
+      "title": "User Testing",
+      "description": "Collect feedback from beta users",
+      "status": "todo",
+      "created_at": "2026-01-06T12:00:00Z"
+    }
+  },
+  {
+    "model": "task.task",
+    "pk": 7,
+    "fields": {
+      "title": "Security Audit",
+      "description": "Check for vulnerabilities",
+      "status": "todo",
+      "created_at": "2026-01-07T15:00:00Z"
+    }
+  },
+  {
+    "model": "task.task",
+    "pk": 8,
+    "fields": {
+      "title": "Payment Integration",
+      "description": "Integrate Stripe payments",
+      "status": "doing",
+      "created_at": "2026-01-08T16:00:00Z"
+    }
+  },
+  {
+    "model": "task.task",
+    "pk": 9,
+    "fields": {
+      "title": "Notification System",
+      "description": "Email + push notifications",
+      "status": "todo",
+      "created_at": "2026-01-09T10:00:00Z"
+    }
+  },
+  {
+    "model": "task.task",
+    "pk": 10,
+    "fields": {
+      "title": "Analytics Dashboard",
+      "description": "Admin dashboard with charts",
+      "status": "todo",
+      "created_at": "2026-01-10T11:00:00Z"
+    }
+  },
+  {
+    "model": "task.task",
+    "pk": 11,
+    "fields": {
+      "title": "Bug Fix Sprint",
+      "description": "Fix critical bugs",
+      "status": "doing",
+      "created_at": "2026-01-11T09:00:00Z"
+    }
+  },
+  {
+    "model": "task.task",
+    "pk": 12,
+    "fields": {
+      "title": "CI/CD Setup",
+      "description": "Automate deployment pipeline",
+      "status": "done",
+      "created_at": "2026-01-12T13:00:00Z"
+    }
+  }
+]

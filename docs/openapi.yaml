@@ -1,0 +1,1220 @@
+openapi: 3.0.3
+info:
+  title: Tasky API
+  version: 1.0.0
+  description: A collaborative task management REST API with JWT authentication.
+paths:
+  /api/auth/activate/:
+    post:
+      operationId: api_auth_activate_create
+      tags:
+        - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActivateWriteRequest'
+        required: true
+      security:
+        - jwtAuth: []
+        - {}
+      responses:
+        '202':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivateRead'
+          description: ''
+  /api/auth/login/:
+    post:
+      operationId: api_auth_login_create
+      description: |-
+        Takes a set of user credentials and returns an access and refresh JSON web
+        token pair to prove the authentication of those credentials.
+      tags:
+        - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JWTTokenObtainPairRequest'
+        required: true
+      security:
+        - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JWTTokenObtainPairResponse'
+          description: ''
+  /api/auth/logout/:
+    post:
+      operationId: api_auth_logout_create
+      description: |-
+        Takes a token and blacklists it. Must be used with the
+        `rest_framework_simplejwt.token_blacklist` app installed.
+      tags:
+        - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JWTLogoutRequest'
+        required: true
+      security:
+        - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JWTLogout'
+          description: ''
+  /api/auth/refresh/:
+    post:
+      operationId: api_auth_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+        - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JWTRefreshRequest'
+        required: true
+      security:
+        - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JWTRefresh'
+          description: ''
+  /api/auth/register/:
+    post:
+      operationId: api_auth_register_create
+      tags:
+        - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterWriteRequest'
+        required: true
+      security:
+        - jwtAuth: []
+        - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterRead'
+          description: ''
+  /api/v1/membership/:
+    get:
+      operationId: membership_list
+      parameters:
+        - name: page
+          required: false
+          in: query
+          description: A page number within the paginated result set.
+          schema:
+            type: integer
+        - name: page_size
+          required: false
+          in: query
+          description: Number of results to return per page.
+          schema:
+            type: integer
+      tags:
+        - membership
+      security:
+        - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTaskMembershipReadList'
+          description: ''
+  /api/v1/membership/{id}/:
+    get:
+      operationId: membership_retrieve
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this task membership.
+          required: true
+      tags:
+        - membership
+      security:
+        - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskMembershipRead'
+          description: ''
+    patch:
+      operationId: membership_partial_update
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this task membership.
+          required: true
+      tags:
+        - membership
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTaskMembershipWriteRequest'
+      security:
+        - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskMembershipRead'
+          description: ''
+    delete:
+      operationId: membership_destroy
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this task membership.
+          required: true
+      tags:
+        - membership
+      security:
+        - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/note/:
+    get:
+      operationId: note_list
+      parameters:
+        - name: page
+          required: false
+          in: query
+          description: A page number within the paginated result set.
+          schema:
+            type: integer
+        - name: page_size
+          required: false
+          in: query
+          description: Number of results to return per page.
+          schema:
+            type: integer
+      tags:
+        - note
+      security:
+        - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTaskNoteReadList'
+          description: ''
+  /api/v1/note/{id}/:
+    get:
+      operationId: note_retrieve
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this task note.
+          required: true
+      tags:
+        - note
+      security:
+        - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskNoteRead'
+          description: ''
+    patch:
+      operationId: note_partial_update
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this task note.
+          required: true
+      tags:
+        - note
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTaskNoteWriteRequest'
+      security:
+        - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskNoteRead'
+          description: ''
+    delete:
+      operationId: note_destroy
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this task note.
+          required: true
+      tags:
+        - note
+      security:
+        - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/task/:
+    get:
+      operationId: task_list
+      parameters:
+        - name: page
+          required: false
+          in: query
+          description: A page number within the paginated result set.
+          schema:
+            type: integer
+        - name: page_size
+          required: false
+          in: query
+          description: Number of results to return per page.
+          schema:
+            type: integer
+      tags:
+        - task
+      security:
+        - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTaskReadList'
+          description: ''
+    post:
+      operationId: task_create
+      tags:
+        - task
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskWriteRequest'
+        required: true
+      security:
+        - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskRead'
+          description: ''
+  /api/v1/task/{id}/:
+    get:
+      operationId: task_retrieve
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this task.
+          required: true
+      tags:
+        - task
+      security:
+        - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskRead'
+          description: ''
+    patch:
+      operationId: task_partial_update
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this task.
+          required: true
+      tags:
+        - task
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTaskWriteRequest'
+      security:
+        - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskRead'
+          description: ''
+    delete:
+      operationId: task_destroy
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this task.
+          required: true
+      tags:
+        - task
+      security:
+        - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/task/{id}/membership/:
+    post:
+      operationId: task_membership_create
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this task.
+          required: true
+      tags:
+        - task
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskMembershipWriteRequest'
+        required: true
+      security:
+        - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskMembershipRead'
+          description: ''
+  /api/v1/task/{id}/memberships/:
+    get:
+      operationId: task_memberships_list
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this task.
+          required: true
+        - name: page
+          required: false
+          in: query
+          description: A page number within the paginated result set.
+          schema:
+            type: integer
+        - name: page_size
+          required: false
+          in: query
+          description: Number of results to return per page.
+          schema:
+            type: integer
+      tags:
+        - task
+      security:
+        - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTaskMembershipReadList'
+          description: ''
+  /api/v1/task/{id}/note/:
+    post:
+      operationId: task_note_create
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this task.
+          required: true
+      tags:
+        - task
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskNoteWriteRequest'
+        required: true
+      security:
+        - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskNoteRead'
+          description: ''
+  /api/v1/task/{id}/notes/:
+    get:
+      operationId: task_notes_list
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this task.
+          required: true
+        - name: page
+          required: false
+          in: query
+          description: A page number within the paginated result set.
+          schema:
+            type: integer
+        - name: page_size
+          required: false
+          in: query
+          description: Number of results to return per page.
+          schema:
+            type: integer
+      tags:
+        - task
+      security:
+        - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTaskNoteReadList'
+          description: ''
+  /api/v1/user/:
+    get:
+      operationId: user_list
+      parameters:
+        - name: page
+          required: false
+          in: query
+          description: A page number within the paginated result set.
+          schema:
+            type: integer
+        - name: page_size
+          required: false
+          in: query
+          description: Number of results to return per page.
+          schema:
+            type: integer
+      tags:
+        - user
+      security:
+        - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTmsUserReadList'
+          description: ''
+  /api/v1/user/{id}/:
+    get:
+      operationId: user_retrieve
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this user.
+          required: true
+      tags:
+        - user
+      security:
+        - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TmsUserRead'
+          description: ''
+    patch:
+      operationId: user_partial_update
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this user.
+          required: true
+      tags:
+        - user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTmsUserWriteRequest'
+      security:
+        - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TmsUserRead'
+          description: ''
+    delete:
+      operationId: user_destroy
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this user.
+          required: true
+      tags:
+        - user
+      security:
+        - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/user/{id}/task_memberships/:
+    get:
+      operationId: user_task_memberships_list
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this user.
+          required: true
+        - name: page
+          required: false
+          in: query
+          description: A page number within the paginated result set.
+          schema:
+            type: integer
+        - name: page_size
+          required: false
+          in: query
+          description: Number of results to return per page.
+          schema:
+            type: integer
+      tags:
+        - user
+      security:
+        - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTaskMembershipReadList'
+          description: ''
+  /api/v1/user/{id}/task_notes/:
+    get:
+      operationId: user_task_notes_list
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this user.
+          required: true
+        - name: page
+          required: false
+          in: query
+          description: A page number within the paginated result set.
+          schema:
+            type: integer
+        - name: page_size
+          required: false
+          in: query
+          description: Number of results to return per page.
+          schema:
+            type: integer
+      tags:
+        - user
+      security:
+        - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTaskNoteReadList'
+          description: ''
+  /api/v1/user/{id}/tasks/:
+    get:
+      operationId: user_tasks_list
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this user.
+          required: true
+        - name: page
+          required: false
+          in: query
+          description: A page number within the paginated result set.
+          schema:
+            type: integer
+        - name: page_size
+          required: false
+          in: query
+          description: Number of results to return per page.
+          schema:
+            type: integer
+      tags:
+        - user
+      security:
+        - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTaskReadList'
+          description: ''
+components:
+  schemas:
+    ActivateRead:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        email:
+          type: string
+          format: email
+          readOnly: true
+        username:
+          type: string
+          readOnly: true
+      required:
+        - email
+        - id
+        - username
+    ActivateWriteRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          writeOnly: true
+          minLength: 1
+        token:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+        - email
+        - token
+    JWTLogout:
+      type: object
+      properties:
+        refresh:
+          type: string
+      required:
+        - refresh
+    JWTLogoutRequest:
+      type: object
+      properties:
+        refresh:
+          type: string
+          minLength: 1
+      required:
+        - refresh
+    JWTRefresh:
+      type: object
+      properties:
+        refresh:
+          type: string
+        access:
+          type: string
+          readOnly: true
+      required:
+        - access
+        - refresh
+    JWTRefreshRequest:
+      type: object
+      properties:
+        refresh:
+          type: string
+          minLength: 1
+      required:
+        - refresh
+    JWTTokenObtainPairRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          writeOnly: true
+          minLength: 1
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+        - email
+        - password
+    JWTTokenObtainPairResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        access:
+          type: string
+        refresh:
+          type: string
+      required:
+        - access
+        - id
+        - refresh
+    PaginatedTaskMembershipReadList:
+      type: object
+      required:
+        - count
+        - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskMembershipRead'
+    PaginatedTaskNoteReadList:
+      type: object
+      required:
+        - count
+        - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskNoteRead'
+    PaginatedTaskReadList:
+      type: object
+      required:
+        - count
+        - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskRead'
+    PaginatedTmsUserReadList:
+      type: object
+      required:
+        - count
+        - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TmsUserRead'
+    PatchedTaskMembershipWriteRequest:
+      type: object
+      properties:
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+        user_id:
+          type: integer
+        task:
+          type: integer
+    PatchedTaskNoteWriteRequest:
+      type: object
+      properties:
+        note:
+          type: string
+          minLength: 1
+        author_id:
+          type: integer
+        task:
+          type: integer
+    PatchedTaskWriteRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 255
+        description:
+          type: string
+          minLength: 1
+        status:
+          $ref: '#/components/schemas/StatusEnum'
+    PatchedTmsUserWriteRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          minLength: 1
+          maxLength: 254
+        username:
+          type: string
+          minLength: 1
+          maxLength: 128
+        password:
+          type: string
+          minLength: 1
+          maxLength: 128
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        is_staff:
+          type: boolean
+        is_superuser:
+          type: boolean
+          title: Superuser status
+          description: Designates that this user has all permissions without explicitly assigning them.
+    RegisterRead:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          readOnly: true
+        username:
+          type: string
+          readOnly: true
+      required:
+        - email
+        - username
+    RegisterWriteRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 1
+          maxLength: 128
+        email:
+          type: string
+          format: email
+          minLength: 1
+          maxLength: 254
+        email_verification:
+          type: string
+          format: email
+          writeOnly: true
+          minLength: 1
+        password:
+          type: string
+          writeOnly: true
+          minLength: 8
+        password_verification:
+          type: string
+          writeOnly: true
+          minLength: 8
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+      required:
+        - email
+        - email_verification
+        - password
+        - password_verification
+        - username
+    RoleEnum:
+      enum:
+        - owner
+        - admin
+        - member
+        - viewer
+      type: string
+      description: |-
+        * `owner` - Owner
+        * `admin` - Admin
+        * `member` - Member
+        * `viewer` - Viewer
+    StatusEnum:
+      enum:
+        - todo
+        - doing
+        - done
+      type: string
+      description: |-
+        * `todo` - To Do
+        * `doing` - Doing
+        * `done` - Done
+    TaskMembershipRead:
+      type: object
+      properties:
+        can_delete:
+          type: boolean
+          readOnly: true
+        editable_fields:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        id:
+          type: integer
+          readOnly: true
+        user:
+          allOf:
+            - $ref: '#/components/schemas/TmsUserRead'
+          readOnly: true
+        task:
+          type: integer
+          readOnly: true
+        role:
+          allOf:
+            - $ref: '#/components/schemas/RoleEnum'
+          readOnly: true
+        joined_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+        - can_delete
+        - editable_fields
+        - id
+        - joined_at
+        - role
+        - task
+        - user
+    TaskMembershipWriteRequest:
+      type: object
+      properties:
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+        user_id:
+          type: integer
+        task:
+          type: integer
+      required:
+        - role
+        - task
+        - user_id
+    TaskNoteRead:
+      type: object
+      properties:
+        can_delete:
+          type: boolean
+          readOnly: true
+        editable_fields:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        id:
+          type: integer
+          readOnly: true
+        note:
+          type: string
+          readOnly: true
+        author:
+          allOf:
+            - $ref: '#/components/schemas/TmsUserRead'
+          readOnly: true
+        task:
+          type: integer
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+        - author
+        - can_delete
+        - created_at
+        - editable_fields
+        - id
+        - note
+        - task
+    TaskNoteWriteRequest:
+      type: object
+      properties:
+        note:
+          type: string
+          minLength: 1
+        author_id:
+          type: integer
+        task:
+          type: integer
+      required:
+        - author_id
+        - note
+        - task
+    TaskRead:
+      type: object
+      properties:
+        can_delete:
+          type: boolean
+          readOnly: true
+        editable_fields:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          readOnly: true
+        description:
+          type: string
+          readOnly: true
+        status:
+          allOf:
+            - $ref: '#/components/schemas/StatusEnum'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+        - can_delete
+        - created_at
+        - description
+        - editable_fields
+        - id
+        - status
+        - title
+    TaskWriteRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 255
+        description:
+          type: string
+          minLength: 1
+        status:
+          $ref: '#/components/schemas/StatusEnum'
+      required:
+        - description
+        - title
+    TmsUserRead:
+      type: object
+      properties:
+        can_delete:
+          type: boolean
+          readOnly: true
+        editable_fields:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        id:
+          type: integer
+          readOnly: true
+        email:
+          type: string
+          format: email
+          readOnly: true
+        username:
+          type: string
+          readOnly: true
+        first_name:
+          type: string
+          readOnly: true
+        last_name:
+          type: string
+          readOnly: true
+      required:
+        - can_delete
+        - editable_fields
+        - email
+        - first_name
+        - id
+        - last_name
+        - username
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
