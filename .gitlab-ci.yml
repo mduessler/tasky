@@ -9,3 +9,9 @@ include:
   - local: .gitlab/ci/build-jobs/dev-image.yaml
   - local: .gitlab/ci/lint-jobs/lint.yaml
   - local: .gitlab/ci/lint-jobs/openapi.yaml
+  - local: .gitlab/ci/test-jobs/base.yaml
+  - local: .gitlab/ci/test-jobs/registration.yaml
+  - local: .gitlab/ci/test-jobs/task.yaml
+  - local: .gitlab/ci/test-jobs/tms_auth.yaml
+  - local: .gitlab/ci/test-jobs/user.yaml
+  - local: .gitlab/ci/test-jobs/task_management_system.yaml
