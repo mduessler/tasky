@@ -3,10 +3,9 @@ openapi:
   image: $DEV_IMAGE_LATEST
   needs:
     - build-dev-image
-  rules:
-    - if: $CI_COMMIT_BRANCH == "dev"
-    - if: $CI_COMMIT_BRANCH == "main"
+  variables:
+    PRE_COMMIT_HOME: ${CI_PROJECT_DIR}/.pre-commit-cache
   script:
-    - python manage.py spectacular --file docs/openapi.yaml.tmp
-    - pre-commit run yamlfmt --files docs/openapi.yaml.tmp
-    - diff docs/openapi.yaml docs/openapi.yaml.tmp
+    - python task_management_system/manage.py spectacular --file docs/openapi.tmp.yaml
+    - pre-commit run yamlfmt --files docs/openapi.tmp.yaml
+    - diff docs/openapi.yaml docs/openapi.tmp.yaml
