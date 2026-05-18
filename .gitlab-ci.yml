@@ -20,3 +20,4 @@ include:
   - local: .gitlab/ci/test-jobs/task_management_system.yaml
   - local: .gitlab/ci/security-jobs/security.yaml
   - local: .gitlab/ci/build-jobs/prod-image.yaml
+  - local: .gitlab/ci/security-jobs/trivy.yaml
