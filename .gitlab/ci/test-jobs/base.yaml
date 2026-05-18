@@ -1,0 +1,23 @@
+.test-base:
+  stage: test
+  image: $DEV_IMAGE_LATEST
+  needs:
+    - lint
+    - openapi
+  variables:
+    DJANGO_SETTINGS_MODULE: task_management_system.settings.development
+    SECRET_KEY: $SECRET_KEY
+    JWT_SECRET_KEY: $JWT_SECRET_KEY
+    DJANGO_ALLOWED_HOSTS: localhost
+    SQL_ENGINE: django.db.backends.postgresql
+    SQL_DB: postgres
+    SQL_USER: postgres
+    SQL_PASSWORD: postgres
+    SQL_HOST: postgres
+    SQL_PORT: "5432"
+    EMAIL_HOST: sandbox.smtp.mailtrap.io
+    EMAIL_PORT: "2525"
+    EMAIL_HOST_USER: $EMAIL_HOST_USER
+    EMAIL_HOST_PASSWORD: $EMAIL_HOST_PASSWORD
+  services:
+    - postgres:18.4-alpine
