@@ -1,0 +1,11 @@
+openapi:
+  stage: lint
+  image: $DEV_IMAGE_LATEST
+  needs:
+    - build-dev-image
+  variables:
+    PRE_COMMIT_HOME: ${CI_PROJECT_DIR}/.pre-commit-cache
+  script:
+    - python task_management_system/manage.py spectacular --file docs/openapi.tmp.yaml
+    - pre-commit run yamlfmt --files docs/openapi.tmp.yaml
+    - diff docs/openapi.yaml docs/openapi.tmp.yaml
