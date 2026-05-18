@@ -1,0 +1,11 @@
+security:
+  stage: security
+  image: $DEV_IMAGE_LATEST
+  needs:
+    - test:task
+    - test:registration
+    - test:tms_auth
+    - test:user
+    - test:task_management_system
+  script:
+    - pip-audit
