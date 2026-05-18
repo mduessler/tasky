@@ -17,7 +17,7 @@ build-dev-image:
   script:
     - |
       docker build \
-        -f dev/Dockerfile \
+        -f dev/Dockerfile.ci \
         -t $DEV_IMAGE \
         -t $DEV_IMAGE_LATEST \
         .
