@@ -7,3 +7,4 @@ variables:
 include:
   - local: .gitlab/ci/build-jobs/dev-image.yaml
   - local: .gitlab/ci/lint-jobs/lint.yaml
+  - local: .gitlab/ci/lint-jobs/openapi.yaml

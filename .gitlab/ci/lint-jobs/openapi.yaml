@@ -1,0 +1,12 @@
+openapi:
+  stage: lint
+  image: $DEV_IMAGE_LATEST
+  needs:
+    - build-dev-image
+  rules:
+    - if: $CI_COMMIT_BRANCH == "dev"
+    - if: $CI_COMMIT_BRANCH == "main"
+  script:
+    - python manage.py spectacular --file docs/openapi.yaml.tmp
+    - pre-commit run yamlfmt --files docs/openapi.yaml.tmp
+    - diff docs/openapi.yaml docs/openapi.yaml.tmp
