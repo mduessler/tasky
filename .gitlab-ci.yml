@@ -1,0 +1,9 @@
+stages:
+  - build
+
+variables:
+  DEV_IMAGE: $CI_REGISTRY_IMAGE/dev:$CI_COMMIT_SHORT_SHA
+  DEV_IMAGE_LATEST: $CI_REGISTRY_IMAGE/dev:latest
+
+build-dev-image:
+  stage: build
