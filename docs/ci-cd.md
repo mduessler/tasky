@@ -183,3 +183,58 @@ scans the `prod/Dockerfile` for misconfigurations.
 
 The Trivy vulnerability database is cached between pipeline runs.
 
+## Variables
+
+### Predefined GitLab Variables
+
+The following variables are injected automatically by GitLab into every job:
+
+| Variable               | Description                         |
+| ---------------------- | ----------------------------------- |
+| `CI_REGISTRY`          | GitLab Container Registry URL       |
+| `CI_REGISTRY_USER`     | Registry login user                 |
+| `CI_REGISTRY_PASSWORD` | Registry login password (job token) |
+| `CI_REGISTRY_IMAGE`    | Base image path for this project    |
+| `CI_COMMIT_SHORT_SHA`  | Short commit SHA used as image tag  |
+
+### Custom Variables
+
+The following variables must be set manually under
+**Settings → CI/CD → Variables**:
+
+| Variable              | Description                |
+| --------------------- | -------------------------- |
+| `SECRET_KEY`          | Django secret key          |
+| `JWT_SECRET_KEY`      | JWT signing key            |
+| `EMAIL_HOST_USER`     | SMTP user for Mailtrap     |
+| `EMAIL_HOST_PASSWORD` | SMTP password for Mailtrap |
+
+The following variables are defined globally in `.gitlab-ci.yml`:
+
+| Variable            | Value                                          |
+| ------------------- | ---------------------------------------------- |
+| `DEV_IMAGE`         | `$CI_REGISTRY_IMAGE/dev:$CI_COMMIT_SHORT_SHA`  |
+| `DEV_IMAGE_LATEST`  | `$CI_REGISTRY_IMAGE/dev:latest`                |
+| `PROD_IMAGE`        | `$CI_REGISTRY_IMAGE/prod:$CI_COMMIT_SHORT_SHA` |
+| `PROD_IMAGE_LATEST` | `$CI_REGISTRY_IMAGE/prod:latest`               |
+
+## Rules
+
+All jobs run only on pushes to `dev` and `main`:
+
+```yaml
+rules:
+  - if: $CI_COMMIT_BRANCH == "dev"
+  - if: $CI_COMMIT_BRANCH == "main"
+```
+
+Feature branches do not trigger the pipeline.
+
+## Caching
+
+Two caches are used to speed up pipeline runs:
+
+| Job               | Cache                   | Key                  |
+| ----------------- | ----------------------- | -------------------- |
+| `lint`            | pre-commit environments | `.pre-commit-cache/` |
+| `scan-prod-image` | Trivy vulnerability DB  | `.trivycache/`       |
