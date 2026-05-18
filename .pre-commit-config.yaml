@@ -106,6 +106,7 @@ repos:
     rev: v1.105.0
     hooks:
       - id: terraform_fmt
+        args: [--args=-write=true]
       - id: terraform_validate
       - id: terraform_tflint
       - id: terraform_trivy
