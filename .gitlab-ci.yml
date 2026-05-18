@@ -6,6 +6,8 @@ stages:
 variables:
   DEV_IMAGE: $CI_REGISTRY_IMAGE/dev:$CI_COMMIT_SHORT_SHA
   DEV_IMAGE_LATEST: $CI_REGISTRY_IMAGE/dev:latest
+  PROD_IMAGE: $CI_REGISTRY_IMAGE/prod:$CI_COMMIT_SHORT_SHA
+  PROD_IMAGE_LATEST: $CI_REGISTRY_IMAGE/prod:latest
 include:
   - local: .gitlab/ci/build-jobs/dev-image.yaml
   - local: .gitlab/ci/lint-jobs/lint.yaml
@@ -17,3 +19,5 @@ include:
   - local: .gitlab/ci/test-jobs/user.yaml
   - local: .gitlab/ci/test-jobs/task_management_system.yaml
   - local: .gitlab/ci/security-jobs/security.yaml
+  - local: .gitlab/ci/build-jobs/prod-image.yaml
+  - local: .gitlab/ci/security-jobs/trivy.yaml
