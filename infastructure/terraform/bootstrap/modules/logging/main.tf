@@ -1,6 +1,6 @@
 data "aws_caller_identity" "current" {}
 
-module "s3_bucket" {
+module "log_bucket" {
   source          = "../s3_bucket"
   name            = "gitlab-runner-terraform-state-logs-${var.owner_id}"
   version_status = "Enabled"
@@ -8,11 +8,11 @@ module "s3_bucket" {
 
 module "security" {
   source    = "../security"
-  bucket_id = module.s3_bucket.id
+  bucket_id = module.log_bucket.id
 }
 
 resource "aws_s3_bucket_ownership_controls" "logs" {
-  bucket = module.s3_bucket.id
+  bucket = module.log_bucket.id
 
   rule {
     object_ownership = "BucketOwnerPreferred"
@@ -21,12 +21,12 @@ resource "aws_s3_bucket_ownership_controls" "logs" {
 
 resource "aws_s3_bucket_logging" "source" {
   bucket        = var.target_id
-  target_bucket = module.s3_bucket.id
+  target_bucket = module.log_bucket.id
   target_prefix = "logs/"
 }
 
 resource "aws_s3_bucket_policy" "logs" {
-  bucket = module.s3_bucket.id
+  bucket = module.log_bucket.id
 
   depends_on = [module.security]
 
@@ -40,7 +40,7 @@ resource "aws_s3_bucket_policy" "logs" {
           Service = "logging.s3.amazonaws.com"
         }
         Action   = "s3:PutObject"
-        Resource = "${module.s3_bucket.arn}/logs/*"
+        Resource = "${module.log_bucket.arn}/logs/*"
         Condition = {
           ArnLike = {
             "aws:SourceArn" = var.target_arn
@@ -56,8 +56,8 @@ resource "aws_s3_bucket_policy" "logs" {
         Principal = "*"
         Action    = "s3:*"
         Resource = [
-          module.s3_bucket.arn,
-          "${module.s3_bucket.arn}/*"
+          module.log_bucket.arn,
+          "${module.log_bucket.arn}/*"
         ]
         Condition = {
           Bool = { "aws:SecureTransport" = "false" }

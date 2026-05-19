@@ -1,5 +1,5 @@
 output "s3_bucket_name" {
-  value = module.s3_bucket.id
+  value = module.state_bucket.id
 }
 
 output "dynamodb_table_name" {

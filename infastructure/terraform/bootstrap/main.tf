@@ -1,4 +1,4 @@
-module "s3_bucket" {
+module "state_bucket" {
   source          = "./modules/s3_bucket"
   name            = "gitlab-runner-terraform-state-${var.owner_id}"
   version_status = "Enabled"
@@ -6,7 +6,7 @@ module "s3_bucket" {
 
 module "security" {
   source    = "./modules/security"
-  bucket_id = module.s3_bucket.id
+  bucket_id = module.state_bucket.id
 }
 
 resource "aws_dynamodb_table" "terraform_locks" {
@@ -21,7 +21,7 @@ resource "aws_dynamodb_table" "terraform_locks" {
 }
 
 resource "aws_s3_bucket_policy" "terraform_state" {
-  bucket = module.s3_bucket.id
+  bucket = module.state_bucket.id
 
   depends_on = [module.security]
 
@@ -33,8 +33,8 @@ resource "aws_s3_bucket_policy" "terraform_state" {
       Principal = "*"
       Action    = "s3:*"
       Resource = [
-        module.s3_bucket.arn,
-        "${module.s3_bucket.arn}/*"
+        module.state_bucket.arn,
+        "${module.state_bucket.arn}/*"
       ]
       Condition = {
         Bool = { "aws:SecureTransport" = "false" }
@@ -45,7 +45,7 @@ resource "aws_s3_bucket_policy" "terraform_state" {
 
 module "logging" {
   source     = "./modules/logging"
-  target_id  = module.s3_bucket.id
-  target_arn = module.s3_bucket.arn
+  target_id  = module.state_bucket.id
+  target_arn = module.state_bucket.arn
   owner_id = var.owner_id
 }

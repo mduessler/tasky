@@ -1,4 +1,4 @@
 output "id" {
   description = "Name of the S3 bucket logs"
-  value       = module.s3_bucket.id
+  value       = module.log_bucket.id
 }
