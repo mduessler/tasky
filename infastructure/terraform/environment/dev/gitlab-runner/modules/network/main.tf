@@ -67,7 +67,7 @@ resource "aws_route_table_association" "public" {
 }
 
 #
-# Security group (HTTPS only, only outgoind)
+# Security group (HTTPS only, only outbound)
 #
 
 resource "aws_security_group" "runner" {
