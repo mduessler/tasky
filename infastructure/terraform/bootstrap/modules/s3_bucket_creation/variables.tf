@@ -8,3 +8,8 @@ variable "prevent_destroy" {
   type        = string
   default     = True
 }
+
+variable "version_status" {
+  description = "Set the status of the versioning"
+  type        = string
+}
