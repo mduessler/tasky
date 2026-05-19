@@ -5,7 +5,7 @@ resource "aws_vpc" "main" {
 }
 
 #
-# Private subnets components
+# Private subnet components
 #
 resource "aws_subnet" "private" {
   vpc_id                  = aws_vpc.main.id
