@@ -1,6 +1,6 @@
 module "s3_bucket" {
   source          = "./modules/s3_bucket"
-  name            = "gitlab-runner-terraform-state-{var.owner_id}"
+  name            = "gitlab-runner-terraform-state-${var.owner_id}"
   prevent_destroy = true
   version_status  = "Enabled"
 }
@@ -48,4 +48,5 @@ module "logging" {
   source     = "./modules/logging"
   target_id  = module.s3_bucket.id
   target_arn = module.s3_bucket.arn
+  owner_id = var.owner_id
 }

@@ -2,7 +2,7 @@ data "aws_caller_identity" "current" {}
 
 module "s3_bucket" {
   source          = "../s3_bucket"
-  name            = "gitlab-runner-terraform-state-logs-{var.owner_id}"
+  name            = "gitlab-runner-terraform-state-logs-${var.owner_id}"
   prevent_destroy = true
   version_status  = "Enabled"
 }
