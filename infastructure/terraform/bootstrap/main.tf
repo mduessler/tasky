@@ -1,7 +1,7 @@
 module "s3_bucket" {
   source          = "./modules/s3_bucket"
   name            = "gitlab-runner-terraform-state-${var.owner_id}"
-  prevent_destroy = true
+  version_status = "Enabled"
 }
 
 module "security" {
