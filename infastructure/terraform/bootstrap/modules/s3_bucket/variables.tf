@@ -12,3 +12,8 @@ variable "version_status" {
   description = "Set the status of the versioning"
   type        = string
 }
+
+variable "owner_id" {
+  description = "ID of the owner"
+  type        = string
+}
