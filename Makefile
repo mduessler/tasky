@@ -94,6 +94,5 @@ pre-commit:
 .ONESHELL:
 terraform-init-bootstrap:
 	cd $(terraform-dir)/bootstrap
-	ls -la
 	terraform init
 	terraform apply
