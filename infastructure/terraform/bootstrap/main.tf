@@ -1,3 +1,15 @@
+module "s3_bucket" {
+  source          = "./modules/s3_bucket"
+  name            = "gitlab-runner-terraform-state-{var.owner_id}"
+  prevent_destroy = true
+  version_status  = "Enabled"
+}
+
+module "s3_security_state" {
+  source    = "./modules/s3_security"
+  bucket_id = aws_s3_bucket.terraform_state.id
+}
+
 resource "aws_dynamodb_table" "terraform_locks" {
   name         = "gitlab-runner-terraform-locks"
   billing_mode = "PAY_PER_REQUEST"
@@ -30,16 +42,4 @@ resource "aws_s3_bucket_policy" "terraform_state" {
       }
     }]
   })
-}
-
-module "s3_security_state" {
-  source    = "./modules/s3_security"
-  bucket_id = aws_s3_bucket.terraform_state.id
-}
-
-module "s3_bucket" {
-  source          = "./modules/s3_bucket"
-  name            = "gitlab-runner-terraform-state-{var.owner_id}"
-  prevent_destroy = true
-  version_status  = "Enabled"
 }
