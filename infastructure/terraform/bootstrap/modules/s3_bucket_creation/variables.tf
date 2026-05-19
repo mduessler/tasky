@@ -5,7 +5,7 @@ variable "name" {
 
 variable "prevent_destroy" {
   description = "Enable or disable deletion of bucket, if it is new initialized."
-  type        = string
+  type        = bool
 }
 
 variable "version_status" {
