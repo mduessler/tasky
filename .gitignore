@@ -7,7 +7,6 @@ logs/
 
 # terraform
 .terraform/
-*.tfvars
 *.tfstate
 *.tfstate.backup
 private.tfvars
