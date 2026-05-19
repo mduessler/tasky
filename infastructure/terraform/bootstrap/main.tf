@@ -43,3 +43,9 @@ resource "aws_s3_bucket_policy" "terraform_state" {
     }]
   })
 }
+
+module "logging" {
+  source     = "./modules/logging"
+  target_id  = module.s3_bucket.id
+  target_arn = module.s3_bucket.arn
+}
