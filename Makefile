@@ -96,3 +96,8 @@ terraform-init-bootstrap:
 	cd $(terraform-dir)/bootstrap
 	terraform init
 	terraform apply
+
+.ONESHELL:
+terraform-destroy-bootstrap:
+	cd $(terraform-dir)/bootstrap
+	terraform destroy
