@@ -1,1 +1,0 @@
-owner_id = "REDACTED_AWS_ACCOUNT"
