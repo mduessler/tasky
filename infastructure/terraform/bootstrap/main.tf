@@ -1,5 +1,8 @@
 resource "aws_s3_bucket" "terraform_state" {
   bucket = "gitlab-runner-terraform-state-REDACTED_AWS_ACCOUNT"
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "aws_s3_bucket_versioning" "terraform_state" {
