@@ -5,7 +5,7 @@ module "s3_bucket" {
   version_status  = "Enabled"
 }
 
-module "s3_security_state" {
+module "s3_security" {
   source    = "./modules/s3_security"
   bucket_id = module.s3_bucket.id
 }
@@ -24,7 +24,7 @@ resource "aws_dynamodb_table" "terraform_locks" {
 resource "aws_s3_bucket_policy" "terraform_state" {
   bucket = module.s3_bucket.id
 
-  depends_on = [module.s3_security_state]
+  depends_on = [module.s3_security]
 
   policy = jsonencode({
     Version = "2012-10-17"
