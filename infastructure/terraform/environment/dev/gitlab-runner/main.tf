@@ -1,7 +1,6 @@
 module "network" {
   source      = "./modules/network"
   aws_region  = var.aws_region
-  environment = var.environment
 }
 
 module "security" {
