@@ -14,6 +14,7 @@ test-data=/home/tms/web/tests/data
 docs = ./docs/
 
 terraform-dir=infastructure/terraform/
+gitlab-runner-dir=$(terraform-dir)/environment/dev/gitlab-runner
 
 .SILENT:
 .ONESHELL:
@@ -101,4 +102,16 @@ terraform-init-bootstrap:
 .ONESHELL:
 terraform-destroy-bootstrap:
 	cd $(terraform-dir)/bootstrap
+	terraform destroy
+
+# Set up gitlab-runner
+.ONESHELL:
+terraform-init-runner:
+	cd $(gitlab-runner-dir)
+	terraform init
+	terraform apply
+
+.ONESHELL:
+terraform-destroy-runner:
+	cd $(gitlab-runner-dir)
 	terraform destroy
