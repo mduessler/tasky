@@ -13,3 +13,8 @@ variable "instance_type" {
   type        = string
   default     = "t3.medium"
 }
+
+variable "owner_id" {
+  description = "AWS owner id"
+  type        = string
+}
