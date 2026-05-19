@@ -8,7 +8,7 @@ data "aws_ami" "ubuntu" {
   }
 }
 
-resource "aws_instance" "runner" {
+resource "aws_instance" "gitlab_runner" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = var.instance_type
   subnet_id              = var.subnet_id
