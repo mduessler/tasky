@@ -9,6 +9,7 @@ logs/
 .terraform/
 *.tfstate
 *.tfstate.backup
+private.tfvars
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
