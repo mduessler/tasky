@@ -91,6 +91,7 @@ pre-commit:
 #
 # Infastructure commands
 #
+# Set up backend
 .ONESHELL:
 terraform-init-bootstrap:
 	cd $(terraform-dir)/bootstrap
