@@ -2,8 +2,6 @@ terraform {
   required_version = ">= 1.6.0"
 
   backend "s3" {
-    bucket         = "gitlab-runner-terraform-state-REDACTED_AWS_ACCOUNT"
-    key            = "prod/terraform.tfstate"
     region         = "eu-central-1"
     use_lockfile   = true
     encrypt        = true
