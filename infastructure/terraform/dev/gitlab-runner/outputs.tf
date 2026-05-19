@@ -17,3 +17,8 @@ output "instance_profile_name" {
   description = "IAM instance profile name for the runner"
   value       = module.iam.instance_profile_name
 }
+
+output "runner_instance_id" {
+  description = "ID of the GitLab Runner EC2 instance"
+  value       = module.compute.runner_instance_id
+}
