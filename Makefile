@@ -13,6 +13,8 @@ cert-subj=/CN=localhost
 test-data=/home/tms/web/tests/data
 docs = ./docs/
 
+terraform-dir=infastructure/terraform/
+
 .SILENT:
 .ONESHELL:
 up-dev:
@@ -84,3 +86,14 @@ openapi:
 pre-commit:
 	poetry install
 	poetry run pre-commit install
+
+
+#
+# Infastructure commands
+#
+.ONESHELL:
+terraform-init-bootstrap:
+	cd $(terraform-dir)/bootstrap
+	ls -la
+	terraform init
+	terraform apply
