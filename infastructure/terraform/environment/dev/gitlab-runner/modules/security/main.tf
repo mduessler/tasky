@@ -10,3 +10,8 @@ resource "aws_iam_role" "gitlab_runner" {
     }]
   })
 }
+
+resource "aws_iam_instance_profile" "gitlab_runner" {
+  name = "gitlab-runner-profile-${var.environment}"
+  role = aws_iam_role.gitlab_runner.name
+}
