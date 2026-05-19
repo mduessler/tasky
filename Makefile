@@ -13,6 +13,9 @@ cert-subj=/CN=localhost
 test-data=/home/tms/web/tests/data
 docs = ./docs/
 
+terraform-dir=infastructure/terraform/
+gitlab-runner-dir=$(terraform-dir)/environment/dev/gitlab-runner
+
 .SILENT:
 .ONESHELL:
 up-dev:
@@ -84,3 +87,33 @@ openapi:
 pre-commit:
 	poetry install
 	poetry run pre-commit install
+
+
+#
+# Infastructure commands
+#
+# Set up backend
+.ONESHELL:
+terraform-init-bootstrap:
+	cd $(terraform-dir)/bootstrap
+	terraform init
+	terraform apply
+
+.ONESHELL:
+terraform-destroy-bootstrap:
+	cd $(terraform-dir)/bootstrap
+	terraform destroy
+
+# Set up gitlab-runner
+.ONESHELL:
+terraform-init-runner-dev:
+	cd $(gitlab-runner-dir)
+	terraform init \
+	  -backend-config="bucket=gitlab-runner-terraform-state-REDACTED_AWS_ACCOUNT" \
+	  -backend-config="key=dev/terraform.tfstate"
+	terraform apply
+
+.ONESHELL:
+terraform-destroy-runner:
+	cd $(gitlab-runner-dir)
+	terraform destroy
