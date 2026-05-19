@@ -1,5 +1,5 @@
 output "s3_bucket_name" {
-  value = aws_s3_bucket.terraform_state.bucket
+  value = module.s3_bucket.id
 }
 
 output "dynamodb_table_name" {
