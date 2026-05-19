@@ -7,8 +7,8 @@ module "s3_bucket" {
   version_status  = "Enabled"
 }
 
-module "s3_security" {
-  source    = "../s3_security"
+module "security" {
+  source    = "../security"
   bucket_id = module.s3_bucket.id
 }
 
@@ -29,7 +29,7 @@ resource "aws_s3_bucket_logging" "source" {
 resource "aws_s3_bucket_policy" "logs" {
   bucket = module.s3_bucket.id
 
-  depends_on = [module.s3_security]
+  depends_on = [module.security]
 
   policy = jsonencode({
     Version = "2012-10-17"
