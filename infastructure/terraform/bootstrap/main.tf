@@ -7,7 +7,7 @@ module "s3_bucket" {
 
 module "s3_security_state" {
   source    = "./modules/s3_security"
-  bucket_id = aws_s3_bucket.terraform_state.id
+  bucket_id = module.s3_bucket.id
 }
 
 resource "aws_dynamodb_table" "terraform_locks" {
