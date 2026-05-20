@@ -15,7 +15,7 @@
     state: present
     update_cache: true
 - name: Register gitlab-runner
-  ansible.builtin.command:
+  ansible.builtin.shell:
     cmd: |
       gitlab-runner register \
         --url "https://gitlab.com" \
