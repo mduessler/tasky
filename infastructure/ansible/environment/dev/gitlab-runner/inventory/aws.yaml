@@ -8,3 +8,7 @@ filters:
   tag:RunnerName: "{{ gitlab_runner_name }}"
 compose:
   ansible_host: instance_id
+keyed_groups:
+  - key: tags.Role
+    prefix: ""
+    separator: ""
