@@ -25,10 +25,6 @@ resource "aws_iam_instance_profile" "gitlab_runner" {
 locals {
   runner_policies = [
     "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
-    "arn:aws:iam::aws:policy/AmazonS3FullAccess",
-    "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess",
-    "arn:aws:iam::aws:policy/AmazonEC2FullAccess",
-    "arn:aws:iam::aws:policy/AmazonVPCFullAccess",
   ]
 }
 
