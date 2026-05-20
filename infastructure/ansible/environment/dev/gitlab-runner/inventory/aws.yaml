@@ -2,7 +2,7 @@ plugin: amazon.aws.aws_ec2
 regions:
   - "{{ lookup('env', 'TF_VAR_AWS_REGION') }}"
 filters:
-  tag:Project: "{{ lookup('env', 'TF_VAR_PROJECT_NAME') }}"
+  tag:Project: "tasky"
   tag:Role: gitlab-runner
   tag:Environment: dev
 compose:

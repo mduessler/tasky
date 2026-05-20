@@ -1,14 +1,12 @@
 module "network" {
   source      = "./modules/network"
   aws_region  = var.aws_region
-  project_name = var.project_name
   runner_name = var.runner_name
 }
 
 module "security" {
   source       = "./modules/security"
   environment  = var.environment
-  project_name = var.project_name
   runner_name  = var.runner_name
 }
 

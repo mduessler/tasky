@@ -1,5 +1,5 @@
 resource "aws_iam_role" "gitlab_runner" {
-  name = "${var.project_name}-gitlab-runner-role-${var.environment}-${var.runner_name}"
+  name = "tasky-gitlab-runner-role-${var.environment}-${var.runner_name}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -12,13 +12,13 @@ resource "aws_iam_role" "gitlab_runner" {
 
   tags = {
     Environment = var.environment
-    Project     = var.project_name
+    Project     = tasky
     ManagedBy   = "terraform"
   }
 }
 
 resource "aws_iam_instance_profile" "gitlab_runner" {
-  name = "${var.project_name}-gitlab-runner-profile-${var.environment}-${var.runner_name}"
+  name = "tasky-gitlab-runner-profile-${var.environment}-${var.runner_name}"
   role = aws_iam_role.gitlab_runner.name
 }
 

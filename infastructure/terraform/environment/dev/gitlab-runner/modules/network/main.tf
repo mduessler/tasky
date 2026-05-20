@@ -71,7 +71,7 @@ resource "aws_route_table_association" "public" {
 #
 
 resource "aws_security_group" "runner" {
-  name        = "${var.project_name}-gitlab-runner-sg-${var.runner_name}"  # ← geändert
+  name        = "tasky-gitlab-runner-sg-${var.runner_name}"  # ← geändert
   description = "Security Group for GitLab Runner - outbound only"
   vpc_id      = aws_vpc.main.id
 
