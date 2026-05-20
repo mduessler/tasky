@@ -108,10 +108,11 @@ terraform-destroy-bootstrap:
 # Set up gitlab-runner
 .ONESHELL:
 terraform-init-runner-dev:
-	cd $(gitlab-runner-dir)
+	@read -p "Runner name: " runner_name && \
+	export TF_VAR_runner_name=$$runner_name && \
 	terraform init \
 	  -backend-config="bucket=tasky-terraform-state-REDACTED_AWS_ACCOUNT-dev" \
-	  -backend-config="key=dev/terraform.tfstate"
+	  -backend-config="key=dev/terraform.tfstate" && \
 	terraform apply
 
 .ONESHELL:
