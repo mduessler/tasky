@@ -48,14 +48,14 @@ State **lokal** (kein S3-Backend).
 
 #### S3 State Bucket
 
-| Eigenschaft        | Wert                                       |
-| ------------------ | ------------------------------------------ |
-| Name               | `gitlab-runner-terraform-state-<owner_id>` |
-| Versioning         | Aktiviert                                  |
-| Verschlüsselung    | AES-256 (Server-Side)                      |
-| Public Access      | Vollständig blockiert                      |
-| TLS                | Erzwungen (Policy `DenyNonTLS`)            |
-| Destroy Protection | `prevent_destroy = true`                   |
+| Eigenschaft        | Wert                                             |
+| ------------------ | ------------------------------------------------ |
+| Name               | `tasky-gitlab-runner-terraform-state-<owner_id>` |
+| Versioning         | Aktiviert                                        |
+| Verschlüsselung    | AES-256 (Server-Side)                            |
+| Public Access      | Vollständig blockiert                            |
+| TLS                | Erzwungen (Policy `DenyNonTLS`)                  |
+| Destroy Protection | `prevent_destroy = true`                         |
 
 Der Bucket speichert die `terraform.tfstate`-Dateien aller nachgelagerten
 Workspaces. Versioning stellt sicher, dass ältere State-Versionen bei Bedarf
@@ -63,11 +63,11 @@ wiederhergestellt werden können.
 
 #### DynamoDB Lock Table
 
-| Eigenschaft | Wert                            |
-| ----------- | ------------------------------- |
-| Name        | `gitlab-runner-terraform-locks` |
-| Billing     | PAY_PER_REQUEST                 |
-| Hash Key    | `LockID` (String)               |
+| Eigenschaft | Wert                                  |
+| ----------- | ------------------------------------- |
+| Name        | `tasky-gitlab-runner-terraform-locks` |
+| Billing     | PAY_PER_REQUEST                       |
+| Hash Key    | `LockID` (String)                     |
 
 Verhindert konkurrierende `terraform apply`-Ausführungen. Bevor Terraform den
 State schreibt, legt es einen Lock in dieser Tabelle an. Ist der Lock bereits
@@ -75,12 +75,12 @@ vorhanden, schlägt der Vorgang mit einem Fehler fehl.
 
 #### S3 Log Bucket
 
-| Eigenschaft      | Wert                                            |
-| ---------------- | ----------------------------------------------- |
-| Name             | `gitlab-runner-terraform-state-logs-<owner_id>` |
-| Zweck            | Access-Logs des State-Buckets                   |
-| Prefix           | `logs/`                                         |
-| Object Ownership | `BucketOwnerPreferred`                          |
+| Eigenschaft      | Wert                                                  |
+| ---------------- | ----------------------------------------------------- |
+| Name             | `tasky-gitlab-runner-terraform-state-logs-<owner_id>` |
+| Zweck            | Access-Logs des State-Buckets                         |
+| Prefix           | `logs/`                                               |
+| Object Ownership | `BucketOwnerPreferred`                                |
 
 Alle Zugriffe auf den State-Bucket werden in diesen separaten Bucket geloggt.
 Der Log-Bucket hat dieselben Sicherheitseinstellungen (AES-256, Public-Access-
@@ -141,7 +141,7 @@ seinen Remote-State.
 
 ```hcl
 backend "s3" {
-  bucket       = "gitlab-runner-terraform-state-REDACTED_AWS_ACCOUNT"
+  bucket       = "tasky-gitlab-runner-terraform-state-REDACTED_AWS_ACCOUNT"
   key          = "dev/terraform.tfstate"
   region       = "eu-central-1"
   use_lockfile = true
@@ -175,7 +175,7 @@ Private Subnet (10.0.1.0/24)
     ▼
 EC2: GitLab Runner
     │  Security Group: nur HTTPS (443) outbound
-    │  IAM Role: gitlab-runner-role-dev
+    │  IAM Role: tasky-gitlab-runner-role-dev
     ▼
 (kein eingehender Traffic)
 ```
@@ -212,7 +212,7 @@ Erstellt die EC2-Instanz für den Runner:
 | Instance Type | `t3.micro` (konfigurierbar)                   |
 | Subnet        | Private Subnet                                |
 | Public IP     | Nein                                          |
-| IAM Profile   | `gitlab-runner-profile-dev`                   |
+| IAM Profile   | `tasky-gitlab-runner-profile-dev`             |
 
 Das AMI wird dynamisch über einen Data-Source-Filter bezogen (`owners =   ["099720109477"]`
 ist Canonicals offizielle AWS-Account-ID), sodass immer das aktuellste
@@ -222,10 +222,10 @@ Ubuntu-24.04-Image verwendet wird.
 
 Erstellt die IAM-Berechtigungen für den Runner:
 
-| Ressource        | Name                        |
-| ---------------- | --------------------------- |
-| IAM Role         | `gitlab-runner-role-dev`    |
-| Instance Profile | `gitlab-runner-profile-dev` |
+| Ressource        | Name                              |
+| ---------------- | --------------------------------- |
+| IAM Role         | `tasky-gitlab-runner-role-dev`    |
+| Instance Profile | `tasky-gitlab-runner-profile-dev` |
 
 Die IAM-Role erlaubt EC2-Instanzen, diese Role anzunehmen (`ec2.amazonaws.com`
 als Trust Principal). Folgende AWS Managed Policies sind angehängt:

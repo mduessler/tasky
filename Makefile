@@ -109,7 +109,7 @@ terraform-destroy-bootstrap:
 terraform-init-runner-dev:
 	cd $(gitlab-runner-dir)
 	terraform init \
-	  -backend-config="bucket=gitlab-runner-terraform-state-REDACTED_AWS_ACCOUNT" \
+	  -backend-config="bucket=tasky-gitlab-runner-terraform-state-REDACTED_AWS_ACCOUNT" \
 	  -backend-config="key=dev/terraform.tfstate"
 	terraform apply
 

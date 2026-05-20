@@ -2,7 +2,7 @@ plugin: amazon.aws.aws_ec2
 regions:
   - eu-central-1
 filters:
-  tag:Project: gitlab-runner
+  tag:Project: tasky
   tag:Environment: dev
 compose:
   ansible_host: instance_id

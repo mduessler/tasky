@@ -1,6 +1,6 @@
 module "state_bucket" {
   source          = "./modules/s3_bucket"
-  name            = "gitlab-runner-terraform-state-${var.owner_id}"
+  name            = "tasky-gitlab-runner-terraform-state-${var.owner_id}"
   version_status = "Enabled"
 }
 
@@ -10,7 +10,7 @@ module "security" {
 }
 
 resource "aws_dynamodb_table" "terraform_locks" {
-  name         = "gitlab-runner-terraform-locks"
+  name         = "tasky-gitlab-runner-terraform-locks"
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "LockID"
 

@@ -4,3 +4,4 @@ gitlab_runner_executor: shell
 gitlab_runner_tags:
   - aws
   - dev
+  - tasky
