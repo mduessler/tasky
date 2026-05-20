@@ -14,3 +14,14 @@
     name: "gitlab-runner={{ gitlab_runner_version }}"
     state: present
     update_cache: true
+- name: Register gitlab-runner
+  ansible.builtin.command:
+    cmd: |
+      gitlab-runner register \
+        --non-interactive \
+        --url "{{ gitlab_runner_url }}" \
+        --token "{{ gitlab_runner_token }}" \
+        --executor "{{ gitlab_runner_executor }}" \
+        --description "aws-runner-{{ env }}" \
+        --tag-list "{{ gitlab_runner_tags | join(',') }}"
+    creates: /etc/gitlab-runner/config.toml
