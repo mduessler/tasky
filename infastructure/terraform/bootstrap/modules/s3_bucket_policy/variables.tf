@@ -4,7 +4,7 @@ variable "bucket_id" {
 }
 variable "depends_on" {
   description = "Dependencies"
-  type=list[string]
+  type        = list[string]
 }
 variable "policy_statements" {
   description = "List of policy statements"
