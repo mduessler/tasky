@@ -14,10 +14,10 @@ test-data=/home/tms/web/tests/data
 docs = ./docs/
 
 aws-user-dev=tasky-dev
-terraform-dir=infastructure/terraform
-ansible-dir=infastructure/ansible
+terraform-dir=infrastructure/terraform
+ansible-dir=infrastructure/ansible
 
-gitlab-runner-dir=dev/gitlab-runner
+gitlab-runner-dir=environment/dev/gitlab-runner
 
 
 .SILENT:
@@ -94,7 +94,7 @@ pre-commit:
 
 
 #
-# Infastructure commands
+# Infrastructure commands
 #
 # Set up backend
 .ONESHELL:
