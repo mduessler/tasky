@@ -1,5 +1,12 @@
 resource "aws_iam_user" "gitlab_runner" {
   name = var.username
+
+  tags = {
+    Environment = var.environment
+    Project     = "tasky"
+    ManagedBy   = "terraform"
+  }
+
 }
 
 resource "aws_iam_access_key" "gitlab_runner" {
