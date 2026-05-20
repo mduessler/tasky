@@ -113,14 +113,19 @@ install-runner-dev:
 	@read -p "Runner name: " runner_name && \
 	export TF_VAR_runner_name=$$runner_name && \
 	terraform init \
-	  -backend-config="bucket=tasky-terraform-state-REDACTED_AWS_ACCOUNT-dev" \
-	  -backend-config="key=dev/terraform.tfstate" && \
+		-backend-config="bucket=tasky-terraform-state-REDACTED_AWS_ACCOUNT-dev" \
+		-backend-config="key=dev/terraform.tfstate" && \
 	terraform apply
+
+	@read -p "Runner token: " runner_token && \
+	ansible-playbook playbook.yaml \
+		-i inventory/aws.yaml \
+		-e "gitlab_runner_name=$$runner_name gitlab_runner_token=$$runner_token"
 
 .ONESHELL:
 terraform-destroy-runner:
 	cd $(gitlab-runner-dir)
 	terraform init \
-	  -backend-config="bucket=tasky-terraform-state-REDACTED_AWS_ACCOUNT-dev" \
-	  -backend-config="key=dev/terraform.tfstate"
+		-backend-config="bucket=tasky-terraform-state-REDACTED_AWS_ACCOUNT-dev" \
+		-backend-config="key=dev/terraform.tfstate"
 	terraform destroy --auto-approve
