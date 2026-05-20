@@ -40,7 +40,7 @@ module "logging" {
   owner_id   = var.owner_id
 }
 
-module "tasky-gitlab-runner-user" {
+module "tasky_gitlab_runner_user" {
   source = "./modules/user"
 
   username    = "tasky-gitlab-runner-user"
