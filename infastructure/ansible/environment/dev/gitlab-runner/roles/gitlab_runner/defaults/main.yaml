@@ -5,3 +5,4 @@ gitlab_runner_tags:
   - aws
   - dev
   - tasky
+env: dev

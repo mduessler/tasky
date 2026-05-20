@@ -19,11 +19,12 @@
     cmd: |
       gitlab-runner register \
         --non-interactive \
-        --url "{{ gitlab_runner_url }}" \
+        --url "https://gitlab.com" \
         --token "{{ gitlab_runner_token }}" \
-        --executor "{{ gitlab_runner_executor }}" \
-        --description "aws-runner-{{ env }}" \
-        --tag-list "{{ gitlab_runner_tags | join(',') }}"
+        --executor "docker" \
+        --description "aws-runner-{{ gitlab-runner_name }}" \
+        --name "{{ gitlab_runner_name }}"
+        --tag-list "tasky-dev"
     creates: /etc/gitlab-runner/config.toml
 - name: Verify gitlab-runner is running
   ansible.builtin.systemd:
