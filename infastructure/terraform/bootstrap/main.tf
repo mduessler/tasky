@@ -50,11 +50,11 @@ module "logging" {
   owner_id   = var.owner_id
 }
 
-module "iam" {
+module "tasky-gitlab-runner-user" {
   source   = "./modules/user"
 
-  username = var.username
-  environment = var.environment
+  username = "tasky-gitlab-runner-user"
+  environment = "dev"
   policies = [
     "arn:aws:iam::aws:policy/AmazonS3FullAccess",
     "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess",
