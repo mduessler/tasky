@@ -3,7 +3,7 @@ resource "aws_iam_user" "this" {
 
   tags = {
     Environment = var.environment
-    Project     = var.project_name
+    Project     = "tasky"
     ManagedBy   = "terraform"
   }
 

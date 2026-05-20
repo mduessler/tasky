@@ -13,8 +13,3 @@ variable "policies" {
   type        = list(string)
   default     = []
 }
-
-variable "poject_name" {
-  description = "Name of the project"
-  type        = string
-}
