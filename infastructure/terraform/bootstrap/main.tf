@@ -9,7 +9,7 @@ module "security" {
   bucket_id = module.state_bucket_dev.id
 }
 
-module "terraform_locks" {
+module "terraform_locks_dev" {
   source      = "./modules/dynamo_db"
   environment = "dev"
 }
