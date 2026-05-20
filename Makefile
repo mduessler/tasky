@@ -111,7 +111,7 @@ terraform-destroy-bootstrap:
 
 # Set up gitlab-runner
 .ONESHELL:
-install-runner-dev:
+install-gitlab-runner:
 	cd $(terraform-dir)/$(gitlab-runner-dir)
 	export AWS_PROFILE=$(aws-user-dev)
 	@read -p "Runner name: " runner_name && \
