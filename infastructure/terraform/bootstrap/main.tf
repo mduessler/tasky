@@ -4,7 +4,7 @@ module "state_bucket_dev" {
   version_status = "Enabled"
 }
 
-module "security" {
+module "security_dev" {
   source    = "./modules/security"
   bucket_id = module.state_bucket_dev.id
 }
@@ -14,10 +14,10 @@ module "terraform_locks_dev" {
   environment = "dev"
 }
 
-module "bucket_policy" {
+module "bucket_policy_dev" {
   source     = "./modules/s3_bucket_policy"
   bucket_id  = module.state_bucket_dev.id
-  depends_on = [module.security]
+  depends_on = [module.security_dev]
   policy_statements = [{
     Sid       = "DenyNonTLS"
     Effect    = "Deny"
@@ -33,17 +33,17 @@ module "bucket_policy" {
   }]
 }
 
-module "logging" {
+module "logging_dev" {
   source     = "./modules/logging"
   target_id  = module.state_bucket_dev.id
   target_arn = module.state_bucket_dev.arn
   owner_id   = var.owner_id
 }
 
-module "tasky_gitlab_runner_user" {
+module "iam_user_dev" {
   source = "./modules/user"
 
-  username    = "tasky-gitlab-runner-user"
+  username    = "iam_user_dev"
   environment = "dev"
   policies = [
     "arn:aws:iam::aws:policy/AmazonS3FullAccess",
