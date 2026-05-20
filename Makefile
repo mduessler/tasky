@@ -102,6 +102,7 @@ terraform-init-bootstrap:
 .ONESHELL:
 terraform-destroy-bootstrap:
 	cd $(terraform-dir)/bootstrap
+	terraform init
 	terraform destroy --auto-approve
 
 # Set up gitlab-runner
@@ -116,4 +117,7 @@ terraform-init-runner-dev:
 .ONESHELL:
 terraform-destroy-runner:
 	cd $(gitlab-runner-dir)
+	terraform init \
+	  -backend-config="bucket=tasky-gitlab-runner-terraform-state-REDACTED_AWS_ACCOUNT" \
+	  -backend-config="key=dev/terraform.tfstate"
 	terraform destroy --auto-approve
