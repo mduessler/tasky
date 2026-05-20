@@ -102,7 +102,7 @@ terraform-init-bootstrap:
 .ONESHELL:
 terraform-destroy-bootstrap:
 	cd $(terraform-dir)/bootstrap
-	terraform destroy
+	terraform destroy --auto-approve
 
 # Set up gitlab-runner
 .ONESHELL:
@@ -116,4 +116,4 @@ terraform-init-runner-dev:
 .ONESHELL:
 terraform-destroy-runner:
 	cd $(gitlab-runner-dir)
-	terraform destroy
+	terraform destroy --auto-approve
