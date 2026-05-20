@@ -5,3 +5,7 @@
       - ca-certificates
     state: present
     update_cache: true
+- name: Added gitlab-runner repo
+  ansible.builtin.shell:
+    cmd: curl -L "https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh" | bash
+    creates: /etc/apt/sources.list.d/runner_gitlab-runner.list
