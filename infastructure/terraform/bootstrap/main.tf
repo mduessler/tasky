@@ -15,25 +15,22 @@ module "terraform_locks" {
 }
 
 module "bucket_policy" {
-  source = "./modules/s3_bucket_policy"
-  bucket     = module.state_bucket_dev.id
+  source     = "./modules/s3_bucket_policy"
+  bucket_id  = module.state_bucket_dev.id
   depends_on = [module.security]
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Sid       = "DenyNonTLS"
-      Effect    = "Deny"
-      Principal = "*"
-      Action    = "s3:*"
-      Resource = [
-        module.state_bucket_dev.arn,
-        "${module.state_bucket_dev.arn}/*"
-      ]
-      Condition = {
-        Bool = { "aws:SecureTransport" = "false" }
-      }
-    }]
-  })
+  policy_statements = [{
+    Sid       = "DenyNonTLS"
+    Effect    = "Deny"
+    Principal = "*"
+    Action    = "s3:*"
+    Resource = [
+      module.state_bucket_dev.arn,
+      "${module.state_bucket_dev.arn}/*"
+    ]
+    Condition = {
+      Bool = { "aws:SecureTransport" = "false" }
+    }
+  }]
 }
 
 module "logging" {
