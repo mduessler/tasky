@@ -14,8 +14,11 @@ test-data=/home/tms/web/tests/data
 docs = ./docs/
 
 aws-user-dev=tasky-dev
-terraform-dir=infastructure/terraform/
-gitlab-runner-dir=$(terraform-dir)/environment/dev/gitlab-runner
+terraform-dir=infastructure/terraform
+ansible-dir=infastructure/ansible
+
+gitlab-runner-dir=dev/gitlab-runner
+
 
 .SILENT:
 .ONESHELL:
@@ -109,6 +112,7 @@ terraform-destroy-bootstrap:
 # Set up gitlab-runner
 .ONESHELL:
 install-runner-dev:
+	cd $(terraform-dir)/$(gitlab-runner-dir)
 	export AWS_PROFILE=$(aws-user-dev)
 	@read -p "Runner name: " runner_name && \
 	export TF_VAR_runner_name=$$runner_name && \
@@ -117,6 +121,7 @@ install-runner-dev:
 		-backend-config="key=dev/terraform.tfstate" && \
 	terraform apply
 
+	cd $(ansible-dir)/$(gitlab-runner-dir)
 	@read -p "Runner token: " runner_token && \
 	ansible-playbook playbook.yaml \
 		-i inventory/aws.yaml \
@@ -124,7 +129,7 @@ install-runner-dev:
 
 .ONESHELL:
 terraform-destroy-runner:
-	cd $(gitlab-runner-dir)
+	cd $(terraform-dir)/$(gitlab-runner-dir)
 	terraform init \
 		-backend-config="bucket=tasky-terraform-state-REDACTED_AWS_ACCOUNT-dev" \
 		-backend-config="key=dev/terraform.tfstate"
