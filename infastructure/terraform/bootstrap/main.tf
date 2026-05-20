@@ -39,14 +39,3 @@ module "logging_dev" {
   target_arn = module.state_bucket_dev.arn
   owner_id   = var.owner_id
 }
-
-module "iam_user_dev" {
-  source = "./modules/user"
-
-  username    = "iam_user_dev"
-  environment = "dev"
-  policies = [
-    "arn:aws:iam::aws:policy/AmazonS3FullAccess",
-    "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess",
-  ]
-}
