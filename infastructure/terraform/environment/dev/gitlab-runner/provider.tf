@@ -20,7 +20,7 @@ provider "aws" {
 
   default_tags {
     tags = {
-      Project     = "tasky"
+      Project     = "tasky-gitlab-runner"
       Environment = var.environment
       ManagedBy   = "terraform"
     }
