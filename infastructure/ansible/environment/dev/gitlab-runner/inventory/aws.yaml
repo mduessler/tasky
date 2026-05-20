@@ -1,8 +1,8 @@
 plugin: amazon.aws.aws_ec2
 regions:
-  - eu-central-1
+  - "{{ lookup('env', 'TF_VAR_AWS_REGION') }}"
 filters:
-  tag:Project: tasky
+  tag:Project: "{{ lookup('env', 'TF_VAR_PROJECT_NAME') }}"
   tag:Role: gitlab-runner
   tag:Environment: dev
 compose:

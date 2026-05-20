@@ -1,4 +1,4 @@
 ansible_connection: aws_ssm
-ansible_aws_ssm_region: eu-central-1
+ansible_aws_ssm_region: "{{ lookup('env', 'TF_VAR_AWS_REGION') }}"
 ansible_user: ubuntu
 ansible_become: true
