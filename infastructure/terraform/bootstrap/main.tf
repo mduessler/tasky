@@ -52,5 +52,11 @@ module "logging" {
 
 module "iam" {
   source   = "./modules/user"
+
   username = var.username
+  environment = var.environment
+  policies = [
+    "arn:aws:iam::aws:policy/AmazonS3FullAccess",
+    "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess",
+  ]
 }

@@ -7,3 +7,9 @@ variable "environment" {
   description = "Deployment environment"
   type        = string
 }
+
+variable "policies" {
+  description = "Polcies to assign to user"
+  type        = list(string)
+  default     = []
+}

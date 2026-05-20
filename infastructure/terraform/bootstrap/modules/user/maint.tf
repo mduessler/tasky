@@ -13,12 +13,8 @@ resource "aws_iam_access_key" "this" {
   user = aws_iam_user.this.name
 }
 
-resource "aws_iam_user_policy_attachment" "s3_access" {
+resource "aws_iam_user_policy_attachment" "this" {
+  for_each   = toset(var.policies)
   user       = aws_iam_user.this.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
-}
-
-resource "aws_iam_user_policy_attachment" "dynamodb_access" {
-  user       = aws_iam_user.this.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
+  policy_arn = each.value
 }
