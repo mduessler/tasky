@@ -13,6 +13,7 @@ cert-subj=/CN=localhost
 test-data=/home/tms/web/tests/data
 docs = ./docs/
 
+aws-user-dev=tasky-dev
 terraform-dir=infastructure/terraform/
 gitlab-runner-dir=$(terraform-dir)/environment/dev/gitlab-runner
 
@@ -107,7 +108,8 @@ terraform-destroy-bootstrap:
 
 # Set up gitlab-runner
 .ONESHELL:
-terraform-init-runner-dev:
+install-runner-dev:
+	export AWS_PROFILE=$(aws-user-dev)
 	@read -p "Runner name: " runner_name && \
 	export TF_VAR_runner_name=$$runner_name && \
 	terraform init \
