@@ -10,7 +10,7 @@ module "security" {
 }
 
 module "terraform_locks" {
-  source      = "./modules/dynamodb"
+  source      = "./modules/dynamo_db"
   environment = "dev"
 }
 
