@@ -9,15 +9,9 @@ module "security" {
   bucket_id = module.state_bucket_dev.id
 }
 
-resource "aws_dynamodb_table" "terraform_locks" {
-  name         = "tasky-gitlab-runner-terraform-locks"
-  billing_mode = "PAY_PER_REQUEST"
-  hash_key     = "LockID"
-
-  attribute {
-    name = "LockID"
-    type = "S"
-  }
+module "terraform_locks" {
+  source      = "./modules/dynamodb"
+  environment = "dev"
 }
 
 resource "aws_s3_bucket_policy" "terraform_state" {
