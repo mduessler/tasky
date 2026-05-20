@@ -16,6 +16,7 @@ resource "aws_instance" "gitlab_runner" {
   iam_instance_profile   = var.permission_profile
   tags = {
     Project     = "tasky"
+    RunnerName  = var.runner_name
     Role        = "gitlab-runner"
     Name        = "tasky-gitlab-runner-${var.environment}-${var.runner_name}"
     Environment = var.environment
