@@ -7,3 +7,8 @@ variable "owner_id" {
   description = "ID of the owner"
   type        = string
 }
+
+variable "poject_name" {
+  description = "Name of the project"
+  type        = string
+}

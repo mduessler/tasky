@@ -2,9 +2,9 @@ terraform {
   required_version = ">= 1.15.3"
 
   backend "s3" {
-    region         = "eu-central-1"
-    use_lockfile   = true
-    encrypt        = true
+    region       = "eu-central-1"
+    use_lockfile = true
+    encrypt      = true
   }
 
   required_providers {
@@ -20,7 +20,8 @@ provider "aws" {
 
   default_tags {
     tags = {
-      Project     = "tasky-gitlab-runner"
+      Project     = var.project_name
+      Role        = "gitlab-runner"
       Environment = var.environment
       ManagedBy   = "terraform"
     }

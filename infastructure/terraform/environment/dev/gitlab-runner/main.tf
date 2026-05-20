@@ -6,6 +6,7 @@ module "network" {
 module "security" {
   source      = "./modules/security"
   environment = var.environment
+  project_name = var.project_name
 }
 
 module "compute" {

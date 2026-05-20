@@ -12,7 +12,7 @@ resource "aws_iam_role" "gitlab_runner" {
 
   tags = {
     Environment = var.environment
-    Project     = "tasky"
+    Project     = var.project_name
     ManagedBy   = "terraform"
   }
 }

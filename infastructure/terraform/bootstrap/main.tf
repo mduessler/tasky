@@ -45,6 +45,7 @@ module "iam_user_dev" {
 
   username    = "iam_user_dev"
   environment = "dev"
+  project_name = var.project_name
   policies = [
     "arn:aws:iam::aws:policy/AmazonS3FullAccess",
     "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess",

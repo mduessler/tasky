@@ -12,7 +12,7 @@ provider "aws" {
   region = var.aws_region
   default_tags {
     tags = {
-      Project     = "tasky"
+      Project     = var.project_name
       Environment = "dev"
       ManagedBy   = "terraform"
     }

@@ -14,3 +14,8 @@ variable "instance_type" {
   type        = string
   default     = "t3.micro"
 }
+
+variable "poject_name" {
+  description = "Name of the project"
+  type        = string
+}
