@@ -9,6 +9,12 @@ resource "aws_iam_role" "gitlab_runner" {
       Action    = "sts:AssumeRole"
     }]
   })
+
+  tags = {
+    Environment = var.environment
+    Project     = "tasky"
+    ManagedBy   = "terraform"
+  }
 }
 
 resource "aws_iam_instance_profile" "gitlab_runner" {
