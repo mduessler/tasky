@@ -1,6 +1,6 @@
 module "state_bucket" {
-  source          = "./modules/s3_bucket"
-  name            = "tasky-gitlab-runner-terraform-state-${var.owner_id}"
+  source         = "./modules/s3_bucket"
+  name           = "tasky-gitlab-runner-terraform-state-${var.owner_id}"
   version_status = "Enabled"
 }
 
@@ -47,5 +47,10 @@ module "logging" {
   source     = "./modules/logging"
   target_id  = module.state_bucket.id
   target_arn = module.state_bucket.arn
-  owner_id = var.owner_id
+  owner_id   = var.owner_id
+}
+
+module "iam" {
+  source   = "./modules/user"
+  username = var.username
 }
