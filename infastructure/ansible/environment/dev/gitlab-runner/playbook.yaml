@@ -1,0 +1,5 @@
+- name: Configure gitlab-runner
+  hosts: tasky-gitlab-runner
+  gather_facts: true
+  roles:
+    - gitlab_runner
