@@ -5,4 +5,4 @@ filters:
   tag:Project: gitlab-runner
   tag:Environment: dev
 compose:
-  ansible_host: private_ip_address
+  ansible_host: instance_id
