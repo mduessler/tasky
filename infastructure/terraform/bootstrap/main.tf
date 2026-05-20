@@ -14,11 +14,10 @@ module "terraform_locks" {
   environment = "dev"
 }
 
-resource "aws_s3_bucket_policy" "terraform_state" {
-  bucket = module.state_bucket_dev.id
-
+module "bucket_policy" {
+  source = "./modules/s3_bucket_policy"
+  bucket     = module.state_bucket_dev.id
   depends_on = [module.security]
-
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
@@ -45,9 +44,9 @@ module "logging" {
 }
 
 module "tasky-gitlab-runner-user" {
-  source   = "./modules/user"
+  source = "./modules/user"
 
-  username = "tasky-gitlab-runner-user"
+  username    = "tasky-gitlab-runner-user"
   environment = "dev"
   policies = [
     "arn:aws:iam::aws:policy/AmazonS3FullAccess",
