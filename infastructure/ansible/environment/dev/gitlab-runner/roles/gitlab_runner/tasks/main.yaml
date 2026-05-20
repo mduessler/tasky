@@ -9,7 +9,7 @@
   ansible.builtin.shell:
     cmd: curl -L "https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh" | bash
     creates: /etc/apt/sources.list.d/runner_gitlab-runner.list
-- name: Install girlab-runner
+- name: Install gitlab-runner
   ansible.builtin.apt:
     name: "gitlab-runner={{ gitlab_runner_version }}"
     state: present
