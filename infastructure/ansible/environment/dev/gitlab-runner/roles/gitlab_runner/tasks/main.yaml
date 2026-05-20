@@ -25,3 +25,8 @@
         --description "aws-runner-{{ env }}" \
         --tag-list "{{ gitlab_runner_tags | join(',') }}"
     creates: /etc/gitlab-runner/config.toml
+- name: Verify gitlab-runner is running
+  ansible.builtin.systemd:
+    name: gitlab-runner
+    state: started
+    enabled: true
