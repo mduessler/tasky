@@ -1,6 +1,6 @@
 module "state_bucket_dev" {
   source         = "./modules/s3_bucket"
-  name           = "tasky-gitlab-runner-terraform-state-${var.owner_id}"
+  name           = "tasky-terraform-state-${var.owner_id}-dev"
   version_status = "Enabled"
 }
 
