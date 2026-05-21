@@ -2,6 +2,10 @@ module "state_bucket_dev" {
   source         = "./modules/s3_bucket"
   name           = "tasky-terraform-state-${var.owner_id}-dev"
   version_status = "Enabled"
+  tags = {
+    Component = "terraform-state"
+    Purpose   = "remote-state-storage"
+  }
 }
 
 module "security_dev" {
@@ -12,6 +16,10 @@ module "security_dev" {
 module "terraform_locks_dev" {
   source      = "./modules/dynamo_db"
   environment = "dev"
+  tags = {
+    Component = "terraform-lock-table"
+    Purpose = "Store locks if someone access the terraform-state s3 bucket."
+  }
 }
 
 module "bucket_policy_dev" {

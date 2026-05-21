@@ -3,6 +3,11 @@ data "aws_caller_identity" "current" {}
 module "log_bucket" {
   source = "../s3_bucket"
   name   = "tasky-terraform-state-logs-${var.owner_id}-dev"
+  tags = {
+    Component = "terraform-state-access-logs"
+    Purpose   = "Log the tfstate"
+  }
+
 }
 
 module "security" {
