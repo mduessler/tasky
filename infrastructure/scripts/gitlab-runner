@@ -28,25 +28,25 @@ function install() {
 	SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 	cd "$SCRIPT_DIR/../terraform/environment/dev/gitlab-runner" || exit 2
 
-	read -r "Runner name: " runner_name
+	read -p -r "Runner name: " runner_name
 	export TF_VAR_runner_name=${runner_name}
 
 	terraform init -reconfigure \
-		-backend-config="bucket=tasky-terraform-state-$(aws_account_id)-dev" \
+		-backend-config="bucket=tasky-terraform-state-${TF_VAR_owner_id}-dev" \
 		-backend-config="key=runner/dev/$$runner_name/terraform.tfstate" &&
 		terraform apply || exit 3
 
-	ansible-galaxy collection install -r requirements.yaml -p ./collections
-	read -r "Runner token: " runner_token
-
 	cd "$SCRIPT_DIR/../ansible/environment/dev/gitlab-runner" || exit 2
+
+	ansible-galaxy collection install -r requirements.yaml -p ./collections
+	read -p -r "Runner token: " runner_token
 
 	ANSIBLE_CONFIG=./ansible.cfg ansible-playbook playbook.yaml \
 		-i inventory/aws_ec2.yaml \
 		-l "runner_dev_${runner_name}" \
 		-e runner_name="${runner_name}" \
 		-e runner_token="${runner_token}" \
-		-e owner_id="$(AWS_ACCOUNT_ID)" -vvvv
+		-e owner_id="${TF_VAR_owner_id}" -vvvv
 }
 
 if [[ "$1" == "help" ]]; then
