@@ -1,9 +1,8 @@
 data "aws_caller_identity" "current" {}
 
 module "log_bucket" {
-  source          = "../s3_bucket"
-  name            = "tasky-gitlab-runner-terraform-state-logs-${var.owner_id}"
-  version_status = "Enabled"
+  source = "../s3_bucket"
+  name   = "tasky-gitlab-runner-terraform-state-logs-${var.owner_id}"
 }
 
 module "security" {
@@ -65,4 +64,23 @@ resource "aws_s3_bucket_policy" "logs" {
       }
     ]
   })
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "logs" {
+  bucket = module.log_bucket.id
+
+  rule {
+    id     = "expire-old-access-logs"
+    status = "Enabled"
+
+    filter {}
+
+    expiration {
+      days = 90
+    }
+
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 7
+    }
+  }
 }
