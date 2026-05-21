@@ -33,6 +33,25 @@ module "bucket_policy_dev" {
   }]
 }
 
+resource "aws_s3_bucket_lifecycle_configuration" "state_dev" {
+  bucket = module.state_bucket_dev.id
+
+  rule {
+    id     = "expire-noncurrent-state-versions"
+    status = "Enabled"
+
+    filter {}
+
+    noncurrent_version_expiration {
+      noncurrent_days = 90
+    }
+
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 7
+    }
+  }
+}
+
 module "logging_dev" {
   source     = "./modules/logging"
   target_id  = module.state_bucket_dev.id
