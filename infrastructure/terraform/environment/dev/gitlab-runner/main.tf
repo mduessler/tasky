@@ -22,9 +22,54 @@ module "compute" {
 
 module "ssm_transfer_bucket" {
   source = "../../../modules/s3_bucket"
-  name = "tasky-ssm-bucket-${var.owner_id}-dev"
-
+  name   = "tasky-ansible-ssm-${var.owner_id}-${var.environment}"
   tags = {
     Component = "ansible-ssm-transfer"
+  }
+}
+
+module "ssm_bucket_security" {
+  source    = "../../../modules/s3_security"
+  bucket_id = module.ssm_transfer_bucket.id
+}
+
+data "aws_iam_policy_document" "ssm_bucket" {
+  statement {
+    sid     = "DenyNonTLS"
+    effect  = "Deny"
+    actions = ["s3:*"]
+    resources = [
+      module.ssm_transfer_bucket.arn,
+      "${module.ssm_transfer_bucket.arn}/*",
+    ]
+    principals {
+      type        = "*"
+      identifiers = ["*"]
+    }
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+      values   = ["false"]
+    }
+  }
+}
+
+resource "aws_s3_bucket_policy" "ssm_bucket" {
+  bucket     = module.ssm_transfer_bucket.id
+  policy     = data.aws_iam_policy_document.ssm_bucket.json
+  depends_on = [module.ssm_bucket_security]
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "ssm_bucket" {
+  bucket = module.ssm_transfer_bucket.id
+
+  rule {
+    id     = "delete-stale-ansible-objects"
+    status = "Enabled"
+    filter {}
+
+    expiration {
+      days = 1
+    }
   }
 }
