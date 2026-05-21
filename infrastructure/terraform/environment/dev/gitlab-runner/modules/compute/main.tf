@@ -21,6 +21,12 @@ resource "aws_instance" "gitlab_runner" {
     http_put_response_hop_limit = 2
   }
 
+  root_block_device {
+    encrypted   = true
+    volume_type = "gp3"
+    volume_size = 20
+  }
+
   tags = {
     Name       = "tasky-gitlab-runner-${var.environment}-${var.runner_name}"
     RunnerName = var.runner_name
