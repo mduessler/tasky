@@ -99,19 +99,19 @@ pre-commit:
 # Infrastructure commands
 #
 # Set up backend
-.ONESHELL:
-bootstrap-create:
-	cd $(terraform-dir)/bootstrap
+#
+
+set-env-vars-for-bootstrap:
 	export TF_VAR_owner_id=$(aws_account_id)
 	export AWS_PROFILE=$(aws-user-admin)
-	terraform init
-	terraform apply
 
 .ONESHELL:
-terraform-destroy-bootstrap:
-	cd $(terraform-dir)/bootstrap
-	terraform init
-	terraform destroy --auto-approve
+bootstrap-create: set-env-vars-for-bootstrap
+	./infrastructure/scripts/bootstrap create
+
+.ONESHELL:
+terraform-destroy-bootstrap: set-env-vars-for-bootstrap
+	./infrastructure/scripts/bootstrap destroy
 
 # Set up gitlab-runner
 # aws s3api head-bucket --bucket ansible-ssm-REDACTED_AWS_ACCOUNT-dev --profile tasky-dev 2> /dev/null
