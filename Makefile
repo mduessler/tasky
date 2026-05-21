@@ -1,5 +1,5 @@
 # Root-directory
-root-dir=./task_management_system/
+root-dir=$(shell pwd)
 
 # dev
 service-dev=tms-dev
@@ -104,7 +104,7 @@ bootstrap-create:
 	cd $(terraform-dir)/bootstrap
 	export TF_VAR_owner_id=$(aws_account_id)
 	export AWS_PROFILE=$(aws-user-admin)
-	terraform init -backend=false
+	terraform init
 	terraform apply
 
 .ONESHELL:
@@ -114,6 +114,7 @@ terraform-destroy-bootstrap:
 	terraform destroy --auto-approve
 
 # Set up gitlab-runner
+# aws s3api head-bucket --bucket ansible-ssm-REDACTED_AWS_ACCOUNT-dev --profile tasky-dev 2> /dev/null
 .ONESHELL:
 install-gitlab-runner:
 	cd $(terraform-dir)/$(gitlab-runner-dir)
@@ -123,21 +124,26 @@ install-gitlab-runner:
 	export TF_VAR_runner_name=$$runner_name && \
 	terraform init -reconfigure \
 		-backend-config="bucket=tasky-terraform-state-$(aws_account_id)-dev" \
-		-backend-config="key=gitlab-runner/dev/$$runner_name/terraform.tfstate" && \
+		-backend-config="key=runner/dev/$$runner_name/terraform.tfstate" && \
 	terraform apply || exit 1
+
+	cd $(root-dir)
 	cd $(ansible-dir)/$(gitlab-runner-dir) && \
 	ansible-galaxy collection install -r requirements.yaml -p ./collections && \
-	read -s -p "Runner token: " runner_token && echo && \
+	read -p "Runner token: " runner_token && echo && \
 	ANSIBLE_CONFIG=./ansible.cfg ansible-playbook playbook.yaml \
 		-i inventory/aws_ec2.yaml \
-		-e runner_token="$$runner_token" \
+		-l "runner_dev_$$runner_name" \
 		-e runner_name="$$runner_name" \
-		-e owner_id="$(aws_account_id)"
+		-e runner_token="$$runner_token" \
+		-e owner_id="$(aws_account_id)" -vvvv
 
 .ONESHELL:
 terraform-destroy-runner:
 	cd $(terraform-dir)/$(gitlab-runner-dir)
-	terraform init \
+	export TF_VAR_owner_id=$(aws_account_id)
+	export AWS_PROFILE=$(aws-user-dev)
+	terraform init -migrate-state\
 		-backend-config="bucket=tasky-terraform-state-REDACTED_AWS_ACCOUNT-dev" \
 		-backend-config="key=dev/terraform.tfstate"
 	terraform destroy --auto-approve
