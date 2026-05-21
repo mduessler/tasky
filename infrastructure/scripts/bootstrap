@@ -14,7 +14,7 @@ Commands:
 EOF
 }
 
-function check_env_vars() {
+function create() {
 	if [[ -z "${TF_VAR_owner_id}" || -z "${AWS_PROFILE}" ]]; then
 		if [[ -z "${TF_VAR_owner_id}" ]]; then
 			echo "ERROR: TF_VAR_owner_id is not set"
@@ -24,42 +24,30 @@ function check_env_vars() {
 		help
 		exit 1
 	fi
-}
 
-function set_working_dir() {
 	SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 	cd "$SCRIPT_DIR/../terraform/bootstrap" || exit 2
-}
 
-function create() {
 	check_env_vars
 	set_working_dir
 	terraform init
 	terraform apply
 }
 
-function destroy() {
-	check_env_vars
-	set_working_dir
-	terraform init
-	terraform destroy --auto-approve
-}
-
 function get_instruction() {
 
 	if [[ "$1" == "help" ]]; then
 		help
-		exit 0
 	elif [[ "$1" == "create" ]]; then
 		create
 	elif [[ "$1" == "destroy" ]]; then
-		destroy
+		echo "INFO: This operation is not allowed. Admin has to do it manually."
 	else
 		echo "ERROR: Unkown command."
 		help
 		exit 1
 	fi
+	exit 0
 }
 
 get_instruction "${@}"
-exit 0
