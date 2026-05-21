@@ -28,8 +28,6 @@ function create() {
 	SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 	cd "$SCRIPT_DIR/../terraform/bootstrap" || exit 2
 
-	check_env_vars
-	set_working_dir
 	terraform init
 	terraform apply
 }
