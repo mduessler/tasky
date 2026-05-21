@@ -117,19 +117,14 @@ install-gitlab-runner:
 	export AWS_PROFILE=$(aws-user-dev)
 	@read -p "Runner name: " runner_name && \
 	export TF_VAR_runner_name=$$runner_name && \
-	terraform init \
-		-backend-config="bucket=tasky-terraform-state-REDACTED_AWS_ACCOUNT-dev" \
-		-backend-config="key=dev/terraform.tfstate" && \
-	terraform apply || exit 1
-
+	terraform init -backend-config="key=dev/$$runner_name/terraform.tfstate" && \
+	terraform apply -auto-approve || exit 1
 	cd $(ansible-dir)/$(gitlab-runner-dir) && \
-	ansible-galaxy collection install -r requirements.yaml -p ./collections
-	read -p "Runner token: " runner_token && \
-	export A_VAR_runner_token=$$runner_token && \
-	export A_VAR_runner_token=glrt-M7mnerj1Xcd4zAm43DhsQWM6MQpvOjEKcDoxY3oxMnkKdDozCnU6a3hneDgc.01.1o16wyb0q && \
-	ANSIBLE_CONFIG=./ansible.cfg \
-	ansible-playbook playbook.yaml \
-		-i inventory/aws_ec2.yaml
+	ansible-galaxy collection install -r requirements.yaml -p ./collections && \
+	read -s -p "Runner token: " runner_token && echo && \
+	ANSIBLE_CONFIG=./ansible.cfg ansible-playbook playbook.yaml \
+		-i inventory/aws_ec2.yaml \
+		-e runner_token="$$runner_token"
 
 .ONESHELL:
 terraform-destroy-runner:
