@@ -8,6 +8,7 @@ module "security" {
   source      = "./modules/security"
   environment = var.environment
   runner_name = var.runner_name
+  ssm_bucket_arn = module.ssm_transfer_bucket.arn
 }
 
 module "compute" {

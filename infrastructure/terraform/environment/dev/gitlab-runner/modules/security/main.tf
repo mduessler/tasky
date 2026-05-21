@@ -33,3 +33,26 @@ resource "aws_iam_role_policy_attachment" "runner" {
   role       = aws_iam_role.gitlab_runner.name
   policy_arn = each.value
 }
+
+data "aws_iam_policy_document" "ssm_bucket_access" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "s3:GetObject",
+      "s3:PutObject",
+      "s3:DeleteObject",
+      "s3:ListBucket",
+      "s3:GetBucketLocation",
+    ]
+    resources = [
+      var.ssm_bucket_arn,
+      "${var.ssm_bucket_arn}/*",
+    ]
+  }
+}
+
+resource "aws_iam_role_policy" "ssm_bucket_access" {
+  name   = "ssm-bucket-access"
+  role   = aws_iam_role.gitlab_runner.id
+  policy = data.aws_iam_policy_document.ssm_bucket_access.json
+}
