@@ -29,46 +29,57 @@ resource "aws_s3_bucket_logging" "source" {
   target_prefix = "logs/"
 }
 
-resource "aws_s3_bucket_policy" "logs" {
-  bucket = module.log_bucket.id
+data "aws_iam_policy_document" "log_bucket" {
+  statement {
+    sid       = "AllowS3LogDelivery"
+    effect    = "Allow"
+    actions   = ["s3:PutObject"]
+    resources = ["${module.log_bucket.arn}/logs/*"]
 
-  depends_on = [module.security]
+    principals {
+      type        = "Service"
+      identifiers = ["logging.s3.amazonaws.com"]
+    }
 
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Sid    = "AllowS3LogDelivery"
-        Effect = "Allow"
-        Principal = {
-          Service = "logging.s3.amazonaws.com"
-        }
-        Action   = "s3:PutObject"
-        Resource = "${module.log_bucket.arn}/logs/*"
-        Condition = {
-          ArnLike = {
-            "aws:SourceArn" = var.target_arn
-          }
-          StringEquals = {
-            "aws:SourceAccount" = data.aws_caller_identity.current.account_id
-          }
-        }
-      },
-      {
-        Sid       = "DenyNonTLS"
-        Effect    = "Deny"
-        Principal = "*"
-        Action    = "s3:*"
-        Resource = [
-          module.log_bucket.arn,
-          "${module.log_bucket.arn}/*"
-        ]
-        Condition = {
-          Bool = { "aws:SecureTransport" = "false" }
-        }
-      }
+    condition {
+      test     = "ArnLike"
+      variable = "aws:SourceArn"
+      values   = [var.target_arn]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "aws:SourceAccount"
+      values   = [data.aws_caller_identity.current.account_id]
+    }
+  }
+
+  statement {
+    sid     = "DenyNonTLS"
+    effect  = "Deny"
+    actions = ["s3:*"]
+    resources = [
+      module.log_bucket.arn,
+      "${module.log_bucket.arn}/*",
     ]
-  })
+
+    principals {
+      type        = "*"
+      identifiers = ["*"]
+    }
+
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+      values   = ["false"]
+    }
+  }
+}
+
+resource "aws_s3_bucket_policy" "logs" {
+  bucket     = module.log_bucket.id
+  policy     = data.aws_iam_policy_document.log_bucket.json
+  depends_on = [module.security]
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "logs" {
