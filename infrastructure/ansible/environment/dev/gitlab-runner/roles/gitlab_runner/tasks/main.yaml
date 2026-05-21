@@ -13,11 +13,6 @@
   ansible.builtin.command: bash /tmp/gitlab-runner.script.deb.sh
   args:
     creates: /etc/apt/sources.list.d/runner_gitlab-runner.list
-- name: Install gitlab-runner-helper-images
-  ansible.builtin.apt:
-    name: "gitlab-runner-helper-images={{ gitlab_runner_version }}"
-    state: present
-    update_cache: true
 - name: Install gitlab-runner
   ansible.builtin.apt:
     name: "gitlab-runner={{ gitlab_runner_version }}"
