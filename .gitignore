@@ -5,11 +5,23 @@ dev/certs/
 dev/.env.dev
 logs/
 
-# terraform
-.terraform/
+# Terraform
+**/.terraform/*
 *.tfstate
-*.tfstate.backup
-private.tfvars
+*.tfstate.*
+*.tfplan
+crash.log
+crash.*.log
+
+# Sensitive var files — commit *.tfvars.example instead
+*.tfvars
+!*.tfvars.example
+
+# Lock files — DO commit these (they pin provider versions)
+!.terraform.lock.hcl
+
+# Ansible
+*.retry
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
