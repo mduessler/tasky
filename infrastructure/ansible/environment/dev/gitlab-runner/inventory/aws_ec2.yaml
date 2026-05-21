@@ -1,4 +1,4 @@
-plugin: amazon.aws.aws_ec2
+ansible_connection: community.aws.aws_ssm
 aws_profile: tasky-dev
 regions:
   - "eu-central-1"
