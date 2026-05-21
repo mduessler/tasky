@@ -19,3 +19,33 @@ To initialize the backend simple run from the root of the project the command
 4. **Add state of the backend** — To add the *TFstate* of the backend itself.
    The backend has to call `terraform init -migrate-state` to upload the created
    *TFstate*.
+
+## File structure
+
+The next graph represents the file structure of the backend. It also displays modules
+not located in the backend, which are needed for the configuration.
+
+```shell
+├── bootstrap
+│   ├── main.tf
+│   ├── modules
+│   │   ├── dynamo_db
+│   │   │   ├── main.tf
+│   │   │   ├── output.tf
+│   │   │   └── variables.tf
+│   │   └── logging
+│   │       ├── main.tf
+│   │       ├── output.tf
+│   │       └── variables.tf
+│   ├── output.tf
+│   ├── provider.tf
+│   └── variables.tf
+└── modules
+    ├── s3_bucket
+    │   ├── main.tf
+    │   ├── output.tf
+    │   └── variables.tf
+    └── s3_security
+        ├── main.tf
+        └── variables.tf
+```
