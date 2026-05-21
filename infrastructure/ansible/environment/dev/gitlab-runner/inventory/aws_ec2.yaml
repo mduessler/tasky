@@ -1,11 +1,12 @@
 plugin: amazon.aws.aws_ec2
+aws_profile: tasky-dev
 regions:
   - "eu-central-1"
 filters:
   tag:Project: "tasky"
   tag:Role: gitlab-runner
   tag:Environment: dev
-  tag:RunnerName: "{{ gitlab_runner_name }}"
+  tag:RunnerName: "{{ runner_name }}"
 compose:
   ansible_host: instance_id
 keyed_groups:
