@@ -14,6 +14,7 @@ test-data=/home/tms/web/tests/data
 docs = ./docs/
 
 aws_account_id=REDACTED_AWS_ACCOUNT
+aws-user-admin=tasky-admin
 aws-user-dev=tasky-dev
 terraform-dir=infrastructure/terraform
 ansible-dir=infrastructure/ansible
@@ -102,6 +103,7 @@ pre-commit:
 terraform-init-bootstrap:
 	cd $(terraform-dir)/bootstrap
 	export TF_VAR_owner_id=$(aws_account_id)
+	export AWS_PROFILE=$(aws-user-admin)
 
 	terraform init
 	terraform apply
