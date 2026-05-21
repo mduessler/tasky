@@ -7,10 +7,4 @@ resource "aws_dynamodb_table" "this" {
     name = "LockID"
     type = "S"
   }
-
-  tags = {
-    Environment = var.environment
-    Project     = "tasky"
-    ManagedBy   = "terraform"
-  }
 }
