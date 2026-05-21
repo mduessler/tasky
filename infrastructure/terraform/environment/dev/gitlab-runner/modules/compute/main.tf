@@ -15,10 +15,7 @@ resource "aws_instance" "gitlab_runner" {
   vpc_security_group_ids = [var.runner_security_group]
   iam_instance_profile   = var.permission_profile
   tags = {
-    Project     = "tasky"
-    RunnerName  = var.runner_name
-    Role        = "gitlab-runner"
-    Name        = "tasky-gitlab-runner-${var.environment}-${var.runner_name}"
-    Environment = var.environment
+    Name       = "tasky-gitlab-runner-${var.environment}-${var.runner_name}"
+    RunnerName = var.runner_name
   }
 }
