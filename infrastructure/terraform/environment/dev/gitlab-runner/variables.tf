@@ -20,3 +20,8 @@ variable "runner_name" {
   description = "Unique name for this runner"
   type        = string
 }
+
+variable "owner_id" {
+  description = "ID of the owner"
+  type        = string
+}
