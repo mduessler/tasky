@@ -113,26 +113,9 @@ bootstrap-destroy:
 # aws s3api head-bucket --bucket ansible-ssm-REDACTED_AWS_ACCOUNT-dev --profile tasky-dev 2> /dev/null
 .ONESHELL:
 install-gitlab-runner:
-	cd $(terraform-dir)/$(gitlab-runner-dir)
 	export TF_VAR_owner_id=$(aws_account_id)
 	export AWS_PROFILE=$(aws-user-dev)
-	read -p "Runner name: " runner_name && \
-	export TF_VAR_runner_name=$$runner_name && \
-	terraform init -reconfigure \
-		-backend-config="bucket=tasky-terraform-state-$(aws_account_id)-dev" \
-		-backend-config="key=runner/dev/$$runner_name/terraform.tfstate" && \
-	terraform apply || exit 1
-
-	cd $(root-dir)
-	cd $(ansible-dir)/$(gitlab-runner-dir) && \
-	ansible-galaxy collection install -r requirements.yaml -p ./collections && \
-	read -p "Runner token: " runner_token && echo && \
-	ANSIBLE_CONFIG=./ansible.cfg ansible-playbook playbook.yaml \
-		-i inventory/aws_ec2.yaml \
-		-l "runner_dev_$$runner_name" \
-		-e runner_name="$$runner_name" \
-		-e runner_token="$$runner_token" \
-		-e owner_id="$(aws_account_id)" -vvvv
+	./infrastructure/scripts/gitlab-runner install
 
 .ONESHELL:
 terraform-destroy-runner:
