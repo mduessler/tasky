@@ -122,6 +122,7 @@ install-gitlab-runner:
 	read -p "Runner name: " runner_name && \
 	export TF_VAR_runner_name=$$runner_name && \
 	terraform init -reconfigure \
+		-backend-config="bucket=tasky-terraform-state-$(aws_account_id)-dev" \
 		-backend-config="key=gitlab-runner/dev/$$runner_name/terraform.tfstate" && \
 	terraform apply || exit 1
 	cd $(ansible-dir)/$(gitlab-runner-dir) && \
