@@ -19,10 +19,10 @@
     cmd: |
       gitlab-runner register \
         --url "https://gitlab.com" \
-        --token "{{ gitlab_runner_token }}" \
+        --token "{{ runner_token }}" \
         --executor "docker" \
         --docker-image "alpine:latest" \
-        --name "{{ gitlab_runner_name }}" \
+        --name "{{ runner_name }}" \
         --non-interactive
     creates: /etc/gitlab-runner/config.toml
 - name: Verify gitlab-runner is running
