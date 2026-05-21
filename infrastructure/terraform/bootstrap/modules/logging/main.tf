@@ -2,7 +2,7 @@ data "aws_caller_identity" "current" {}
 
 module "log_bucket" {
   source = "../s3_bucket"
-  name   = "tasky-gitlab-runner-terraform-state-logs-${var.owner_id}"
+  name   = "tasky-terraform-state-logs-${var.owner_id}-dev"
 }
 
 module "security" {
