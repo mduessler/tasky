@@ -6,6 +6,14 @@ terraform {
       version = "~> 5.0"
     }
   }
+
+  backend "s3" {
+    bucket         = "tasky-terraform-state-REDACTED_AWS_ACCOUNT-dev"
+    key            = "bootstrap/terraform.tfstate"
+    region         = "eu-central-1"
+    dynamodb_table = "tasky-terraform-locks-dev"
+    encrypt        = true
+  }
 }
 
 provider "aws" {
