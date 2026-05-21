@@ -101,6 +101,8 @@ pre-commit:
 .ONESHELL:
 terraform-init-bootstrap:
 	cd $(terraform-dir)/bootstrap
+	export TF_VAR_owner_id=$(aws_account_id)
+
 	terraform init
 	terraform apply
 	terraform init -migrate-state
@@ -114,14 +116,15 @@ terraform-destroy-bootstrap:
 # Set up gitlab-runner
 .ONESHELL:
 install-gitlab-runner:
-	@cd $(terraform-dir)/$(gitlab-runner-dir)
-	@export AWS_PROFILE=$(aws-user-dev)
-	@read -p "Runner name: " runner_name && \
+	cd $(terraform-dir)/$(gitlab-runner-dir)
+	export TF_VAR_owner_id=$(aws_account_id)
+	export AWS_PROFILE=$(aws-user-dev)
+	read -p "Runner name: " runner_name && \
 	export TF_VAR_runner_name=$$runner_name && \
 	terraform init -reconfigure \
 		-backend-config="key=gitlab-runner/dev/$$runner_name/terraform.tfstate" && \
 	terraform apply || exit 1
-	@cd $(ansible-dir)/$(gitlab-runner-dir) && \
+	cd $(ansible-dir)/$(gitlab-runner-dir) && \
 	ansible-galaxy collection install -r requirements.yaml -p ./collections && \
 	read -s -p "Runner token: " runner_token && echo && \
 	ANSIBLE_CONFIG=./ansible.cfg ansible-playbook playbook.yaml \
