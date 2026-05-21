@@ -25,6 +25,7 @@
         --name "{{ runner_name }}" \
         --non-interactive
     creates: /etc/gitlab-runner/config.toml
+  no_log: true
 - name: Verify gitlab-runner is running
   ansible.builtin.systemd:
     name: gitlab-runner
