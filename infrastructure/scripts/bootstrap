@@ -32,20 +32,15 @@ function create() {
 	terraform apply
 }
 
-function get_instruction() {
-
-	if [[ "$1" == "help" ]]; then
-		help
-	elif [[ "$1" == "create" ]]; then
-		create
-	elif [[ "$1" == "destroy" ]]; then
-		echo "INFO: This operation is not allowed. Admin has to do it manually."
-	else
-		echo "ERROR: Unkown command."
-		help
-		exit 1
-	fi
-	exit 0
-}
-
-get_instruction "${@}"
+if [[ "$1" == "help" ]]; then
+	help
+elif [[ "$1" == "create" ]]; then
+	create
+elif [[ "$1" == "destroy" ]]; then
+	echo "INFO: This operation is not allowed. Admin has to do it manually."
+else
+	echo "ERROR: Unkown command."
+	help
+	exit 1
+fi
+exit 0
