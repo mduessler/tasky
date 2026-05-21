@@ -102,6 +102,7 @@ terraform-init-bootstrap:
 	cd $(terraform-dir)/bootstrap
 	terraform init
 	terraform apply
+	terraform init -migrate-state
 
 .ONESHELL:
 terraform-destroy-bootstrap:
@@ -119,13 +120,7 @@ install-gitlab-runner:
 	terraform init \
 		-backend-config="bucket=tasky-terraform-state-REDACTED_AWS_ACCOUNT-dev" \
 		-backend-config="key=dev/terraform.tfstate" && \
-	terraform apply
-
-	cd $(ansible-dir)/$(gitlab-runner-dir)
-	@read -p "Runner token: " runner_token && \
-	ansible-playbook playbook.yaml \
-		-i inventory/aws.yaml \
-		-e "gitlab_runner_name=$$runner_name gitlab_runner_token=$$runner_token"
+	terraform apply || exit 1
 
 .ONESHELL:
 terraform-destroy-runner:
