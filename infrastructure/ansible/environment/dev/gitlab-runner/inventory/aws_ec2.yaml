@@ -1,4 +1,4 @@
-plugin: community.aws.aws_ssm
+plugin: amazon.aws.aws_ec2
 aws_profile: tasky-dev
 regions:
   - "eu-central-1"
@@ -6,10 +6,9 @@ filters:
   tag:Project: "tasky"
   tag:Role: gitlab-runner
   tag:Environment: dev
-  tag:RunnerName: "{{ runner_name }}"
 compose:
   ansible_host: instance_id
 keyed_groups:
-  - key: tags.Role
+  - key: tags.RunnerName
     prefix: ""
     separator: ""
