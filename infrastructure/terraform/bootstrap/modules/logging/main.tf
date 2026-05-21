@@ -1,7 +1,7 @@
 data "aws_caller_identity" "current" {}
 
 module "log_bucket" {
-  source = "../s3_bucket"
+  source = "../../../modules/s3_bucket"
   name   = "tasky-terraform-state-logs-${var.owner_id}-dev"
   tags = {
     Component = "terraform-state-access-logs"
@@ -10,7 +10,7 @@ module "log_bucket" {
 }
 
 module "security" {
-  source    = "../security"
+  source = "../../../modules/s3_security"
   bucket_id = module.log_bucket.id
 }
 

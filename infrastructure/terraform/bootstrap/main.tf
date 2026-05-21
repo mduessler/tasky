@@ -1,5 +1,5 @@
 module "state_bucket_dev" {
-  source         = "./modules/s3_bucket"
+  source         = "../modules/s3_bucket"
   name           = "tasky-terraform-state-${var.owner_id}-dev"
   version_status = "Enabled"
   tags = {
@@ -8,7 +8,7 @@ module "state_bucket_dev" {
 }
 
 module "security_dev" {
-  source    = "./modules/security"
+  source    = "../modules/s3_security"
   bucket_id = module.state_bucket_dev.id
 }
 
