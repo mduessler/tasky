@@ -8,3 +8,9 @@ variable "version_status" {
   type        = string
   default     = null
 }
+
+variable "tags" {
+  description = "Resource-level tags merged with the provider's default_tags."
+  type        = map(string)
+  default     = {}
+}
