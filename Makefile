@@ -101,16 +101,12 @@ pre-commit:
 # Set up backend
 #
 
-set-env-vars-for-bootstrap:
+bootstrap-create:
 	export TF_VAR_owner_id=$(aws_account_id)
 	export AWS_PROFILE=$(aws-user-admin)
-
-.ONESHELL:
-bootstrap-create: set-env-vars-for-bootstrap
 	./infrastructure/scripts/bootstrap create
 
-.ONESHELL:
-terraform-destroy-bootstrap: set-env-vars-for-bootstrap
+terraform-destroy-bootstrap:
 	./infrastructure/scripts/bootstrap destroy
 
 # Set up gitlab-runner
