@@ -113,18 +113,20 @@ terraform-destroy-bootstrap:
 # Set up gitlab-runner
 .ONESHELL:
 install-gitlab-runner:
-	cd $(terraform-dir)/$(gitlab-runner-dir)
-	export AWS_PROFILE=$(aws-user-dev)
+	@cd $(terraform-dir)/$(gitlab-runner-dir)
+	@export AWS_PROFILE=$(aws-user-dev)
 	@read -p "Runner name: " runner_name && \
 	export TF_VAR_runner_name=$$runner_name && \
-	terraform init -backend-config="key=dev/$$runner_name/terraform.tfstate" && \
-	terraform apply -auto-approve || exit 1
-	cd $(ansible-dir)/$(gitlab-runner-dir) && \
+	terraform init -reconfigure \
+		-backend-config="key=gitlab-runner/dev/$$runner_name/terraform.tfstate" && \
+	terraform apply || exit 1
+	@cd $(ansible-dir)/$(gitlab-runner-dir) && \
 	ansible-galaxy collection install -r requirements.yaml -p ./collections && \
 	read -s -p "Runner token: " runner_token && echo && \
 	ANSIBLE_CONFIG=./ansible.cfg ansible-playbook playbook.yaml \
 		-i inventory/aws_ec2.yaml \
-		-e runner_token="$$runner_token"
+		-e runner_token="$$runner_token" \
+		-e runner_name="$$runner_name"
 
 .ONESHELL:
 terraform-destroy-runner:
