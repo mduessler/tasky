@@ -122,6 +122,15 @@ install-gitlab-runner:
 		-backend-config="key=dev/terraform.tfstate" && \
 	terraform apply || exit 1
 
+	cd $(ansible-dir)/$(gitlab-runner-dir) && \
+	ansible-galaxy collection install -r requirements.yaml -p ./collections
+	read -p "Runner token: " runner_token && \
+	export A_VAR_runner_token=$$runner_token && \
+	export A_VAR_runner_token=glrt-M7mnerj1Xcd4zAm43DhsQWM6MQpvOjEKcDoxY3oxMnkKdDozCnU6a3hneDgc.01.1o16wyb0q && \
+	ANSIBLE_CONFIG=./ansible.cfg \
+	ansible-playbook playbook.yaml \
+		-i inventory/aws_ec2.yaml
+
 .ONESHELL:
 terraform-destroy-runner:
 	cd $(terraform-dir)/$(gitlab-runner-dir)
