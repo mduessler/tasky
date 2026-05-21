@@ -26,7 +26,7 @@ function install() {
 	fi
 
 	SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-	cd "$SCRIPT_DIR/../terraform/environment/dev/gitlab-runne" || exit 2
+	cd "$SCRIPT_DIR/../terraform/environment/dev/gitlab-runner" || exit 2
 
 	read -r "Runner name: " runner_name
 	export TF_VAR_runner_name=${runner_name}
@@ -39,7 +39,7 @@ function install() {
 	ansible-galaxy collection install -r requirements.yaml -p ./collections
 	read -r "Runner token: " runner_token
 
-	cd "$SCRIPT_DIR/../ansible/environment/dev/gitlab-runne" || exit 2
+	cd "$SCRIPT_DIR/../ansible/environment/dev/gitlab-runner" || exit 2
 
 	ANSIBLE_CONFIG=./ansible.cfg ansible-playbook playbook.yaml \
 		-i inventory/aws_ec2.yaml \
