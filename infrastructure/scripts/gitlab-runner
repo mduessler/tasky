@@ -49,12 +49,32 @@ function install() {
 		-e owner_id="${TF_VAR_owner_id}" -vvvv
 }
 
+function destroy() {
+	if [[ -z "${TF_VAR_owner_id}" || -z "${AWS_PROFILE}" ]]; then
+		if [[ -z "${TF_VAR_owner_id}" ]]; then
+			echo "ERROR: TF_VAR_owner_id is not set"
+		else
+			echo "ERROR: AWS_PROFILE is not set"
+		fi
+		help
+		exit 1
+	fi
+
+	SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+	cd "$SCRIPT_DIR/../terraform/environment/dev/gitlab-runner" || exit 2
+
+	terraform init -migrate-state \
+		-backend-config="bucket=tasky-terraform-state-${TF_VAR_owner_id}-dev" \
+		-backend-config="key=dev/terraform.tfstate"
+	terraform destroy --auto-approve
+}
+
 if [[ "$1" == "help" ]]; then
 	help
 elif [[ "$1" == "install" ]]; then
 	install
 elif [[ "$1" == "destroy" ]]; then
-	echo "INFO: This operation is not allowed. Admin has to do it manually."
+	destroy
 else
 	echo "ERROR: Unkown command."
 	help

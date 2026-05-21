@@ -119,10 +119,4 @@ install-gitlab-runner:
 
 .ONESHELL:
 terraform-destroy-runner:
-	cd $(terraform-dir)/$(gitlab-runner-dir)
-	export TF_VAR_owner_id=$(aws_account_id)
-	export AWS_PROFILE=$(aws-user-dev)
-	terraform init -migrate-state\
-		-backend-config="bucket=tasky-terraform-state-REDACTED_AWS_ACCOUNT-dev" \
-		-backend-config="key=dev/terraform.tfstate"
-	terraform destroy --auto-approve
+	./infrastructure/scripts/gitlab-runner destroy
