@@ -1,3 +1,9 @@
+- name: Wait for apt lock
+  ansible.builtin.shell: |
+    while fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1; do
+      sleep 5
+    done
+  changed_when: false
 - name: Install gitlab-runner dependencies
   ansible.builtin.apt:
     name:
@@ -5,10 +11,22 @@
       - ca-certificates
     state: present
     update_cache: true
+- name: Wait for apt lock
+  ansible.builtin.shell: |
+    while fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1; do
+      sleep 5
+    done
+  changed_when: false
 - name: Added gitlab-runner repo
   ansible.builtin.shell:
     cmd: curl -L "https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh" | bash
     creates: /etc/apt/sources.list.d/runner_gitlab-runner.list
+- name: Wait for apt lock
+  ansible.builtin.shell: |
+    while fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1; do
+      sleep 5
+    done
+  changed_when: false
 - name: Install gitlab-runner
   ansible.builtin.apt:
     name: "gitlab-runner={{ gitlab_runner_version }}"
@@ -25,7 +43,7 @@
         --name "{{ runner_name }}" \
         --non-interactive
     creates: /etc/gitlab-runner/config.toml
-  no_log: true
+  no_log: false
 - name: Verify gitlab-runner is running
   ansible.builtin.systemd:
     name: gitlab-runner
