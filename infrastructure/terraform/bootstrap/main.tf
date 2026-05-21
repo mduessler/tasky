@@ -22,23 +22,31 @@ module "terraform_locks_dev" {
   }
 }
 
-module "bucket_policy_dev" {
-  source     = "./modules/s3_bucket_policy"
-  bucket_id  = module.state_bucket_dev.id
-  depends_on = [module.security_dev]
-  policy_statements = [{
-    Sid       = "DenyNonTLS"
-    Effect    = "Deny"
-    Principal = "*"
-    Action    = "s3:*"
-    Resource = [
+data "aws_iam_policy_document" "state_bucket_dev" {
+  statement {
+    sid     = "DenyNonTLS"
+    effect  = "Deny"
+    actions = ["s3:*"]
+    resources = [
       module.state_bucket_dev.arn,
-      "${module.state_bucket_dev.arn}/*"
+      "${module.state_bucket_dev.arn}/*",
     ]
-    Condition = {
-      Bool = { "aws:SecureTransport" = "false" }
+    principals {
+      type        = "*"
+      identifiers = ["*"]
     }
-  }]
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+      values   = ["false"]
+    }
+  }
+}
+
+resource "aws_s3_bucket_policy" "state_dev" {
+  bucket     = module.state_bucket_dev.id
+  policy     = data.aws_iam_policy_document.state_bucket_dev.json
+  depends_on = [module.security_dev]
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "state_dev" {
