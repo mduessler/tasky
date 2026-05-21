@@ -118,5 +118,5 @@ install-gitlab-runner:
 	./infrastructure/scripts/gitlab-runner install
 
 .ONESHELL:
-terraform-destroy-runner:
+destroy-gitlab-runner:
 	./infrastructure/scripts/gitlab-runner destroy
