@@ -10,5 +10,5 @@ compose:
   ansible_host: instance_id
 keyed_groups:
   - key: tags.RunnerName
-    prefix: ""
+    prefix: "runner_dev_"
     separator: ""
