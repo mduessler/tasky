@@ -8,7 +8,7 @@ data "aws_ami" "ubuntu" {
   }
 }
 
-resource "aws_instance" "gitlab_runner" {
+resource "aws_instance" "runner" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = var.instance_type
   subnet_id              = var.subnet_id
@@ -28,7 +28,7 @@ resource "aws_instance" "gitlab_runner" {
   }
 
   tags = {
-    Name       = "tasky-gitlab-runner-${var.environment}-${var.runner_name}"
+    Name       = "runner-${var.environment}-${var.runner_name}"
     RunnerName = var.runner_name
   }
 }

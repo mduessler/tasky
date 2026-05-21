@@ -8,14 +8,14 @@ data "aws_iam_policy_document" "ec2_assume_role" {
   }
 }
 
-resource "aws_iam_role" "gitlab_runner" {
-  name               = "tasky-gitlab-runner-role-${var.environment}-${var.runner_name}"
+resource "aws_iam_role" "runner" {
+  name               = "runner-role-${var.environment}-${var.runner_name}"
   assume_role_policy = data.aws_iam_policy_document.ec2_assume_role.json
 }
 
-resource "aws_iam_instance_profile" "gitlab_runner" {
-  name = "tasky-gitlab-runner-profile-${var.environment}-${var.runner_name}"
-  role = aws_iam_role.gitlab_runner.name
+resource "aws_iam_instance_profile" "runner" {
+  name = "runner-profile-${var.environment}-${var.runner_name}"
+  role = aws_iam_role.runner.name
 }
 
 locals {
@@ -26,7 +26,7 @@ locals {
 
 resource "aws_iam_role_policy_attachment" "runner" {
   for_each   = toset(local.runner_policies)
-  role       = aws_iam_role.gitlab_runner.name
+  role       = aws_iam_role.runner.name
   policy_arn = each.value
 }
 
@@ -49,6 +49,6 @@ data "aws_iam_policy_document" "ssm_bucket_access" {
 
 resource "aws_iam_role_policy" "ssm_bucket_access" {
   name   = "ssm-bucket-access"
-  role   = aws_iam_role.gitlab_runner.id
+  role   = aws_iam_role.runner.id
   policy = data.aws_iam_policy_document.ssm_bucket_access.json
 }

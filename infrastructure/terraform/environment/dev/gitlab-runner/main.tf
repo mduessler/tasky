@@ -23,7 +23,7 @@ module "compute" {
 
 module "ssm_transfer_bucket" {
   source = "../../../modules/s3_bucket"
-  name   = "tasky-ansible-ssm-${var.owner_id}-${var.environment}"
+  name   = "ansible-ssm-${var.owner_id}-${var.environment}"
   tags = {
     Component = "ansible-ssm-transfer"
   }
