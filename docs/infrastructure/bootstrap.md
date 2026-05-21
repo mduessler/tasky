@@ -49,3 +49,15 @@ not located in the backend, which are needed for the configuration.
         ├── main.tf
         └── variables.tf
 ```
+
+## Overview
+
+The backend consists of two [*Simple Storage Service *S3**](https://aws.amazon.com/s3/)
+buckets. The purpose of the two buckets is:
+
+1. **State-Bucket-Dev** — Store the *TFState* for the dev environment
+2. **Log-Bucket** — Log the access on the bucket of *State-Bucket-Dev* storage.
+
+Furthermore a [*DynamoDB*](https://aws.amazon.com/dynamodb/) is used, to store locks.
+A *DynamoDB* is a fully manged, NoSQL database. The locks ensure that no two developers
+can write to a TFState at the same time
