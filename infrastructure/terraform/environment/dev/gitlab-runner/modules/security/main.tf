@@ -1,14 +1,16 @@
-resource "aws_iam_role" "gitlab_runner" {
-  name = "tasky-gitlab-runner-role-${var.environment}-${var.runner_name}"
+data "aws_iam_policy_document" "ec2_assume_role" {
+  statement {
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+  }
+}
 
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Effect    = "Allow"
-      Principal = { Service = "ec2.amazonaws.com" }
-      Action    = "sts:AssumeRole"
-    }]
-  })
+resource "aws_iam_role" "gitlab_runner" {
+  name               = "tasky-gitlab-runner-role-${var.environment}-${var.runner_name}"
+  assume_role_policy = data.aws_iam_policy_document.ec2_assume_role.json
 }
 
 resource "aws_iam_instance_profile" "gitlab_runner" {
