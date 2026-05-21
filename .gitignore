@@ -21,7 +21,7 @@ crash.*.log
 !.terraform.lock.hcl
 
 # Ansible
-ansible/**/collections/
+infrastructure/ansible/**/collections/
 *.retry
 .vault_pass
 
