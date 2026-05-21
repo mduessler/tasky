@@ -71,7 +71,7 @@ resource "aws_route_table_association" "public" {
 #
 
 resource "aws_security_group" "runner" {
-  name        = "tasky-gitlab-runner-sg-${var.runner_name}"  # ← geändert
+  name        = "tasky-gitlab-runner-sg-${var.runner_name}" # ← geändert
   description = "Security Group for GitLab Runner - outbound only"
   vpc_id      = aws_vpc.main.id
 
@@ -82,3 +82,12 @@ resource "aws_security_group" "runner" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
+resource "aws_vpc_endpoint" "s3" {
+  vpc_id            = aws_vpc.main.id
+  service_name      = "com.amazonaws.${data.aws_region.current.name}.s3"
+  vpc_endpoint_type = "Gateway"
+  route_table_ids   = [aws_route_table.private.id]
+}
+
+data "aws_region" "current" {}
