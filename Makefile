@@ -106,7 +106,7 @@ bootstrap-create:
 	export AWS_PROFILE=$(aws-user-admin)
 	./infrastructure/scripts/bootstrap create
 
-terraform-destroy-bootstrap:
+bootstrap-destroy:
 	./infrastructure/scripts/bootstrap destroy
 
 # Set up gitlab-runner
