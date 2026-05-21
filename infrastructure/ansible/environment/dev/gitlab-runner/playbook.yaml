@@ -1,5 +1,5 @@
 - name: Configure gitlab-runner
-  hosts: gitlab_runner
+  hosts: all
   gather_facts: false
   pre_tasks:
     - name: Test SSM connection
