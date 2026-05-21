@@ -13,6 +13,7 @@ cert-subj=/CN=localhost
 test-data=/home/tms/web/tests/data
 docs = ./docs/
 
+aws_account_id=REDACTED_AWS_ACCOUNT
 aws-user-dev=tasky-dev
 terraform-dir=infrastructure/terraform
 ansible-dir=infrastructure/ansible
@@ -126,7 +127,8 @@ install-gitlab-runner:
 	ANSIBLE_CONFIG=./ansible.cfg ansible-playbook playbook.yaml \
 		-i inventory/aws_ec2.yaml \
 		-e runner_token="$$runner_token" \
-		-e runner_name="$$runner_name"
+		-e runner_name="$$runner_name" \
+		-e owner_id="$(aws_account_id)"
 
 .ONESHELL:
 terraform-destroy-runner:
