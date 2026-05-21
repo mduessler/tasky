@@ -5,7 +5,6 @@ module "log_bucket" {
   name   = "tasky-terraform-state-logs-${var.owner_id}-dev"
   tags = {
     Component = "terraform-state-access-logs"
-    Purpose   = "Log the tfstate"
   }
 
 }

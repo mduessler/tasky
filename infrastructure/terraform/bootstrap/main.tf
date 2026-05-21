@@ -4,7 +4,6 @@ module "state_bucket_dev" {
   version_status = "Enabled"
   tags = {
     Component = "terraform-state"
-    Purpose   = "remote-state-storage"
   }
 }
 
@@ -18,7 +17,6 @@ module "terraform_locks_dev" {
   environment = "dev"
   tags = {
     Component = "terraform-lock-table"
-    Purpose = "Store locks if someone access the terraform-state s3 bucket."
   }
 }
 
