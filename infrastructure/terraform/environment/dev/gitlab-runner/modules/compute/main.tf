@@ -14,6 +14,13 @@ resource "aws_instance" "gitlab_runner" {
   subnet_id              = var.subnet_id
   vpc_security_group_ids = [var.runner_security_group]
   iam_instance_profile   = var.permission_profile
+
+  metadata_options {
+    http_tokens                 = "required"
+    http_endpoint               = "enabled"
+    http_put_response_hop_limit = 2
+  }
+
   tags = {
     Name       = "tasky-gitlab-runner-${var.environment}-${var.runner_name}"
     RunnerName = var.runner_name
