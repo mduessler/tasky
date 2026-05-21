@@ -71,9 +71,16 @@ resource "aws_route_table_association" "public" {
 #
 
 resource "aws_security_group" "runner" {
-  name        = "runner-sg-${var.runner_name}" # ← geändert
+  name        = "runner-sg-${var.runner_name}"
   description = "Security Group for GitLab Runner - outbound only"
   vpc_id      = aws_vpc.main.id
+
+  egress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
   egress {
     from_port   = 443
