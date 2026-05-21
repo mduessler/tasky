@@ -16,9 +16,6 @@ To initialize the backend simple run from the root of the project the command
    In this directory is the configuration of the backend stored.
 2. **Initialize Working directory** to prepare the configuration files.
 3. **Apply the infrastructure** to create the backend on the remote system.
-4. **Add state of the backend** — To add the *TFstate* of the backend itself.
-   The backend has to call `terraform init -migrate-state` to upload the created
-   *TFstate*.
 
 ## File structure
 

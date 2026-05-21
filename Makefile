@@ -100,14 +100,12 @@ pre-commit:
 #
 # Set up backend
 .ONESHELL:
-terraform-init-bootstrap:
+bootstrap-create:
 	cd $(terraform-dir)/bootstrap
 	export TF_VAR_owner_id=$(aws_account_id)
 	export AWS_PROFILE=$(aws-user-admin)
-
-	terraform init
+	terraform init -backend=false
 	terraform apply
-	terraform init -migrate-state
 
 .ONESHELL:
 terraform-destroy-bootstrap:
