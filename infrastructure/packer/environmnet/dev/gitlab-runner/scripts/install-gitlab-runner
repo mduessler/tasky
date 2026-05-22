@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+gitlab_runner_version="18.11.3-1"
+
+echo "INFO: Installing gitlab-runner ..."
+
+echo "INFO: Initializing repository for gitlab runner"
+curl -L "https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh" | bash
+
+echo "INFO: Installing gitlab-runner"
+sudo apt install -y \
+	gitlab-runner-helper-images="${gitlab_runner_version}" \
+	gitlab-runner="${gitlab_runner_version}"
+
+if gitlab-runner --version >/dev/null 2>&1; then
+	echo "SUCCESS: gitlab-runner ${gitlab_runner_version} installed successfully."
+	exit 0
+else
+	echo "ERROR: gitlab-runner installation failed." >&2
+	exit 1
+fi
