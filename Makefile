@@ -98,7 +98,7 @@ pre-commit:
 #
 # Infrastructure commands
 #
-# Set up backend
+# Create backend
 #
 
 bootstrap-create:
@@ -109,8 +109,9 @@ bootstrap-create:
 bootstrap-destroy:
 	./infrastructure/scripts/bootstrap destroy
 
-# Set up gitlab-runner
-# aws s3api head-bucket --bucket ansible-ssm-REDACTED_AWS_ACCOUNT-dev --profile tasky-dev 2> /dev/null
+# Commands to install or destroy a gitlab-runner
+#
+
 .ONESHELL:
 install-gitlab-runner:
 	export TF_VAR_owner_id=$(aws_account_id)
