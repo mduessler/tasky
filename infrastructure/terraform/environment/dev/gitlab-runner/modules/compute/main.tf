@@ -1,15 +1,15 @@
-data "aws_ami" "ubuntu" {
+data "aws_ami" "gitlab_runner" {
   most_recent = true
-  owners      = ["099720109477"]
+  owners      = ["self"]
 
   filter {
     name   = "name"
-    values = ["ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*"]
+    values = ["gitlab-runner"]
   }
 }
 
 resource "aws_instance" "runner" {
-  ami                    = data.aws_ami.ubuntu.id
+  ami                    = data.aws_ami.gitlab_runner.id
   instance_type          = var.instance_type
   subnet_id              = var.subnet_id
   vpc_security_group_ids = [var.runner_security_group]
