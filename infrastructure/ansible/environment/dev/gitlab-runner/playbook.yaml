@@ -2,8 +2,20 @@
   hosts: all
   gather_facts: false
   pre_tasks:
-    - name: Test SSM connection
-      ansible.builtin.ping:
+    - name: Wait for SSM connection
+      ansible.builtin.wait_for_connection:
+        timeout: 300
+        sleep: 10
+    - name: Wait for cloud-init to finish
+      ansible.builtin.command: cloud-init status --wait
+      changed_when: false
+    - name: Wait for dpkg lock to be released
+      ansible.builtin.shell: |
+        while fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1; do
+          sleep 5
+        done
+      changed_when: false
+      timeout: 600
     - name: Gather facts
       ansible.builtin.setup:
   roles:
