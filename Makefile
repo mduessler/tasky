@@ -18,6 +18,7 @@ aws-user-admin=tasky-admin
 aws-user-dev=tasky-dev
 terraform-dir=infrastructure/terraform
 ansible-dir=infrastructure/ansible
+packer-dir=infrastructure/packer/environmnet/dev/gitlab-runner
 
 gitlab-runner-dir=environment/dev/gitlab-runner
 
@@ -108,6 +109,18 @@ bootstrap-create:
 
 bootstrap-destroy:
 	./infrastructure/scripts/bootstrap destroy
+
+
+# Create AMI gitlab-runner image
+#
+
+ONESHELL:
+create-runner-img:
+	cd $(packer-dir)
+	export AWS_PROFILE=$(aws-user-admin)
+	packer init .
+	packer build gitlab-runner.pkr.hcl
+
 
 # Commands to install or destroy a gitlab-runner
 #
