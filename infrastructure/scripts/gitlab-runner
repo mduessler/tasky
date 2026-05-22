@@ -21,8 +21,7 @@ function install() {
 		else
 			echo "ERROR: AWS_PROFILE is not set"
 		fi
-		help
-		exit 1
+		help && exit 1
 	fi
 
 	SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -37,6 +36,7 @@ function install() {
 
 	if aws s3api head-bucket --bucket "ansible-ssm-${TF_VAR_owner_id}-dev" &>/dev/null; then
 		echo "INFO: Importing already existing object."
+
 		terraform import module.ssm_transfer_bucket.aws_s3_bucket.this "ansible-ssm-${TF_VAR_owner_id}-dev"
 		terraform import aws_s3_bucket_policy.ssm_bucket "ansible-ssm-${TF_VAR_owner_id}-dev"
 		terraform import aws_s3_bucket_lifecycle_configuration.ssm_bucket "ansible-ssm-${TF_VAR_owner_id}-dev"
@@ -70,8 +70,7 @@ function destroy() {
 		else
 			echo "ERROR: AWS_PROFILE is not set"
 		fi
-		help
-		exit 1
+		help && exit 1
 	fi
 	SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 	cd "$SCRIPT_DIR/../terraform/environment/dev/gitlab-runner" || exit 2
@@ -95,7 +94,6 @@ elif [[ "$1" == "destroy" ]]; then
 	destroy
 else
 	echo "ERROR: Unkown command."
-	help
-	exit 1
+	help && exit 1
 fi
 exit 0
