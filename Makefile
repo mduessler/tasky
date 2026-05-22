@@ -1,5 +1,5 @@
 # Root-directory
-root-dir=./task_management_system/
+root-dir=$(shell pwd)
 
 # dev
 service-dev=tms-dev
@@ -13,8 +13,10 @@ cert-subj=/CN=localhost
 test-data=/home/tms/web/tests/data
 docs = ./docs/
 
-terraform-dir=infastructure/terraform/
-gitlab-runner-dir=$(terraform-dir)/environment/dev/gitlab-runner
+aws_account_id=REDACTED_AWS_ACCOUNT
+aws-user-admin=tasky-admin
+aws-user-dev=tasky-dev
+
 
 .SILENT:
 .ONESHELL:
@@ -90,30 +92,42 @@ pre-commit:
 
 
 #
-# Infastructure commands
+# Infrastructure commands
 #
-# Set up backend
-.ONESHELL:
-terraform-init-bootstrap:
-	cd $(terraform-dir)/bootstrap
-	terraform init
-	terraform apply
+# Create backend
+#
+
+bootstrap-create:
+	export TF_VAR_owner_id=$(aws_account_id)
+	export AWS_PROFILE=$(aws-user-admin)
+	./infrastructure/scripts/bootstrap create
+
+bootstrap-destroy:
+	./infrastructure/scripts/bootstrap destroy
+
+
+# Create AMI gitlab-runner image
+#
+
+ONESHELL:
+create-runner-img:
+	cd $(packer-dir)
+	export AWS_PROFILE=$(aws-user-admin)
+	packer init .
+	packer build gitlab-runner.pkr.hcl
+
+
+# Commands to install or destroy a gitlab-runner
+#
 
 .ONESHELL:
-terraform-destroy-bootstrap:
-	cd $(terraform-dir)/bootstrap
-	terraform destroy
-
-# Set up gitlab-runner
-.ONESHELL:
-terraform-init-runner-dev:
-	cd $(gitlab-runner-dir)
-	terraform init \
-	  -backend-config="bucket=gitlab-runner-terraform-state-REDACTED_AWS_ACCOUNT" \
-	  -backend-config="key=dev/terraform.tfstate"
-	terraform apply
+install-gitlab-runner:
+	export TF_VAR_owner_id=$(aws_account_id)
+	export AWS_PROFILE=$(aws-user-dev)
+	./infrastructure/scripts/gitlab-runner install
 
 .ONESHELL:
-terraform-destroy-runner:
-	cd $(gitlab-runner-dir)
-	terraform destroy
+destroy-gitlab-runner:
+	export TF_VAR_owner_id=$(aws_account_id)
+	export AWS_PROFILE=$(aws-user-dev)
+	./infrastructure/scripts/gitlab-runner destroy

@@ -1,0 +1,16 @@
+- name: Register gitlab-runner
+  ansible.builtin.shell:
+    cmd: |
+      gitlab-runner register \
+        --url "{{ gitlab_runner_url }}" \
+        --token "{{ runner_token }}" \
+        --executor "{{ gitlab_runner_executor }}" \
+        --docker-image "alpine:latest" \
+        --name "{{ runner_name }}" \
+        --non-interactive
+  no_log: false
+- name: Verify gitlab-runner is running
+  ansible.builtin.systemd:
+    name: gitlab-runner
+    state: started
+    enabled: true

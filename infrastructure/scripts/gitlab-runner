@@ -1,0 +1,102 @@
+#!/usr/bin/env bash
+
+set -e
+
+function help() {
+	cat <<EOF
+Usage:
+  $(basename "$0") <command>
+
+Commands:
+  help          Shows this help message
+  install       Install gitlab-runner
+  destroy       Destroy gitlab-runner
+EOF
+}
+
+function install() {
+	if [[ -z "${TF_VAR_owner_id}" || -z "${AWS_PROFILE}" ]]; then
+		if [[ -z "${TF_VAR_owner_id}" ]]; then
+			echo "ERROR: TF_VAR_owner_id is not set"
+		else
+			echo "ERROR: AWS_PROFILE is not set"
+		fi
+		help && exit 1
+	fi
+
+	SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+	cd "$SCRIPT_DIR/../terraform/environment/dev/gitlab-runner" || exit 2
+
+	read -rp "Runner name: " runner_name
+	export TF_VAR_runner_name=${runner_name}
+
+	read -rp "Runner token: " runner_token
+
+	terraform init -reconfigure \
+		-backend-config="bucket=tasky-terraform-state-${TF_VAR_owner_id}-dev" \
+		-backend-config="key=runner/dev/${runner_name}/terraform.tfstate"
+
+	if aws s3api head-bucket --bucket "ansible-ssm-${TF_VAR_owner_id}-dev" &>/dev/null; then
+		echo "INFO: Importing already existing objects."
+
+		terraform import module.ssm_transfer_bucket.aws_s3_bucket.this "ansible-ssm-${TF_VAR_owner_id}-dev" || true
+		terraform import aws_s3_bucket_policy.ssm_bucket "ansible-ssm-${TF_VAR_owner_id}-dev" || true
+		terraform import aws_s3_bucket_lifecycle_configuration.ssm_bucket "ansible-ssm-${TF_VAR_owner_id}-dev" || true
+		terraform import module.security.aws_iam_role.runner "runner-role-dev-${runner_name}" || true
+		terraform import module.security.aws_iam_instance_profile.runner "runner-profile-dev-${runner_name}" || true
+		terraform import module.security.aws_iam_role_policy.ssm_bucket_access "runner-role-dev-${runner_name}:ssm-bucket-access" || true
+		terraform import "module.security.aws_iam_role_policy_attachment.runner[\"arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore\"]" \
+			"runner-role-dev-${runner_name}/arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore" || true
+	fi
+
+	terraform apply || exit 3
+
+	cd "$SCRIPT_DIR/../ansible/environment/dev/gitlab-runner" || exit 4
+
+	ansible-galaxy collection install -r requirements.yaml -p ./collections
+
+	ANSIBLE_CONFIG=./ansible.cfg ansible-playbook playbook.yaml \
+		-i inventory/aws_ec2.yaml \
+		-l "runner_dev_${runner_name}" \
+		-e runner_name="${runner_name}" \
+		-e runner_token="${runner_token}" \
+		-e owner_id="${TF_VAR_owner_id}"
+}
+
+function destroy() {
+	if [[ -z "${TF_VAR_owner_id}" || -z "${AWS_PROFILE}" ]]; then
+		if [[ -z "${TF_VAR_owner_id}" ]]; then
+			echo "ERROR: TF_VAR_owner_id is not set"
+		else
+			echo "ERROR: AWS_PROFILE is not set"
+		fi
+		help && exit 1
+	fi
+	SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+	cd "$SCRIPT_DIR/../terraform/environment/dev/gitlab-runner" || exit 2
+
+	read -rp "Runner name: " runner_name
+	export TF_VAR_runner_name=${runner_name}
+
+	terraform init -reconfigure \
+		-backend-config="bucket=tasky-terraform-state-${TF_VAR_owner_id}-dev" \
+		-backend-config="key=runner/dev/${runner_name}/terraform.tfstate"
+
+	terraform state rm module.ssm_transfer_bucket || true
+	terraform state rm aws_s3_bucket_policy.ssm_bucket || true
+	terraform state rm aws_s3_bucket_lifecycle_configuration.ssm_bucket || true
+
+	terraform destroy --auto-approve || exit 3
+}
+
+if [[ "$1" == "help" ]]; then
+	help
+elif [[ "$1" == "install" ]]; then
+	install
+elif [[ "$1" == "destroy" ]]; then
+	destroy
+else
+	echo "ERROR: Unkown command."
+	help && exit 1
+fi
+exit 0

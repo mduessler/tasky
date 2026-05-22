@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+echo "INFO: Starting cleanup ..."
+
+sudo apt remove -y --purge \
+	snapd \
+	man-db \
+	manpages \
+	apport \
+	whoopsie \
+	landscape-common \
+	popularity-contest \
+	ubuntu-advantage-tools \
+	ufw 2>/dev/null || true
+
+sudo apt autoremove -y --purge
+sudo apt clean
+
+sudo rm -rf /snap /var/snap /var/lib/snapd
+sudo rm -rf /usr/share/man /usr/share/doc /usr/share/info
+sudo find /var/log -type f -exec truncate -s 0 {} +
+sudo rm -rf /var/lib/apt/lists/*
+sudo rm -rf /tmp/* /var/tmp/*
+sudo rm -f /root/.bash_history /home/ubuntu/.bash_history
+history -c
+
+echo "SUCCESS: Cleanup done."
+exit 0
