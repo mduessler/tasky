@@ -1,45 +1,3 @@
-- name: Install gitlab-runner dependencies
-  ansible.builtin.apt:
-    name:
-      - ca-certificates
-    state: present
-    update_cache: true
-    lock_timeout: 600
-- name: Create apt keyrings directory
-  ansible.builtin.file:
-    path: /etc/apt/keyrings
-    state: directory
-    mode: "0755"
-- name: Add gitlab-runner GPG key
-  ansible.builtin.get_url:
-    url: https://packages.gitlab.com/gpgkey/gpg.key
-    dest: /etc/apt/keyrings/runner_gitlab-runner-archive-keyring.asc
-    mode: "0444"
-- name: Add gitlab-runner repository
-  ansible.builtin.copy:
-    dest: /etc/apt/sources.list.d/runner_gitlab-runner.sources
-    mode: "0644"
-    content: |
-      Types: deb
-      URIs: https://packages.gitlab.com/runner/gitlab-runner/ubuntu/
-      Suites: {{ ansible_distribution_release }}
-      Components: main
-      Architectures: {{ 'amd64' if ansible_architecture == 'x86_64' else ansible_architecture }}
-      Signed-By: /etc/apt/keyrings/runner_gitlab-runner-archive-keyring.asc
-- name: Update apt cache
-  ansible.builtin.apt:
-    update_cache: true
-    lock_timeout: 600
-- name: Install gitlab-runner-helper-images
-  ansible.builtin.apt:
-    name: "gitlab-runner-helper-images={{ gitlab_runner_version }}"
-    state: present
-    lock_timeout: 600
-- name: Install gitlab-runner
-  ansible.builtin.apt:
-    name: "gitlab-runner={{ gitlab_runner_version }}"
-    state: present
-    lock_timeout: 1200
 - name: Register gitlab-runner
   ansible.builtin.shell:
     cmd: |
@@ -50,7 +8,6 @@
         --docker-image "alpine:latest" \
         --name "{{ runner_name }}" \
         --non-interactive
-    creates: /etc/gitlab-runner/config.toml
   no_log: false
 - name: Verify gitlab-runner is running
   ansible.builtin.systemd:
