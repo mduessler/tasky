@@ -48,9 +48,7 @@ function install() {
 
 	terraform apply || exit 3
 
-	terraform apply || exit 3
-
-	cd "$SCRIPT_DIR/../ansible/environment/dev/gitlab-runner" || exit 2
+	cd "$SCRIPT_DIR/../ansible/environment/dev/gitlab-runner" || exit 4
 
 	ansible-galaxy collection install -r requirements.yaml -p ./collections
 	read -rp "Runner token: " runner_token
@@ -83,7 +81,7 @@ function destroy() {
 	terraform state rm aws_s3_bucket_policy.ssm_bucket || true
 	terraform state rm aws_s3_bucket_lifecycle_configuration.ssm_bucket || true
 
-	terraform destroy --auto-approve
+	terraform destroy --auto-approve || exit 3
 }
 
 if [[ "$1" == "help" ]]; then
