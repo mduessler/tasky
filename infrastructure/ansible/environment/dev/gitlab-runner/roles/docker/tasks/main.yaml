@@ -47,3 +47,8 @@
     state: present
     update_cache: true
     lock_timeout: 600
+- name: Verify docker is running
+  ansible.builtin.systemd:
+    name: docker
+    state: started
+    enabled: true
