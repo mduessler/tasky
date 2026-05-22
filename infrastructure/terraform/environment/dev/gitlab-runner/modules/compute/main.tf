@@ -4,7 +4,7 @@ data "aws_ami" "gitlab_runner" {
 
   filter {
     name   = "name"
-    values = ["gitlab-runner"]
+    values = ["gitlab-runner-*"]
   }
 }
 
