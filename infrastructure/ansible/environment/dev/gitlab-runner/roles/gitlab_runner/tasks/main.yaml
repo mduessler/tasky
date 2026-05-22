@@ -37,7 +37,7 @@
   ansible.builtin.shell:
     cmd: |
       gitlab-runner register \
-        --url "{{ gitlab-runner_url }}" \
+        --url "{{ gitlab_runner_url }}" \
         --token "{{ runner_token }}" \
         --executor "{{ gitlab_runner_executor }}" \
         --docker-image "alpine:latest" \
