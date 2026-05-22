@@ -86,9 +86,11 @@ function destroy() {
 	terraform init -reconfigure \
 		-backend-config="bucket=tasky-terraform-state-${TF_VAR_owner_id}-dev" \
 		-backend-config="key=runner/dev/${runner_name}/terraform.tfstate"
+
 	terraform state rm module.ssm_transfer_bucket || true
 	terraform state rm aws_s3_bucket_policy.ssm_bucket || true
 	terraform state rm aws_s3_bucket_lifecycle_configuration.ssm_bucket || true
+
 	terraform destroy --auto-approve
 }
 
