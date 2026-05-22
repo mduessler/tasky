@@ -28,25 +28,46 @@ function install() {
 	SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 	cd "$SCRIPT_DIR/../terraform/environment/dev/gitlab-runner" || exit 2
 
-	read -p -r "Runner name: " runner_name
+	read -rp "Runner name: " runner_name
 	export TF_VAR_runner_name=${runner_name}
 
 	terraform init -reconfigure \
 		-backend-config="bucket=tasky-terraform-state-${TF_VAR_owner_id}-dev" \
-		-backend-config="key=runner/dev/$$runner_name/terraform.tfstate" &&
-		terraform apply || exit 3
+		-backend-config="key=runner/dev/${runner_name}/terraform.tfstate"
+
+	# S3 imports
+	aws s3api head-bucket --bucket "ansible-ssm-${TF_VAR_owner_id}-dev" &>/dev/null &&
+		terraform import module.ssm_transfer_bucket.aws_s3_bucket.this "ansible-ssm-${TF_VAR_owner_id}-dev" || true
+	aws s3api get-bucket-policy --bucket "ansible-ssm-${TF_VAR_owner_id}-dev" &>/dev/null &&
+		terraform import aws_s3_bucket_policy.ssm_bucket "ansible-ssm-${TF_VAR_owner_id}-dev" || true
+	aws s3api get-bucket-lifecycle-configuration --bucket "ansible-ssm-${TF_VAR_owner_id}-dev" &>/dev/null &&
+		terraform import aws_s3_bucket_lifecycle_configuration.ssm_bucket "ansible-ssm-${TF_VAR_owner_id}-dev" || true
+
+	# IAM imports
+	aws iam get-role --role-name "runner-role-dev-${runner_name}" &>/dev/null &&
+		terraform import module.security.aws_iam_role.runner "runner-role-dev-${runner_name}" || true
+	aws iam get-instance-profile --instance-profile-name "runner-profile-dev-${runner_name}" &>/dev/null &&
+		terraform import module.security.aws_iam_instance_profile.runner "runner-profile-dev-${runner_name}" || true
+	aws iam get-role-policy --role-name "runner-role-dev-${runner_name}" --policy-name "ssm-bucket-access" &>/dev/null &&
+		terraform import module.security.aws_iam_role_policy.ssm_bucket_access "runner-role-dev-${runner_name}:ssm-bucket-access" || true
+	aws iam list-attached-role-policies --role-name "runner-role-dev-${runner_name}" &>/dev/null &&
+		terraform import "module.security.aws_iam_role_policy_attachment.runner[\"arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore\"]" "runner-role-dev-${runner_name}/arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore" || true
+
+	terraform apply || exit 3
+
+	terraform apply || exit 3
 
 	cd "$SCRIPT_DIR/../ansible/environment/dev/gitlab-runner" || exit 2
 
 	ansible-galaxy collection install -r requirements.yaml -p ./collections
-	read -p -r "Runner token: " runner_token
+	read -rp "Runner token: " runner_token
 
 	ANSIBLE_CONFIG=./ansible.cfg ansible-playbook playbook.yaml \
 		-i inventory/aws_ec2.yaml \
 		-l "runner_dev_${runner_name}" \
 		-e runner_name="${runner_name}" \
 		-e runner_token="${runner_token}" \
-		-e owner_id="${TF_VAR_owner_id}" -vvvv
+		-e owner_id="${TF_VAR_owner_id}"
 }
 
 function destroy() {
@@ -59,13 +80,15 @@ function destroy() {
 		help
 		exit 1
 	fi
-
 	SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 	cd "$SCRIPT_DIR/../terraform/environment/dev/gitlab-runner" || exit 2
-
-	terraform init -migrate-state \
+	read -rp "Runner name: " runner_name
+	terraform init -reconfigure \
 		-backend-config="bucket=tasky-terraform-state-${TF_VAR_owner_id}-dev" \
-		-backend-config="key=dev/terraform.tfstate"
+		-backend-config="key=runner/dev/${runner_name}/terraform.tfstate"
+	terraform state rm module.ssm_transfer_bucket || true
+	terraform state rm aws_s3_bucket_policy.ssm_bucket || true
+	terraform state rm aws_s3_bucket_lifecycle_configuration.ssm_bucket || true
 	terraform destroy --auto-approve
 }
 
