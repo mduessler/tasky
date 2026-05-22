@@ -48,9 +48,9 @@ build {
   # make cron job for prune-docker
   provisioner "shell" {
     inline = [
-      "mv /tmp/prune-docker /usr/local/docker-prune",
+      "sudo mv /tmp/prune-docker /usr/local/docker-prune",
       "sudo chmod +x /usr/local/docker-prune",
-      "echo '0 2 * * * root /usr/local/bin/docker-prune' | sudo tee /etc/cron.d/docker-prune"
+      "sudo echo '0 2 * * * root /usr/local/bin/docker-prune' | sudo tee /etc/cron.d/docker-prune"
     ]
   }
 
