@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+docker_ce_version="26.1.4-1~ubuntu.24.04~noble"
+docker_ce_cli_version="26.1.4-1~ubuntu.24.04~noble"
+containerd_io_version="1.7.18-1"
+
+echo "INFO: Removing old docker versions ..."
+sudo apt remove -y \
+	docker.io \
+	docker-compose \
+	docker-compose-v2 \
+	docker-doc \
+	podman-docker \
+	containerd \
+	runc 2>/dev/null || true
+
+echo "INFO: Installing dependencies ..."
+sudo apt update
+sudo apt install -y ca-certificates
+
+echo "INFO: Adding Docker GPG key and repository ..."
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg \
+	-o /etc/apt/keyrings/docker.asc
+sudo chmod 0444 /etc/apt/keyrings/docker.asc
+
+# shellcheck disable=SC1091
+sudo tee /etc/apt/sources.list.d/docker.sources <<EOF
+Types: deb
+URIs: https://download.docker.com/linux/ubuntu
+Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+Components: stable
+Architectures: $(dpkg --print-architecture)
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
+
+echo "INFO: Installing Docker ..."
+sudo apt update && apt install -y \
+	docker-ce="${docker_ce_version}" \
+	docker-ce-cli="${docker_ce_cli_version}" \
+	containerd.io="${containerd_io_version}"
+
+echo "INFO: Starting Docker ..."
+sudo systemctl enable docker
+sudo systemctl start docker
+
+if sudo systemctl is-active --quiet docker; then
+	echo "SUCCESS: Docker ${docker_ce_version} installed and running."
+	exit 0
+else
+	echo "ERROR: Docker installation failed." >&2
+	exit 1
+fi
