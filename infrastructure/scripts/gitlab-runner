@@ -35,15 +35,16 @@ function install() {
 		-backend-config="key=runner/dev/${runner_name}/terraform.tfstate"
 
 	if aws s3api head-bucket --bucket "ansible-ssm-${TF_VAR_owner_id}-dev" &>/dev/null; then
-		echo "INFO: Importing already existing object."
+		echo "INFO: Importing already existing objects."
 
-		terraform import module.ssm_transfer_bucket.aws_s3_bucket.this "ansible-ssm-${TF_VAR_owner_id}-dev"
-		terraform import aws_s3_bucket_policy.ssm_bucket "ansible-ssm-${TF_VAR_owner_id}-dev"
-		terraform import aws_s3_bucket_lifecycle_configuration.ssm_bucket "ansible-ssm-${TF_VAR_owner_id}-dev"
-		terraform import module.security.aws_iam_role.runner "runner-role-dev-${runner_name}"
-		terraform import module.security.aws_iam_instance_profile.runner "runner-profile-dev-${runner_name}"
-		terraform import module.security.aws_iam_role_policy.ssm_bucket_access "runner-role-dev-${runner_name}:ssm-bucket-access"
-		terraform import "module.security.aws_iam_role_policy_attachment.runner[\"arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore\"]" "runner-role-dev-${runner_name}/arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+		terraform import module.ssm_transfer_bucket.aws_s3_bucket.this "ansible-ssm-${TF_VAR_owner_id}-dev" || true
+		terraform import aws_s3_bucket_policy.ssm_bucket "ansible-ssm-${TF_VAR_owner_id}-dev" || true
+		terraform import aws_s3_bucket_lifecycle_configuration.ssm_bucket "ansible-ssm-${TF_VAR_owner_id}-dev" || true
+		terraform import module.security.aws_iam_role.runner "runner-role-dev-${runner_name}" || true
+		terraform import module.security.aws_iam_instance_profile.runner "runner-profile-dev-${runner_name}" || true
+		terraform import module.security.aws_iam_role_policy.ssm_bucket_access "runner-role-dev-${runner_name}:ssm-bucket-access" || true
+		terraform import "module.security.aws_iam_role_policy_attachment.runner[\"arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore\"]" \
+			"runner-role-dev-${runner_name}/arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore" || true
 	fi
 
 	terraform apply || exit 3
