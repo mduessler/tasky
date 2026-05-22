@@ -119,4 +119,6 @@ install-gitlab-runner:
 
 .ONESHELL:
 destroy-gitlab-runner:
+	export TF_VAR_owner_id=$(aws_account_id)
+	export AWS_PROFILE=$(aws-user-dev)
 	./infrastructure/scripts/gitlab-runner destroy
