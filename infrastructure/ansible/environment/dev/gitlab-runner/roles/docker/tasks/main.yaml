@@ -38,3 +38,12 @@
       Components: stable
       Architectures: {{ ansible_architecture }}
       Signed-By: /etc/apt/keyrings/docker.asc
+- name: Install docker for dind
+  ansible.builtin.apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    state: present
+    update_cache: true
+    lock_timeout: 600
