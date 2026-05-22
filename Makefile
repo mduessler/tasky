@@ -16,11 +16,6 @@ docs = ./docs/
 aws_account_id=REDACTED_AWS_ACCOUNT
 aws-user-admin=tasky-admin
 aws-user-dev=tasky-dev
-terraform-dir=infrastructure/terraform
-ansible-dir=infrastructure/ansible
-packer-dir=infrastructure/packer/environmnet/dev/gitlab-runner
-
-gitlab-runner-dir=environment/dev/gitlab-runner
 
 
 .SILENT:
