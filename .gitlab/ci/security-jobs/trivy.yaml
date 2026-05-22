@@ -4,7 +4,7 @@ scan-prod-image:
     name: aquasec/trivy:latest
     entrypoint: [""]
   needs:
-    - build-prod-image
+    - build:prod-image
   variables:
     TRIVY_NO_PROGRESS: "true"
     TRIVY_CACHE_DIR: ".trivycache"
