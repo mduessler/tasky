@@ -8,7 +8,7 @@ packer {
 }
 
 source "amazon-ebs" "ubuntu" {
-  ami_name      = "gitlab-runner"
+  ami_name = "gitlab-runner-${formatdate("YYYYMMDD-HHmmss", timestamp())}"
   instance_type = "t3.micro"
   region        = "eu-central-1"
   source_ami_filter {
