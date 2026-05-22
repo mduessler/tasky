@@ -30,6 +30,8 @@ function install() {
 	read -rp "Runner name: " runner_name
 	export TF_VAR_runner_name=${runner_name}
 
+	read -rp "Runner token: " runner_token
+
 	terraform init -reconfigure \
 		-backend-config="bucket=tasky-terraform-state-${TF_VAR_owner_id}-dev" \
 		-backend-config="key=runner/dev/${runner_name}/terraform.tfstate"
@@ -52,7 +54,6 @@ function install() {
 	cd "$SCRIPT_DIR/../ansible/environment/dev/gitlab-runner" || exit 4
 
 	ansible-galaxy collection install -r requirements.yaml -p ./collections
-	read -rp "Runner token: " runner_token
 
 	ANSIBLE_CONFIG=./ansible.cfg ansible-playbook playbook.yaml \
 		-i inventory/aws_ec2.yaml \
