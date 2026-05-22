@@ -10,3 +10,10 @@
       - runc
     state: absent
     purge: true
+- name: Install docker install dependencies
+  ansible.builtin.apt:
+    name:
+      - ca-certificates
+    state: present
+    update_cache: true
+    lock_timeout: 600
