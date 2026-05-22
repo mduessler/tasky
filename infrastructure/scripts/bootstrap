@@ -21,15 +21,14 @@ function create() {
 		else
 			echo "ERROR: AWS_PROFILE is not set"
 		fi
-		help
-		exit 1
+		help && exit 1
 	fi
 
 	SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 	cd "$SCRIPT_DIR/../terraform/bootstrap" || exit 2
 
 	terraform init
-	terraform apply
+	terraform apply || exit 3
 }
 
 if [[ "$1" == "help" ]]; then
@@ -40,7 +39,6 @@ elif [[ "$1" == "destroy" ]]; then
 	echo "INFO: This operation is not allowed. Admin has to do it manually."
 else
 	echo "ERROR: Unkown command."
-	help
-	exit 1
+	help && exit 1
 fi
 exit 0
