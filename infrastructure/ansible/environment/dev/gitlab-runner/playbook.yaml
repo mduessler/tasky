@@ -20,3 +20,4 @@
       ansible.builtin.setup:
   roles:
     - gitlab_runner
+    - docker
