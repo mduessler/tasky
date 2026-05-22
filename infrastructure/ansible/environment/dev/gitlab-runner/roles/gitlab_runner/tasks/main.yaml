@@ -7,6 +7,8 @@
         --executor "{{ gitlab_runner_executor }}" \
         --docker-image "alpine:latest" \
         --name "{{ runner_name }}" \
+        --docker-volumes "/cache" \
+        --docker-volumes "/var/run/docker.sock:/var/run/docker.sock" \
         --non-interactive
   no_log: false
 - name: Verify gitlab-runner is running
