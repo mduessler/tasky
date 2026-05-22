@@ -73,7 +73,10 @@ function destroy() {
 	fi
 	SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 	cd "$SCRIPT_DIR/../terraform/environment/dev/gitlab-runner" || exit 2
+
 	read -rp "Runner name: " runner_name
+	export TF_VAR_runner_name=${runner_name}
+
 	terraform init -reconfigure \
 		-backend-config="bucket=tasky-terraform-state-${TF_VAR_owner_id}-dev" \
 		-backend-config="key=runner/dev/${runner_name}/terraform.tfstate"
