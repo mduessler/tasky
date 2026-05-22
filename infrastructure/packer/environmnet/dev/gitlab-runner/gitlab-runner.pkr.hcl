@@ -30,17 +30,27 @@ build {
   ]
 
   provisioner "file" {
-    sources     = ["scripts/init-file-structure", "scripts/install-docker", "scripts/install-gitlab-runner", "scripts/cleanup"]
+    sources     = ["scripts/init-file-structure", "scripts/install-docker", "scripts/install-gitlab-runner", "scripts/cleanup", "scripts/prune-docker"]
     destination = "/tmp/"
   }
 
 
+  # Prepare server
   provisioner "shell" {
     inline = [
       "chmod +x /tmp/init-file-structure /tmp/install-docker /tmp/install-gitlab-runner",
       "sudo /tmp/init-file-structure",
       "sudo /tmp/install-docker",
-      "sudo /tmp/install-gitlab-runner"
+      "sudo /tmp/install-gitlab-runner",
+    ]
+  }
+
+  # make cron job for prune-docker
+  provisioner "shell" {
+    inline = [
+      "mv /tmp/prune-docker /usr/local/docker-prune",
+      "sudo chmod +x /usr/local/docker-prune",
+      "echo '0 2 * * * root /usr/local/bin/docker-prune' | sudo tee /etc/cron.d/docker-prune"
     ]
   }
 
