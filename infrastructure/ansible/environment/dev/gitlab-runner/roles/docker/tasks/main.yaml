@@ -41,9 +41,9 @@
 - name: Install docker for dind
   ansible.builtin.apt:
     name:
-      - docker-ce
-      - docker-ce-cli
-      - containerd.io
+      - docker-ce={{ docker_version }}
+      - docker-ce-cli={{ docker_version }}
+      - containerd.io={{ docker_version }}
     state: present
     update_cache: true
     lock_timeout: 600
