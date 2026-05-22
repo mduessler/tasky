@@ -35,23 +35,16 @@ function install() {
 		-backend-config="bucket=tasky-terraform-state-${TF_VAR_owner_id}-dev" \
 		-backend-config="key=runner/dev/${runner_name}/terraform.tfstate"
 
-	# S3 imports
-	aws s3api head-bucket --bucket "ansible-ssm-${TF_VAR_owner_id}-dev" &>/dev/null &&
-		terraform import module.ssm_transfer_bucket.aws_s3_bucket.this "ansible-ssm-${TF_VAR_owner_id}-dev" || true
-	aws s3api get-bucket-policy --bucket "ansible-ssm-${TF_VAR_owner_id}-dev" &>/dev/null &&
-		terraform import aws_s3_bucket_policy.ssm_bucket "ansible-ssm-${TF_VAR_owner_id}-dev" || true
-	aws s3api get-bucket-lifecycle-configuration --bucket "ansible-ssm-${TF_VAR_owner_id}-dev" &>/dev/null &&
-		terraform import aws_s3_bucket_lifecycle_configuration.ssm_bucket "ansible-ssm-${TF_VAR_owner_id}-dev" || true
-
-	# IAM imports
-	aws iam get-role --role-name "runner-role-dev-${runner_name}" &>/dev/null &&
-		terraform import module.security.aws_iam_role.runner "runner-role-dev-${runner_name}" || true
-	aws iam get-instance-profile --instance-profile-name "runner-profile-dev-${runner_name}" &>/dev/null &&
-		terraform import module.security.aws_iam_instance_profile.runner "runner-profile-dev-${runner_name}" || true
-	aws iam get-role-policy --role-name "runner-role-dev-${runner_name}" --policy-name "ssm-bucket-access" &>/dev/null &&
-		terraform import module.security.aws_iam_role_policy.ssm_bucket_access "runner-role-dev-${runner_name}:ssm-bucket-access" || true
-	aws iam list-attached-role-policies --role-name "runner-role-dev-${runner_name}" &>/dev/null &&
-		terraform import "module.security.aws_iam_role_policy_attachment.runner[\"arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore\"]" "runner-role-dev-${runner_name}/arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore" || true
+	if aws s3api head-bucket --bucket "ansible-ssm-${TF_VAR_owner_id}-dev" &>/dev/null; then
+		echo "INFO: Importing already existing object."
+		terraform import module.ssm_transfer_bucket.aws_s3_bucket.this "ansible-ssm-${TF_VAR_owner_id}-dev"
+		terraform import aws_s3_bucket_policy.ssm_bucket "ansible-ssm-${TF_VAR_owner_id}-dev"
+		terraform import aws_s3_bucket_lifecycle_configuration.ssm_bucket "ansible-ssm-${TF_VAR_owner_id}-dev"
+		terraform import module.security.aws_iam_role.runner "runner-role-dev-${runner_name}"
+		terraform import module.security.aws_iam_instance_profile.runner "runner-profile-dev-${runner_name}"
+		terraform import module.security.aws_iam_role_policy.ssm_bucket_access "runner-role-dev-${runner_name}:ssm-bucket-access"
+		terraform import "module.security.aws_iam_role_policy_attachment.runner[\"arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore\"]" "runner-role-dev-${runner_name}/arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+	fi
 
 	terraform apply || exit 3
 
