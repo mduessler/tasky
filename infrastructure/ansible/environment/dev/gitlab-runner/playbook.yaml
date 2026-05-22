@@ -9,34 +9,7 @@
     - name: Wait for cloud-init to finish
       ansible.builtin.command: cloud-init status --wait --long
       changed_when: false
-    - name: Mask apt auto-update units
-      ansible.builtin.systemd:
-        name: "{{ item }}"
-        state: stopped
-        enabled: false
-        masked: true
-      loop:
-        - apt-daily.timer
-        - apt-daily-upgrade.timer
-        - apt-daily.service
-        - apt-daily-upgrade.service
-        - unattended-upgrades.service
-      failed_when: false
-    - name: Wait for active apt processes
-      ansible.builtin.shell: |
-        set -e
-        while fuser /var/lib/dpkg/lock-frontend \
-                    /var/lib/dpkg/lock \
-                    /var/lib/apt/lists/lock \
-                    /var/cache/apt/archives/lock >/dev/null 2>&1 \
-              || pgrep -x apt-get >/dev/null \
-              || pgrep -x unattended-upgr >/dev/null; do
-          sleep 5
-        done
-      changed_when: false
-      timeout: 600
     - name: Gather facts
       ansible.builtin.setup:
   roles:
     - gitlab_runner
-    - docker
