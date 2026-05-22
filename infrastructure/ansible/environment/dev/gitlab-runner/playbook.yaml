@@ -7,15 +7,21 @@
         timeout: 300
         sleep: 10
     - name: Wait for cloud-init to finish
-      ansible.builtin.command: cloud-init status --wait
+      ansible.builtin.command: cloud-init status --wait --long
       changed_when: false
-    - name: Wait for dpkg lock to be released
-      ansible.builtin.shell: |
-        while fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1; do
-          sleep 5
-        done
-      changed_when: false
-      timeout: 600
+    - name: Mask apt auto-update units
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        state: stopped
+        enabled: false
+        masked: true
+      loop:
+        - apt-daily.timer
+        - apt-daily-upgrade.timer
+        - apt-daily.service
+        - apt-daily-upgrade.service
+        - unattended-upgrades.service
+      failed_when: false
     - name: Gather facts
       ansible.builtin.setup:
   roles:
