@@ -66,13 +66,35 @@ full-clean-dev: stop-dev
 	docker image rm $(service-dev) $(database-dev)
 	docker volume rm $(service-dev)-db
 
+
+#
+# Tests
+#
+# Tests without timing
+#
+
 tests: up-dev
 	docker compose --file $(file-dev) exec $(service-dev) pytest
 	docker compose --file $(file-dev) stop
 
+# Test with timing
+#
+
 tests-full: up-dev
 	docker compose --file $(file-dev) exec $(service-dev) pytest timing
 	docker compose --file $(file-dev) stop
+
+#
+# Generate file objects
+#
+# Generate OpenAPI specfication
+#
+
+openapi:
+	poetry run python task_management_system/manage.py spectacular --file $(docs)/openapi.yaml
+
+# Generate Certificats for Lets Encrypt
+#
 
 .ONESHELL:
 gen-cert-dev:
@@ -83,8 +105,11 @@ gen-cert-dev:
 		-out $(cert-path-dev)/local.crt \
 		-subj "$(cert-subj)"
 
-openapi:
-	poetry run python task_management_system/manage.py spectacular --file $(docs)/openapi.yaml
+#
+# Lokal Development components
+#
+# Install pre-commit
+#
 
 pre-commit:
 	poetry install
