@@ -1,6 +1,8 @@
 openapi:
   stage: lint
   image: $DEV_IMAGE_LATEST
+  tags:
+    - dev
   needs:
     - build:dev-image
   variables:

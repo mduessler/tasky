@@ -1,6 +1,8 @@
 security:
   stage: security
   image: $DEV_IMAGE_LATEST
+  tags:
+    - dev
   needs:
     - test:task
     - test:registration

@@ -1,6 +1,8 @@
 build:prod-image:
   stage: release
   image: docker:29
+  tags:
+    - dev
   services:
     - docker:29-dind
   needs:

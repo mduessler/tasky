@@ -3,6 +3,8 @@ scan-prod-image:
   image:
     name: aquasec/trivy:latest
     entrypoint: [""]
+  tags:
+    - dev
   needs:
     - build:prod-image
   variables:

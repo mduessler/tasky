@@ -1,6 +1,8 @@
 .test-base:
   stage: test
   image: $DEV_IMAGE_LATEST
+  tags:
+    - dev
   needs:
     - lint
     - openapi
