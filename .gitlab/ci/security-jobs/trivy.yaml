@@ -1,5 +1,5 @@
 scan-prod-image:
-  stage: security
+  stage: scan
   image:
     name: aquasec/trivy:latest
     entrypoint: [""]

@@ -1,5 +1,5 @@
 build:prod-image:
-  stage: build
+  stage: release
   image: docker:29
   services:
     - docker:29-dind
