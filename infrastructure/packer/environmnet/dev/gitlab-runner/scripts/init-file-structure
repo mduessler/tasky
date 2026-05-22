@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+echo "INFO: Starting to initialized directory structure."
+
+keyring="/etc/apt/keyrings/"
+mkdir -p "${keyring}"
+sudo chmod 0777 "${keyring}"
+echo "INFO: Created keyring diretory '${keyring}'"
+
+source_list_d="/etc/apt/source.list.d"
+
+mkdir -p "${source_list_d}"
+sudo chmod 0777 "${source_list_d}"
+echo "INFO: Created directory for sources '${source_list_d}'"
+
+echo "SUCCESS: Initialized directory structure"
