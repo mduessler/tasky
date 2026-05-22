@@ -1,6 +1,6 @@
 gitlab_runner_version: "18.11.3-1"
 gitlab_runner_url: "https://gitlab.com"
-gitlab_runner_executor: shell
+gitlab_runner_executor: docker
 gitlab_runner_tags:
   - aws
   - dev
