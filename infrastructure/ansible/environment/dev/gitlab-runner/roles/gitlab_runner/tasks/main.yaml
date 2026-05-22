@@ -4,6 +4,7 @@
       - ca-certificates
     state: present
     update_cache: true
+    lock_timeout: 600
 - name: Get gitlab-runner script to install repository
   ansible.builtin.get_url:
     url: https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh
@@ -13,11 +14,18 @@
   ansible.builtin.command: bash /tmp/gitlab-runner.script.deb.sh
   args:
     creates: /etc/apt/sources.list.d/runner_gitlab-runner.list
+- name: Install gitlab-runner-helper-images
+  ansible.builtin.apt:
+    name: "gitlab-runner-helper-images={{ gitlab_runner_version }}"
+    state: present
+    update_cache: true
+    lock_timeout: 600
 - name: Install gitlab-runner
   ansible.builtin.apt:
     name: "gitlab-runner={{ gitlab_runner_version }}"
     state: present
     update_cache: true
+    lock_timeout: 600
 - name: Register gitlab-runner
   ansible.builtin.shell:
     cmd: |
