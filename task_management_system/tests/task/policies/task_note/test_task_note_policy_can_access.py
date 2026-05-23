@@ -8,9 +8,9 @@ from tests.utils import assert_log
 class TestCanAccess:
     @pytest.mark.parametrize(
         "actor_fixture",
-        ["member_is_owner", "member_is_admin", "member_is_member", "member_is_viewer"],
+        ["member_is_owner_read_only", "member_is_admin", "member_is_member", "member_is_viewer"],
     )
-    def test_permission_granted(self, actor_fixture, task_notes, request, caplog_loguru):
+    def test_permission_granted(self, actor_fixture, task_notes_read_only, request, caplog_loguru):
         actor, _ = request.getfixturevalue(actor_fixture)
         result = TaskNotePolicy.can_access(actor)
 
@@ -33,8 +33,8 @@ class TestCanAccess:
             "INFO",
         )
 
-    def test_no_task_memberships(self, user_is_not_member, caplog_loguru):
-        actor, _ = user_is_not_member
+    def test_no_task_memberships(self, user_is_not_member_read_only, caplog_loguru):
+        actor, _ = user_is_not_member_read_only
         TaskMembership.objects.filter(user=actor).delete()
         result = TaskNotePolicy.can_access(actor)
 
@@ -45,8 +45,8 @@ class TestCanAccess:
             log_record, "Permission denied: User is not allowed to access task notes.", "DEBUG"
         )
 
-    def test_anonymous_user(self, anonymous_user, caplog_loguru):
-        result = TaskNotePolicy.can_access(anonymous_user)
+    def test_anonymous_user(self, anonymous_user_read_only, caplog_loguru):
+        result = TaskNotePolicy.can_access(anonymous_user_read_only)
 
         assert result is False
 
