@@ -8,12 +8,14 @@ from tests.utils import assert_log
 
 @pytest.mark.django_db
 class TestCanDelete:
-    @pytest.mark.parametrize("actor_fixture", ["member_is_owner", "member_is_admin"])
+    @pytest.mark.parametrize(
+        "actor_fixture", ["member_is_owner_read_only", "member_is_admin_read_only"]
+    )
     def test_permission_granted_allowed_roles(
-        self, actor_fixture, request, member_is_viewer, caplog_loguru
+        self, actor_fixture, request, member_is_viewer_read_only, caplog_loguru
     ):
         actor, actor_membership = request.getfixturevalue(actor_fixture)
-        _, membership = member_is_viewer
+        _, membership = member_is_viewer_read_only
         result = TaskMembershipPolicy.can_delete(actor, membership)
 
         assert result is True
@@ -28,12 +30,14 @@ class TestCanDelete:
             membership=membership.id,
         )
 
-    @pytest.mark.parametrize("actor_fixture", ["member_is_member", "member_is_viewer"])
+    @pytest.mark.parametrize(
+        "actor_fixture", ["member_is_member_read_only", "member_is_viewer_read_only"]
+    )
     def test_permission_denied_disallowed_roles(
-        self, actor_fixture, request, member_is_owner, caplog_loguru
+        self, actor_fixture, request, member_is_owner_read_only, caplog_loguru
     ):
         actor, actor_membership = request.getfixturevalue(actor_fixture)
-        _, membership = member_is_owner
+        _, membership = member_is_owner_read_only
         result = TaskMembershipPolicy.can_delete(actor, membership)
 
         assert result is False
@@ -48,8 +52,8 @@ class TestCanDelete:
             membership=membership.id,
         )
 
-    def test_permission_granted_self_deletion(self, member_is_viewer, caplog_loguru):
-        actor, actor_membership = member_is_viewer
+    def test_permission_granted_self_deletion(self, member_is_viewer_read_only, caplog_loguru):
+        actor, actor_membership = member_is_viewer_read_only
         result = TaskMembershipPolicy.can_delete(actor, actor_membership)
 
         assert result is True
@@ -64,8 +68,10 @@ class TestCanDelete:
             membership=actor_membership.id,
         )
 
-    def test_permission_granted_superuser(self, superuser, member_is_owner, caplog_loguru):
-        _, membership = member_is_owner
+    def test_permission_granted_superuser(
+        self, superuser, member_is_owner_read_only, caplog_loguru
+    ):
+        _, membership = member_is_owner_read_only
         result = TaskMembershipPolicy.can_delete(superuser, membership)
 
         assert result is True
@@ -80,11 +86,11 @@ class TestCanDelete:
         )
 
     def test_denied_unsupported_future_role(
-        self, member_is_owner, member_is_viewer, caplog_loguru
+        self, member_is_owner_read_only, member_is_viewer_read_only, caplog_loguru
     ):
 
-        actor, actor_membership = member_is_owner
-        _, membership = member_is_viewer
+        actor, actor_membership = member_is_owner_read_only
+        _, membership = member_is_viewer_read_only
         TaskMembership.objects.filter(pk=actor_membership.id).update(role="non-role")
 
         with pytest.raises(RuntimeError):
@@ -98,9 +104,9 @@ class TestCanDelete:
             "CRITICAL",
         )
 
-    def test_is_efficient(self, member_is_owner, member_is_viewer):
-        actor, _ = member_is_owner
-        _, membership = member_is_viewer
+    def test_is_efficient(self, member_is_owner_read_only, member_is_viewer_read_only):
+        actor, _ = member_is_owner_read_only
+        _, membership = member_is_viewer_read_only
         with utils.CaptureQueriesContext(connection) as queries:
             TaskMembershipPolicy.can_delete(actor, membership)
         assert len(queries) <= 1

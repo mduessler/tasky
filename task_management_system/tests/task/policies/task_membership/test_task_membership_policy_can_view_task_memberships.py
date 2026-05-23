@@ -5,8 +5,8 @@ from tests.utils import assert_log
 
 @pytest.mark.django_db
 class TestCanViewTaskMemberships:
-    def test_permission_allowed_for_superuser(self, superuser, caplog_loguru):
-        result = TaskMembershipPolicy.can_view_task_memberships(superuser)
+    def test_permission_allowed_for_superuser(self, superuser_read_only, caplog_loguru):
+        result = TaskMembershipPolicy.can_view_task_memberships(superuser_read_only)
 
         assert result is True
 
@@ -18,11 +18,11 @@ class TestCanViewTaskMemberships:
     @pytest.mark.parametrize(
         "actor_fixture",
         [
-            "member_is_owner",
-            "member_is_admin",
-            "member_is_member",
-            "member_is_viewer",
-            "user_is_not_member",
+            "member_is_owner_read_only",
+            "member_is_admin_read_only",
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
+            "user_is_not_member_read_only",
         ],
     )
     def test_permission_denied_for_all_roles(self, actor_fixture, request, caplog_loguru):
