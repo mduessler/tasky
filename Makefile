@@ -17,7 +17,9 @@ aws_account_id=REDACTED_AWS_ACCOUNT
 aws-user-admin=tasky-admin
 aws-user-dev=tasky-dev
 
-
+#
+# Commands to run dev environment
+#
 .SILENT:
 .ONESHELL:
 up-dev:
