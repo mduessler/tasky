@@ -27,35 +27,35 @@ def task_membership(db, task, users):
 
 
 @pytest.fixture
-def six_users(db):
+def five_users(db):
     return UserFactory.create_batch(5)
 
 
 @pytest.fixture
-def member_is_owner(db, task, six_users):
-    return six_users[0], TaskMembershipFactory(user=six_users[0], task=task, role=Role.OWNER)
+def member_is_owner(db, task, five_users):
+    return five_users[0], TaskMembershipFactory(user=five_users[0], task=task, role=Role.OWNER)
 
 
 @pytest.fixture
-def member_is_admin(db, task, six_users):
-    return six_users[1], TaskMembershipFactory(user=six_users[1], task=task, role=Role.ADMIN)
+def member_is_admin(db, task, five_users):
+    return five_users[1], TaskMembershipFactory(user=five_users[1], task=task, role=Role.ADMIN)
 
 
 @pytest.fixture
-def member_is_member(db, task, six_users):
-    return six_users[2], TaskMembershipFactory(user=six_users[2], task=task, role=Role.MEMBER)
+def member_is_member(db, task, five_users):
+    return five_users[2], TaskMembershipFactory(user=five_users[2], task=task, role=Role.MEMBER)
 
 
 @pytest.fixture
-def member_is_viewer(db, task, six_users):
-    return six_users[3], TaskMembershipFactory(user=six_users[3], task=task, role=Role.VIEWER)
+def member_is_viewer(db, task, five_users):
+    return five_users[3], TaskMembershipFactory(user=five_users[3], task=task, role=Role.VIEWER)
 
 
 @pytest.fixture
-def superuser_is_not_member(db, task, six_users):
+def superuser_is_not_member(db, task, five_users):
     return SuperuserFactory(), None
 
 
 @pytest.fixture
-def user_is_not_member(db, six_users):
-    return six_users[4], None
+def user_is_not_member(db, five_users):
+    return five_users[4], None
