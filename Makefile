@@ -50,9 +50,12 @@ seed-dev:
 	docker compose --file $(file-dev) exec $(service-dev) python manage.py loaddata $(test-data)/task/task_memberships.json
 	docker compose --file $(file-dev) exec $(service-dev) python manage.py loaddata $(test-data)/task/task_notes.json
 
+
+#
+# Destroy and clean dev relicts
+#
 down-dev:
 	docker compose --file $(file-dev) down
-
 .SILENT:
 stop-dev:
 	docker compose --file $(file-dev) stop
