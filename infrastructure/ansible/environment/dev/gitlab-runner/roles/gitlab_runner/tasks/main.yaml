@@ -15,7 +15,7 @@
   ansible.builtin.lineinfile:
     path: /etc/gitlab-runner/config.toml
     regexp: '^concurrent'
-    line: 'concurrent = 4'
+    line: 'concurrent = 1'
   notify: Restart gitlab-runner
 - name: Verify gitlab-runner is running
   ansible.builtin.systemd:
