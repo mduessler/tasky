@@ -12,7 +12,7 @@ from tests.utils import assert_log
 @pytest.mark.django_db
 class TestGetMembershipsOfATask:
     def test_success(self, member_is_owner_read_only, task_read_only, caplog_loguru, monkeypatch):
-        cnt = TaskMembership.object.filter(task=task_read_only).count()
+        cnt = TaskMembership.objects.filter(task=task_read_only).count()
         monkeypatch.setattr(TaskPolicy, "can_view_memberships_of_task", lambda *a, **k: True)
 
         actor, _ = member_is_owner_read_only

@@ -100,6 +100,7 @@ class TestCreate:
         def mock_save(self, *a, **k):
             raise IntegrityError("Error")
 
+        cnt = TaskNote.objects.count()
         actor, _ = member_is_owner
         note_data = {"note": "This is an important note", "task": task, "author": actor}
 
@@ -108,7 +109,7 @@ class TestCreate:
 
         with pytest.raises(IntegrityError):
             TaskNoteService.create(actor, note_data)
-        assert TaskNote.objects.count() == 0
+        assert TaskNote.objects.count() == cnt
 
     def test_is_efficient(self, member_is_owner, task, monkeypatch):
         actor, _ = member_is_owner
