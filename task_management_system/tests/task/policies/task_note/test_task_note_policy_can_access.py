@@ -8,7 +8,12 @@ from tests.utils import assert_log
 class TestCanAccess:
     @pytest.mark.parametrize(
         "actor_fixture",
-        ["member_is_owner_read_only", "member_is_admin", "member_is_member", "member_is_viewer"],
+        [
+            "member_is_owner_read_only",
+            "member_is_admin_read_only",
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
+        ],
     )
     def test_permission_granted(self, actor_fixture, task_notes_read_only, request, caplog_loguru):
         actor, _ = request.getfixturevalue(actor_fixture)

@@ -12,7 +12,9 @@ from tests.utils import assert_log
 
 @pytest.mark.django_db
 class TestCanUpdate:
-    @pytest.mark.parametrize("actor_fixture", ["member_is_owner_read_only", "member_is_admin"])
+    @pytest.mark.parametrize(
+        "actor_fixture", ["member_is_owner_read_only", "member_is_admin_read_only"]
+    )
     def test_permission_granted_by_role(
         self, actor_fixture, request, task_note_read_only, caplog_loguru
     ):
@@ -68,7 +70,9 @@ class TestCanUpdate:
             note=task_note_read_only.id,
         )
 
-    @pytest.mark.parametrize("actor_fixture", ["member_is_member_read_only", "member_is_viewer"])
+    @pytest.mark.parametrize(
+        "actor_fixture", ["member_is_member_read_only", "member_is_viewer_read_only"]
+    )
     def test_permission_denied_by_role(
         self, actor_fixture, request, task_note_read_only, caplog_loguru
     ):
