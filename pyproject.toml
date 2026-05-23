@@ -6,11 +6,11 @@ authors = ["Max Düssler", "max.duessler@posteo.net"]
 
 [tool.poetry.dependencies]
 python = ">=3.13.0 <3.14"
-django = "5.1.7"
+django = "6.0.5"
 psycopg = {version = "3.2.5", extras = ["binary"]}
 loguru = "0.7.3"
 pyjwt = "2.12.1"
-cryptography = "46.0.6"
+cryptography = "46.0.7"
 djangorestframework = "3.17.1"
 drf-spectacular = "0.29.0"
 djangorestframework-simplejwt = "5.5.1"
@@ -19,14 +19,14 @@ redis = "7.4.0"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "4.6.0"
-pytest = "8.3.5"
-black = "25.1.0"
+pytest = "9.0.3"
+black = "26.3.1"
 flake8 = "7.1.2"
 mypy = "1.15.0"
 bandit = "1.8.3"
 isort = "6.0.1"
 pytest-django = "4.10.0"
-types-requests = "2.32.0.20250306"
+types-requests = "2.33.0.20260518"
 freezegun = "1.5.5"
 pytest-xdist = "3.8.0"
 pytest-mock = "3.15.1"
