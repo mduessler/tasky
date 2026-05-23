@@ -29,6 +29,7 @@ class TestCreate:
         assert_log(log_record, "Success: Task note created.", "DEBUG", task=task.id)
 
     def test_permission_denied(self, member_is_owner, task, caplog_loguru, monkeypatch):
+        cnt = TaskNote.objects.count()
         actor, _ = member_is_owner
         note_data = {"note": "This is an important note", "task": task, "author": actor}
 
@@ -37,7 +38,7 @@ class TestCreate:
         with pytest.raises(PermissionDenied) as exc:
             TaskNoteService.create(actor, note_data)
         assert PERMISSION_DENIED_TO_CREATE_TASK_NOTE == str(exc.value)
-        assert TaskNote.objects.count() == 0
+        assert TaskNote.objects.count() == cnt
 
         log_record = caplog_loguru.records[-1]
         assert_log(
@@ -48,6 +49,8 @@ class TestCreate:
         )
 
     def test_validation_error(self, member_is_owner, task, caplog_loguru, monkeypatch):
+        cnt = TaskNote.objects.count()
+
         def mock_full_clean(self, *a, **k):
             raise ValidationError("Error")
 
@@ -59,7 +62,7 @@ class TestCreate:
 
         with pytest.raises(ValidationError) as exc:
             TaskNoteService.create(actor, note_data)
-        assert TaskNote.objects.count() == 0
+        assert TaskNote.objects.count() == cnt
 
         log_record = caplog_loguru.records[-1]
         assert_log(
@@ -70,6 +73,8 @@ class TestCreate:
         )
 
     def test_integrity_error(self, member_is_owner, task, caplog_loguru, monkeypatch):
+        cnt = TaskNote.objects.count()
+
         def mock_save(self, *a, **k):
             raise IntegrityError("Error")
 
@@ -81,7 +86,7 @@ class TestCreate:
 
         with pytest.raises(IntegrityError) as exc:
             TaskNoteService.create(actor, note_data)
-        assert TaskNote.objects.count() == 0
+        assert TaskNote.objects.count() == cnt
 
         log_record = caplog_loguru.records[-1]
         assert_log(

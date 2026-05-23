@@ -8,7 +8,12 @@ from tests.utils import assert_log
 class TestGetActorMembership:
     @pytest.mark.parametrize(
         "actor_fixture",
-        ["member_is_owner_read_only", "member_is_admin", "member_is_member", "member_is_viewer"],
+        [
+            "member_is_owner_read_only",
+            "member_is_admin_read_only",
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
+        ],
     )
     def test_get_actor_membership_db_hit(
         self, actor_fixture, request, task_read_only, caplog_loguru
@@ -28,7 +33,7 @@ class TestGetActorMembership:
         )
 
     @pytest.mark.parametrize(
-        "actor_fixture", ["superuser_is_not_member_read_only", "user_is_not_member"]
+        "actor_fixture", ["superuser_is_not_member_read_only", "user_is_not_member_read_only"]
     )
     def test_get_actor_membership_no_db_hit(
         self, actor_fixture, request, task_read_only, caplog_loguru
@@ -48,7 +53,12 @@ class TestGetActorMembership:
 
     @pytest.mark.parametrize(
         "actor_fixture",
-        ["member_is_owner_read_only", "member_is_admin", "member_is_member", "member_is_viewer"],
+        [
+            "member_is_owner_read_only",
+            "member_is_admin_read_only",
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
+        ],
     )
     def test_get_actor_membership_prefetch_hit(
         self, actor_fixture, request, task_read_only, caplog_loguru
@@ -69,7 +79,7 @@ class TestGetActorMembership:
         )
 
     @pytest.mark.parametrize(
-        "actor_fixture", ["superuser_is_not_member_read_only", "user_is_not_member"]
+        "actor_fixture", ["superuser_is_not_member_read_only", "user_is_not_member_read_only"]
     )
     def test_get_actor_membership_no_prefetch_hit(
         self, actor_fixture, request, task_read_only, caplog_loguru
