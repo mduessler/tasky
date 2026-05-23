@@ -1,4 +1,4 @@
 test:task_management_system:
   extends: .test-base
   script:
-    - pytest tests/task_management_system/ -n auto
+    - pytest tests/task_management_system/ -n 0

@@ -4,4 +4,4 @@ test:registration:
     - postgres:18.4-alpine
     - redis:8.6.3-alpine
   script:
-    - pytest tests/registration/ -n auto
+    - pytest tests/registration/ -n 0
