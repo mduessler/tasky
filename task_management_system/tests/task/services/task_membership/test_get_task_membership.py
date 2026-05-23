@@ -11,10 +11,10 @@ from tests.utils import assert_log
 
 @pytest.mark.django_db
 class TestGetMembership:
-    def test_success(self, member_is_owner, caplog_loguru, monkeypatch):
+    def test_success(self, member_is_owner_read_only, caplog_loguru, monkeypatch):
         monkeypatch.setattr(TaskMembershipPolicy, "can_view", lambda *a, **k: True)
 
-        actor, actor_membership = member_is_owner
+        actor, actor_membership = member_is_owner_read_only
         result = TaskMembershipService.get_task_membership(actor, actor_membership.id)
 
         assert result is not None
@@ -29,8 +29,8 @@ class TestGetMembership:
             task=actor_membership.task.id,
         )
 
-    def test_not_found(self, member_is_owner, caplog_loguru, monkeypatch):
-        actor, actor_membership = member_is_owner
+    def test_not_found(self, member_is_owner_read_only, caplog_loguru, monkeypatch):
+        actor, actor_membership = member_is_owner_read_only
         actor_membership_id = actor_membership.id
         actor_membership.delete()
 
@@ -48,8 +48,8 @@ class TestGetMembership:
             membership=actor_membership_id,
         )
 
-    def test_permission_denied(self, member_is_owner, caplog_loguru, monkeypatch):
-        actor, actor_membership = member_is_owner
+    def test_permission_denied(self, member_is_owner_read_only, caplog_loguru, monkeypatch):
+        actor, actor_membership = member_is_owner_read_only
 
         monkeypatch.setattr(TaskMembershipPolicy, "can_view", lambda *a, **k: False)
 
@@ -66,8 +66,8 @@ class TestGetMembership:
             task=actor_membership.task.id,
         )
 
-    def test_is_efficient(self, member_is_owner, monkeypatch):
-        actor, actor_membership = member_is_owner
+    def test_is_efficient(self, member_is_owner_read_only, monkeypatch):
+        actor, actor_membership = member_is_owner_read_only
 
         monkeypatch.setattr(TaskMembershipPolicy, "can_view", lambda *args, **kwargs: True)
 

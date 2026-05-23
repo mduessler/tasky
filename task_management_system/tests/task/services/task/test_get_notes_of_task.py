@@ -11,24 +11,33 @@ from tests.utils import assert_log
 
 @pytest.mark.django_db
 class TestGetNotes:
-    def test_success(self, member_is_owner, task, task_notes, caplog_loguru, monkeypatch):
+    def test_success(
+        self,
+        member_is_owner_read_only,
+        task_read_only,
+        task_notes_read_only,
+        caplog_loguru,
+        monkeypatch,
+    ):
         monkeypatch.setattr(TaskPolicy, "can_view_notes_of_task", lambda *a, **k: True)
 
-        actor, _ = member_is_owner
-        notes = TaskService.get_notes_of_task(actor, task)
+        actor, _ = member_is_owner_read_only
+        notes = TaskService.get_notes_of_task(actor, task_read_only)
 
-        assert notes.count() == TaskNote.objects.filter(task=task).count()
+        assert notes.count() == TaskNote.objects.filter(task=task_read_only).count()
 
         log_record = caplog_loguru.records[-1]
-        assert_log(log_record, "Success: Getting notes of task.", "DEBUG", task=task.id)
+        assert_log(log_record, "Success: Getting notes of task.", "DEBUG", task=task_read_only.id)
 
-    def test_permission_denied(self, member_is_owner, task, caplog_loguru, monkeypatch):
-        actor, _ = member_is_owner
+    def test_permission_denied(
+        self, member_is_owner_read_only, task_read_only, caplog_loguru, monkeypatch
+    ):
+        actor, _ = member_is_owner_read_only
 
         monkeypatch.setattr(TaskPolicy, "can_view_notes_of_task", lambda *a, **k: False)
 
         with pytest.raises(PermissionDenied) as exc:
-            TaskService.get_notes_of_task(actor, task)
+            TaskService.get_notes_of_task(actor, task_read_only)
         assert PERMISSION_DENIED_TO_VIEW_TASK_NOTE == str(exc.value)
 
         log_record = caplog_loguru.records[-1]
@@ -36,14 +45,14 @@ class TestGetNotes:
             log_record,
             "Permission denied: Actor cannot view this task notes.",
             "WARNING",
-            task=task.id,
+            task=task_read_only.id,
         )
 
-    def test_is_efficient(self, member_is_owner, task, monkeypatch):
-        actor, _ = member_is_owner
+    def test_is_efficient(self, member_is_owner_read_only, task_read_only, monkeypatch):
+        actor, _ = member_is_owner_read_only
 
         monkeypatch.setattr(TaskPolicy, "can_view_notes_of_task", lambda *a, **k: True)
 
         with utils.CaptureQueriesContext(connection) as queries:
-            TaskService.get_notes_of_task(actor, task)
+            TaskService.get_notes_of_task(actor, task_read_only)
         assert len(queries) <= 2
