@@ -5,4 +5,4 @@ test:registration:
       alias: postgres
     - redis:8.6.3-alpine
   script:
-    - pytest tests/registration/ -n 0
+    - pytest tests/registration/ -n auto
