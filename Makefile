@@ -75,14 +75,15 @@ full-clean-dev: stop-dev
 #
 # Tests
 #
-# Tests without timing
+
+# Unit tests without timing
 #
 
 tests-unit-tests: up-dev
 	docker compose --file $(file-dev) exec $(service-dev) pytest -m "not timing"
 	docker compose --file $(file-dev) stop
 
-# Test with timing
+# Unit test with timing
 #
 
 tests-unit-tests-full: up-dev
