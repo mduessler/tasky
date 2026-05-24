@@ -89,6 +89,11 @@ tests-full: up-dev
 	docker compose --file $(file-dev) exec $(service-dev) pytest timing
 	docker compose --file $(file-dev) stop
 
+# Test python modules on vulnerabilities
+#
+tests-pip-audit:
+	docker compose --file $(file-dev) exec $(service-dev) pip-audit
+
 #
 # Generate file objects
 #
