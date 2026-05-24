@@ -19,6 +19,6 @@ build:prod-nginx-image:
         -f prod/Dockerfile.nginx \
         -t $PROD_NGINX_IMAGE \
         -t $PROD_NGINX_IMAGE_LATEST \
-        .
+        ./prod/
     - docker push $PROD_NGINX_IMAGE
     - docker push $PROD_NGINX_IMAGE_LATEST
