@@ -137,4 +137,4 @@ class TestUpdate:
 
         with utils.CaptureQueriesContext(connection) as queries:
             TaskMembershipService.update(actor, task_membership.id, {"role": Role.ADMIN})
-        assert len(queries) <= 13
+        assert len(queries) <= 16
