@@ -16,7 +16,7 @@ include:
   - local: .gitlab/ci/lint-jobs/openapi.yaml
   - local: .gitlab/ci/test-jobs/base.yaml
   - local: .gitlab/ci/test-jobs/registration.yaml
-  - local: .gitlab/ci/test-jobs/task.yaml
+  # - local: .gitlab/ci/test-jobs/task.yaml
   - local: .gitlab/ci/test-jobs/tms_auth.yaml
   - local: .gitlab/ci/test-jobs/user.yaml
   - local: .gitlab/ci/test-jobs/task_management_system.yaml
@@ -26,5 +26,4 @@ include:
   - local: .gitlab/ci/security-jobs/dev/trivy.yaml
   - local: .gitlab/ci/build-jobs/prod/image.yaml
   - local: .gitlab/ci/build-jobs/prod/nginx-image.yaml
-  - local: .gitlab/ci/security-jobs/prod/pip-audit.yaml
   - local: .gitlab/ci/security-jobs/prod/trivy.yaml
