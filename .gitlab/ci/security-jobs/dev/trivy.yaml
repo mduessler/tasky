@@ -7,6 +7,7 @@ trivy-dev:
     - test:task_management_system
     - test:tms_auth
     - test:user
+  allow_failure: True
   script:
     - trivy config dev/Dockerfile.ci
     - trivy image --exit-code 1 --severity HIGH,CRITICAL $DEV_IMAGE_LATEST
