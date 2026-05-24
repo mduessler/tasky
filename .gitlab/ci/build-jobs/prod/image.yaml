@@ -6,7 +6,11 @@ build:prod-image:
   services:
     - docker:29-dind
   needs:
-    - security-dev
+    - test:registration
+    - test:task
+    - test:task_management_service
+    - test:tms_auth
+    - test:user
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
     PROD_IMAGE: $CI_REGISTRY_IMAGE/prod:$CI_COMMIT_SHORT_SHA
