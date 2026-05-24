@@ -1,6 +1,6 @@
-trivy:
+trivy-dev:
   extends: .trivy-base
-  stage: security
+  stage: security-dev
   needs:
     - test:registration
     - test:task
