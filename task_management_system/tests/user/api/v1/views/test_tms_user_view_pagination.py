@@ -44,7 +44,7 @@ class TestPagination:
 
         monkeypatch.setattr("user.api.v1.paginator.TmsUserPagination.page_size", 2)
         cnt = TmsUser.objects.count()
-        page = int(cnt / 2) + 1 if cnt % 2 == 1 else cnt
+        page = int(cnt / 2) + 1 if cnt % 2 == 1 else int(cnt / 2)
 
         api_client.force_authenticate(user=superuser_read_only)
         response = api_client.get(url, data={"page": page})
