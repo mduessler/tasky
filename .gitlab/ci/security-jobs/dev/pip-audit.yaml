@@ -3,7 +3,6 @@ pip-audit:
   image: $DEV_IMAGE_LATEST
   tags:
     - dev
-  extends: .pip-audit-base
   needs:
     - test:registration
     - test:task
