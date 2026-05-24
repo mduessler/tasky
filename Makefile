@@ -12,6 +12,7 @@ cert-subj=/CN=localhost
 
 test-data=/home/tms/web/tests/data
 docs = ./docs/
+docker-socket = $(shell docker context inspect --format '{{.Endpoints.docker.Host}}' | sed 's|unix://||')
 
 aws_account_id=REDACTED_AWS_ACCOUNT
 aws-user-admin=tasky-admin
@@ -106,7 +107,6 @@ secruity-tests:
 	docker run --rm --entrypoint pip tms-prod:test freeze | poetry run pip-audit -r /dev/stdin
 
 	# Test production images with trivy
-	docker-socket := $(shell docker context inspect --format '{{.Endpoints.docker.Host}}' | sed 's|unix://||')
 	docker run --rm \
 		-v $(docker-socket):/var/run/docker.sock \
 		-v trivy-cache:/root/.cache/trivy \
