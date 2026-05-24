@@ -30,14 +30,12 @@ class TestGetMembership:
         )
 
     def test_not_found(self, member_is_owner_read_only, caplog_loguru, monkeypatch):
-        actor, actor_membership = member_is_owner_read_only
-        actor_membership_id = actor_membership.id
-        actor_membership.delete()
+        actor, _ = member_is_owner_read_only
 
         monkeypatch.setattr(TaskMembershipPolicy, "can_view", lambda *a, **k: True)
 
         with pytest.raises(NotFound) as exc:
-            TaskMembershipService.get_task_membership(actor, actor_membership_id)
+            TaskMembershipService.get_task_membership(actor, 9999)
         assert TASK_MEMBERSHIP_DOES_NOT_EXIST == str(exc.value)
 
         log_record = caplog_loguru.records[-1]
@@ -45,7 +43,7 @@ class TestGetMembership:
             log_record,
             "Not found: Task membership not found.",
             "WARNING",
-            membership=actor_membership_id,
+            membership=9999,
         )
 
     def test_permission_denied(self, member_is_owner_read_only, caplog_loguru, monkeypatch):
