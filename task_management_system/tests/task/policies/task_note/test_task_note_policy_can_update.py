@@ -9,6 +9,8 @@ from task.models import TaskMembership
 from task.policies import TaskNotePolicy
 from tests.utils import assert_log
 
+from task_management_system.task.models.task_note import TaskNote
+
 
 @pytest.mark.django_db
 class TestCanUpdate:
@@ -36,14 +38,15 @@ class TestCanUpdate:
             actor_membership=actor_membership.id,
         )
 
-    def test_permission_granted_actor_is_author(self, task_note_read_only, caplog_loguru):
-        actor_membership = TaskMembership.objects.get(
-            user=task_note_read_only.author, task=task_note_read_only.task
-        )
+    def test_permission_granted_actor_is_author(
+        self, member_is_owner_read_only, task_read_only, caplog_loguru
+    ):
+        actor, actor_membership = member_is_owner_read_only
         with freeze_time(timezone.now()):
-            result = TaskNotePolicy.can_update(
-                task_note_read_only.author, task_note_read_only, {"note"}
+            note = TaskNote.objects.create(
+                note="A very important note", author=actor, task=task_read_only
             )
+            result = TaskNotePolicy.can_update(actor, note, {"note"})
         assert result is True
 
         log_record = caplog_loguru.records[-1]
@@ -51,8 +54,8 @@ class TestCanUpdate:
             log_record,
             "Permission granted: Can update own messages within 2 hours.",
             "DEBUG",
-            task=task_note_read_only.task.id,
-            note=task_note_read_only.id,
+            task=task_read_only.task.id,
+            note=task_read_only.id,
             actor_membership=actor_membership.id,
         )
 
