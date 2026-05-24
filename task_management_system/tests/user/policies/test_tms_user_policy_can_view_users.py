@@ -5,8 +5,8 @@ from user.policies import TmsUserPolicy
 
 @pytest.mark.django_db
 class TestCanViewUsers:
-    def test_superuser_can_view_users(self, superuser, caplog_loguru):
-        result = TmsUserPolicy.can_view_users(superuser)
+    def test_superuser_can_view_users(self, superuser_read_only, caplog_loguru):
+        result = TmsUserPolicy.can_view_users(superuser_read_only)
 
         assert result is True
 
@@ -15,17 +15,17 @@ class TestCanViewUsers:
             log_record,
             "Permission granted: Actor is superuser and can view user.",
             "INFO",
-            user=superuser.id,
+            user=superuser_read_only.id,
         )
 
     @pytest.mark.parametrize(
         "actor_fixture",
         [
-            "member_is_owner",
-            "member_is_admin",
-            "member_is_member",
-            "member_is_viewer",
-            "user_is_not_member",
+            "member_is_owner_read_only",
+            "member_is_admin_read_only",
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
+            "user_is_not_member_read_only",
         ],
     )
     def test_user_can_not_view_users(self, actor_fixture, request, caplog_loguru):

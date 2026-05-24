@@ -8,12 +8,12 @@ class TestCanViewTasksOfUser:
     @pytest.mark.parametrize(
         "actor_fixture",
         [
-            "member_is_owner",
-            "member_is_admin",
-            "member_is_member",
-            "member_is_viewer",
-            "superuser_is_not_member",
-            "user_is_not_member",
+            "member_is_owner_read_only",
+            "member_is_admin_read_only",
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
+            "superuser_is_not_member_read_only",
+            "user_is_not_member_read_only",
         ],
     )
     def test_user_can_view_itself(self, actor_fixture, request, caplog_loguru):
@@ -33,16 +33,18 @@ class TestCanViewTasksOfUser:
     @pytest.mark.parametrize(
         "user_fixture",
         [
-            "member_is_owner",
-            "member_is_admin",
-            "member_is_member",
-            "member_is_viewer",
-            "user_is_not_member",
+            "member_is_owner_read_only",
+            "member_is_admin_read_only",
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
+            "user_is_not_member_read_only",
         ],
     )
-    def test_superuser_can_view_users(self, superuser, user_fixture, request, caplog_loguru):
+    def test_superuser_can_view_users(
+        self, superuser_read_only, user_fixture, request, caplog_loguru
+    ):
         user, _ = request.getfixturevalue(user_fixture)
-        result = TmsUserPolicy.can_view_tasks_of_user(superuser, user)
+        result = TmsUserPolicy.can_view_tasks_of_user(superuser_read_only, user)
 
         assert result is True
 
@@ -57,21 +59,21 @@ class TestCanViewTasksOfUser:
     @pytest.mark.parametrize(
         "actor_fixture",
         [
-            "member_is_owner",
-            "member_is_admin",
-            "member_is_member",
-            "member_is_viewer",
-            "user_is_not_member",
+            "member_is_owner_read_only",
+            "member_is_admin_read_only",
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
+            "user_is_not_member_read_only",
         ],
     )
     @pytest.mark.parametrize(
         "user_fixture",
         [
-            "member_is_owner",
-            "member_is_admin",
-            "member_is_member",
-            "member_is_viewer",
-            "user_is_not_member",
+            "member_is_owner_read_only",
+            "member_is_admin_read_only",
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
+            "user_is_not_member_read_only",
         ],
     )
     def test_user_can_not_view_users(self, actor_fixture, user_fixture, request, caplog_loguru):

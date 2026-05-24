@@ -9,12 +9,12 @@ class TestCanUpdate:
     @pytest.mark.parametrize(
         "actor_data",
         [
-            "member_is_owner",
-            "member_is_admin",
-            "member_is_member",
-            "member_is_viewer",
-            "superuser_is_not_member",
-            "user_is_not_member",
+            "member_is_owner_read_only",
+            "member_is_admin_read_only",
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
+            "superuser_is_not_member_read_only",
+            "user_is_not_member_read_only",
         ],
     )
     def test_actor_is_user_valid_fields(self, actor_data, request, caplog_loguru):
@@ -36,12 +36,12 @@ class TestCanUpdate:
     @pytest.mark.parametrize(
         "actor_data",
         [
-            "member_is_owner",
-            "member_is_admin",
-            "member_is_member",
-            "member_is_viewer",
-            "superuser_is_not_member",
-            "user_is_not_member",
+            "member_is_owner_read_only",
+            "member_is_admin_read_only",
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
+            "superuser_is_not_member_read_only",
+            "user_is_not_member_read_only",
         ],
     )
     def test_actor_is_user_invalid_fields(self, actor_data, request, caplog_loguru):
@@ -61,19 +61,19 @@ class TestCanUpdate:
     @pytest.mark.parametrize(
         "user_fixture",
         [
-            "member_is_owner",
-            "member_is_admin",
-            "member_is_member",
-            "member_is_viewer",
-            "user_is_not_member",
+            "member_is_owner_read_only",
+            "member_is_admin_read_only",
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
+            "user_is_not_member_read_only",
         ],
     )
     def test_actor_is_superuser_valid_fields(
-        self, superuser, user_fixture, request, caplog_loguru
+        self, superuser_read_only, user_fixture, request, caplog_loguru
     ):
         user, _ = request.getfixturevalue(user_fixture)
         result = TmsUserPolicy.can_update(
-            superuser, user, TmsUserPermission.get_update_permission("superuser")
+            superuser_read_only, user, TmsUserPermission.get_update_permission("superuser")
         )
 
         assert result is True
@@ -89,18 +89,18 @@ class TestCanUpdate:
     @pytest.mark.parametrize(
         "user_fixture",
         [
-            "member_is_owner",
-            "member_is_admin",
-            "member_is_member",
-            "member_is_viewer",
-            "user_is_not_member",
+            "member_is_owner_read_only",
+            "member_is_admin_read_only",
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
+            "user_is_not_member_read_only",
         ],
     )
     def test_actor_is_superuser_invalid_fields(
-        self, superuser, user_fixture, request, caplog_loguru
+        self, superuser_read_only, user_fixture, request, caplog_loguru
     ):
         user, _ = request.getfixturevalue(user_fixture)
-        result = TmsUserPolicy.can_update(superuser, user, {"invalid-field"})
+        result = TmsUserPolicy.can_update(superuser_read_only, user, {"invalid-field"})
 
         assert result is False
 
@@ -115,21 +115,21 @@ class TestCanUpdate:
     @pytest.mark.parametrize(
         "actor_data",
         [
-            "member_is_owner",
-            "member_is_admin",
-            "member_is_member",
-            "member_is_viewer",
-            "user_is_not_member",
+            "member_is_owner_read_only",
+            "member_is_admin_read_only",
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
+            "user_is_not_member_read_only",
         ],
     )
     @pytest.mark.parametrize(
         "user_fixture",
         [
-            "member_is_owner",
-            "member_is_admin",
-            "member_is_member",
-            "member_is_viewer",
-            "user_is_not_member",
+            "member_is_owner_read_only",
+            "member_is_admin_read_only",
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
+            "user_is_not_member_read_only",
         ],
     )
     def test_can_not_update_non_empty_fields(
@@ -157,21 +157,21 @@ class TestCanUpdate:
     @pytest.mark.parametrize(
         "actor_data",
         [
-            "member_is_owner",
-            "member_is_admin",
-            "member_is_member",
-            "member_is_viewer",
-            "user_is_not_member",
+            "member_is_owner_read_only",
+            "member_is_admin_read_only",
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
+            "user_is_not_member_read_only",
         ],
     )
     @pytest.mark.parametrize(
         "user_fixture",
         [
-            "member_is_owner",
-            "member_is_admin",
-            "member_is_member",
-            "member_is_viewer",
-            "user_is_not_member",
+            "member_is_owner_read_only",
+            "member_is_admin_read_only",
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
+            "user_is_not_member_read_only",
         ],
     )
     def test_can_not_update_empty_fields(self, actor_data, user_fixture, request, caplog_loguru):
