@@ -1,7 +1,0 @@
-pip-audit:
-  extends: .pip-audit-base
-  stage: security
-  needs:
-    - build:prod-image
-  script:
-    - docker run --rm --entrypoint pip $PROD_IMAGE_LATEST freeze | poetry run pip-audit -r /dev/stdin

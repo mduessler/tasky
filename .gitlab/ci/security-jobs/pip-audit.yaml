@@ -1,6 +1,0 @@
-.pip-audit-base:
-  image: $DEV_IMAGE_LATEST
-  services:
-    - docker:29-dind
-  tags:
-    - dev

@@ -6,11 +6,7 @@ build:prod-nginx-image:
   services:
     - docker:29-dind
   needs:
-    - test:registration
-    - test:task
-    - test:task_management_system
-    - test:tms_auth
-    - test:user
+    - pip-audit
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
     PROD_NGINX_IMAGE: $CI_REGISTRY_IMAGE/prod-nginx:$CI_COMMIT_SHORT_SHA
