@@ -1,5 +1,5 @@
 build:dev-image:
-  stage: build
+  stage: build-dev
   image: docker:29
   tags:
     - dev

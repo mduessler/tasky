@@ -1,12 +1,12 @@
 build:prod-image:
-  stage: release
+  stage: build
   image: docker:29
   tags:
     - dev
   services:
     - docker:29-dind
   needs:
-    - security
+    - security-dev
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
     PROD_IMAGE: $CI_REGISTRY_IMAGE/prod:$CI_COMMIT_SHORT_SHA
