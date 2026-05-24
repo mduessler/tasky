@@ -10,4 +10,4 @@ pip-audit:
     - test:tms_auth
     - test:user
   script:
-    - pip audit
+    - pip-audit
