@@ -5,8 +5,8 @@ from user.api.v1.permissions import TmsUserPermission
 
 @pytest.mark.django_db
 class TestHasObjPermission:
-    def test_no_action(self, member_is_owner, caplog_loguru):
-        actor, _ = member_is_owner
+    def test_no_action(self, member_is_owner_read_only, caplog_loguru):
+        actor, _ = member_is_owner_read_only
         req = build_request("get", actor)
         result = TmsUserPermission().has_object_permission(req, object(), actor)
 
@@ -15,9 +15,11 @@ class TestHasObjPermission:
         log_record = caplog_loguru.records[-1]
         assert_log(log_record, "Permission Denied: View has no attribute 'action'.", "ERROR")
 
-    def test_retrieve_allowed(self, member_is_owner, member_is_member, caplog_loguru):
-        actor, _ = member_is_owner
-        user, _ = member_is_member
+    def test_retrieve_allowed(
+        self, member_is_owner_read_only, member_is_member_read_only, caplog_loguru
+    ):
+        actor, _ = member_is_owner_read_only
+        user, _ = member_is_member_read_only
 
         req = build_request("get", actor)
         result = TmsUserPermission().has_object_permission(req, DummyView("retrieve"), user)
@@ -33,9 +35,11 @@ class TestHasObjPermission:
             user=user.id,
         )
 
-    def test_retrieve_not_allowed(self, member_is_owner, user_is_not_member, caplog_loguru):
-        actor, _ = member_is_owner
-        user, _ = user_is_not_member
+    def test_retrieve_not_allowed(
+        self, member_is_owner_read_only, user_is_not_member_read_only, caplog_loguru
+    ):
+        actor, _ = member_is_owner_read_only
+        user, _ = user_is_not_member_read_only
 
         req = build_request("get", actor)
         result = TmsUserPermission().has_object_permission(req, DummyView("retrieve"), user)
@@ -51,8 +55,8 @@ class TestHasObjPermission:
             user=user.id,
         )
 
-    def test_destroy_allowed(self, member_is_owner, caplog_loguru):
-        actor, _ = member_is_owner
+    def test_destroy_allowed(self, member_is_owner_read_only, caplog_loguru):
+        actor, _ = member_is_owner_read_only
 
         req = build_request("delete", actor)
         result = TmsUserPermission().has_object_permission(req, DummyView("destroy"), actor)
@@ -68,9 +72,11 @@ class TestHasObjPermission:
             user=actor.id,
         )
 
-    def test_destroy_not_allowed(self, member_is_member, member_is_owner, caplog_loguru):
-        actor, _ = member_is_owner
-        user, _ = member_is_member
+    def test_destroy_not_allowed(
+        self, member_is_member_read_only, member_is_owner_read_only, caplog_loguru
+    ):
+        actor, _ = member_is_owner_read_only
+        user, _ = member_is_member_read_only
 
         req = build_request("delete", actor)
         result = TmsUserPermission().has_object_permission(req, DummyView("destroy"), user)
@@ -86,9 +92,11 @@ class TestHasObjPermission:
             user=user.id,
         )
 
-    def test_partial_update_allowed(self, member_is_owner, user_is_not_member, caplog_loguru):
-        actor, _ = member_is_owner
-        user, _ = user_is_not_member
+    def test_partial_update_allowed(
+        self, member_is_owner_read_only, user_is_not_member_read_only, caplog_loguru
+    ):
+        actor, _ = member_is_owner_read_only
+        user, _ = user_is_not_member_read_only
 
         req = build_request("patch", actor)
         result = TmsUserPermission().has_object_permission(req, DummyView("partial_update"), user)
@@ -104,9 +112,11 @@ class TestHasObjPermission:
             user=user.id,
         )
 
-    def test_unknown_object_action(self, member_is_owner, member_is_member, caplog_loguru):
-        actor, _ = member_is_owner
-        user, _ = member_is_member
+    def test_unknown_object_action(
+        self, member_is_owner_read_only, member_is_member_read_only, caplog_loguru
+    ):
+        actor, _ = member_is_owner_read_only
+        user, _ = member_is_member_read_only
 
         req = build_request("get", actor)
         result = TmsUserPermission().has_object_permission(req, DummyView("invalid"), user)

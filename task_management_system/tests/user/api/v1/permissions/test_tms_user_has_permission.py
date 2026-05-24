@@ -5,8 +5,8 @@ from user.api.v1.permissions import TmsUserPermission
 
 @pytest.mark.django_db
 class TestHasPermission:
-    def test_action_options_allowed(self, superuser, caplog_loguru):
-        req = build_request("options", superuser)
+    def test_action_options_allowed(self, superuser_read_only, caplog_loguru):
+        req = build_request("options", superuser_read_only)
         result = TmsUserPermission().has_permission(req, DummyView("options"))
 
         assert result is True
@@ -18,8 +18,8 @@ class TestHasPermission:
             "DEBUG",
         )
 
-    def test_request_user_is_not_authenticated(self, anonymous_user, caplog_loguru):
-        req = build_request("get", anonymous_user)
+    def test_request_user_is_not_authenticated(self, anonymous_user_read_only, caplog_loguru):
+        req = build_request("get", anonymous_user_read_only)
         result = TmsUserPermission().has_permission(req, DummyView("list"))
 
         assert result is False
@@ -31,8 +31,8 @@ class TestHasPermission:
             "WARNING",
         )
 
-    def test_view_has_no_action(self, member_is_owner, caplog_loguru):
-        actor, _ = member_is_owner
+    def test_view_has_no_action(self, member_is_owner_read_only, caplog_loguru):
+        actor, _ = member_is_owner_read_only
         req = build_request("get", actor)
         result = TmsUserPermission().has_permission(req, object())
 
@@ -44,12 +44,12 @@ class TestHasPermission:
     @pytest.mark.parametrize(
         "actor_data",
         [
-            "member_is_owner",
-            "member_is_admin",
-            "member_is_member",
-            "member_is_viewer",
-            "superuser_is_not_member",
-            "user_is_not_member",
+            "member_is_owner_read_only",
+            "member_is_admin_read_only",
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
+            "superuser_is_not_member_read_only",
+            "user_is_not_member_read_only",
         ],
     )
     @pytest.mark.parametrize("action, method", [("create", "post"), ("update", "put")])
@@ -71,12 +71,12 @@ class TestHasPermission:
     @pytest.mark.parametrize(
         "actor_data",
         [
-            "member_is_owner",
-            "member_is_admin",
-            "member_is_member",
-            "member_is_viewer",
-            "superuser_is_not_member",
-            "user_is_not_member",
+            "member_is_owner_read_only",
+            "member_is_admin_read_only",
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
+            "superuser_is_not_member_read_only",
+            "user_is_not_member_read_only",
         ],
     )
     @pytest.mark.parametrize(
@@ -103,8 +103,8 @@ class TestHasPermission:
             action=action,
         )
 
-    def test_unknown_action(self, superuser_is_not_member, caplog_loguru):
-        actor, _ = superuser_is_not_member
+    def test_unknown_action(self, superuser_is_not_member_read_only, caplog_loguru):
+        actor, _ = superuser_is_not_member_read_only
         req = build_request("get", actor)
         result = TmsUserPermission().has_permission(req, DummyView("invalid"))
 
