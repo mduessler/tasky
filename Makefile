@@ -75,24 +75,28 @@ full-clean-dev: stop-dev
 #
 # Tests
 #
+# Full tests (without timing)
+#
+
+tests: unit-tests pip-audit-tests
 
 # Unit tests without timing
 #
 
-tests-unit-tests: up-dev
+unit-tests: up-dev
 	docker compose --file $(file-dev) exec $(service-dev) pytest -m "not timing"
 	docker compose --file $(file-dev) stop
 
 # Unit test with timing
 #
 
-tests-unit-tests-full: up-dev
+unit-tests-full: up-dev
 	docker compose --file $(file-dev) exec $(service-dev) pytest timing
 	docker compose --file $(file-dev) stop
 
 # Test python modules on vulnerabilities
 #
-tests-security-pip-audit:
+pip-audit-tests:
 	docker compose --file $(file-dev) exec $(service-dev) pip-audit
 
 #
