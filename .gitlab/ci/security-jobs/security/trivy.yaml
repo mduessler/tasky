@@ -1,4 +1,4 @@
-trivy-app:
+trivy:
   extends: .trivy-base
   stage: security
   needs:
