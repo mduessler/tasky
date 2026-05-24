@@ -1,5 +1,5 @@
 security:
-  stage: security
+  stage: security-dev
   image: $DEV_IMAGE_LATEST
   tags:
     - dev
