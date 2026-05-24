@@ -1,8 +1,6 @@
 pip-audit:
   extends: .pip-audit-base
   stage: security
-  services:
-    - docker:29-dind
   needs:
     - build:prod-image
   script:

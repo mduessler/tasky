@@ -1,0 +1,12 @@
+pip-audit:
+  extends: .pip-audit-base
+  stage: security
+  needs:
+    - test:registration
+    - test:task
+    - test:task_management_service
+    - test:tms_auth
+    - test:user
+  allow_failure: true
+  script:
+    - docker run --rm --entrypoint pip $DEV_IMAGE_LATEST freeze | poetry run pip-audit -r /dev/stdin
