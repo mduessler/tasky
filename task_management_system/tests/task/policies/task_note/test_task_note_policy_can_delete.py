@@ -16,10 +16,10 @@ class TestCanDelete:
         "actor_fixture", ["member_is_owner_read_only", "member_is_admin_read_only"]
     )
     def test_permission_granted_by_role(
-        self, actor_fixture, request, expired_task_note, caplog_loguru
+        self, actor_fixture, request, expired_task_note_read_only, caplog_loguru
     ):
         actor, actor_membership = request.getfixturevalue(actor_fixture)
-        result = TaskNotePolicy.can_delete(actor, expired_task_note)
+        result = TaskNotePolicy.can_delete(actor, expired_task_note_read_only)
 
         assert result is True
 
@@ -28,8 +28,8 @@ class TestCanDelete:
             log_record,
             "Permission granted to delete task note: True",
             "DEBUG",
-            task=expired_task_note.task.id,
-            note=expired_task_note.id,
+            task=expired_task_note_read_only.task.id,
+            note=expired_task_note_read_only.id,
             actor_membership=actor_membership.id,
         )
 
