@@ -6,6 +6,16 @@ from tests.utils import assert_log
 
 @pytest.mark.django_db
 class TestGetActorMembership:
+    @pytest.fixture(scope="class", autouse=True)
+    def preload(
+        self,
+        member_is_owner_read_only,
+        member_is_admin_read_only,
+        member_is_member_read_only,
+        member_is_viewer_read_only,
+    ):
+        pass
+
     @pytest.mark.parametrize(
         "actor_fixture",
         [
