@@ -8,7 +8,7 @@ build:prod-image:
   needs:
     - test:registration
     - test:task
-    - test:task_management_service
+    - test:task_management_system
     - test:tms_auth
     - test:user
   variables:
