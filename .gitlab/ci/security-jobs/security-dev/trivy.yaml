@@ -1,0 +1,12 @@
+trivy:
+  extends: .trivy-base
+  stage: security
+  needs:
+    - test:registration
+    - test:task
+    - test:task_management_service
+    - test:tms_auth
+    - test:user
+  script:
+    - trivy config dev/Dockerfile.ci
+    - trivy image --exit-code 1 --severity HIGH,CRITICAL $DEV_IMAGE_LATEST
