@@ -23,7 +23,7 @@ def expired_task_note(db, task, member_is_owner):
     return note
 
 
-@pytest.fixture
+@pytest.fixture(scope="class")
 def expired_task_note_read_only(
     django_db_setup, django_db_blocker, task_read_only, member_is_owner_read_only
 ):
