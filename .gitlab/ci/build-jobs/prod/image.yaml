@@ -1,0 +1,24 @@
+build:prod-image:
+  stage: build
+  image: docker:29
+  tags:
+    - dev
+  services:
+    - docker:29-dind
+  needs:
+    - security-dev
+  variables:
+    DOCKER_TLS_CERTDIR: "/certs"
+    PROD_IMAGE: $CI_REGISTRY_IMAGE/prod:$CI_COMMIT_SHORT_SHA
+    PROD_IMAGE_LATEST: $CI_REGISTRY_IMAGE/prod:latest
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - |
+      docker build \
+        -f prod/Dockerfile \
+        -t $PROD_IMAGE \
+        -t $PROD_IMAGE_LATEST \
+        .
+    - docker push $PROD_IMAGE
+    - docker push $PROD_IMAGE_LATEST

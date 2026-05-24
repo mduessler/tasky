@@ -1,0 +1,24 @@
+build:prod-nginx-image:
+  stage: build
+  image: docker:29
+  tags:
+    - dev
+  services:
+    - docker:29-dind
+  needs:
+    - security-dev
+  variables:
+    DOCKER_TLS_CERTDIR: "/certs"
+    PROD_NGINX_IMAGE: $CI_REGISTRY_IMAGE/prod:$CI_COMMIT_SHORT_SHA
+    PROD_NGINX_IMAGE_LATEST: $CI_REGISTRY_IMAGE/prod:latest
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - |
+      docker build \
+        -f prod/Dockerfile.nginx \
+        -t $PROD_NGINX_IMAGE \
+        -t $PROD_NGINX_IMAGE_LATEST \
+        .
+    - docker push $PROD_NGINX_IMAGE
+    - docker push $PROD_NGINX_IMAGE_LATEST
