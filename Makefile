@@ -79,7 +79,7 @@ full-clean-dev: stop-dev
 #
 
 tests: up-dev
-	docker compose --file $(file-dev) exec $(service-dev) pytest
+	docker compose --file $(file-dev) exec $(service-dev) pytest -m "not timing"
 	docker compose --file $(file-dev) stop
 
 # Test with timing
