@@ -39,7 +39,6 @@ def expired_task_note_read_only(
 
 
 @pytest.fixture
-@pytest.mark.django_db
 def user_is_none():
     return None, None
 
