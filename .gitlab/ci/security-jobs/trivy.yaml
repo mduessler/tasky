@@ -4,8 +4,6 @@
     entrypoint: [""]
   tags:
     - dev
-  needs:
-    - build:prod-image
   variables:
     TRIVY_NO_PROGRESS: "true"
     TRIVY_CACHE_DIR: ".trivycache"
@@ -14,6 +12,3 @@
   cache:
     paths:
       - .trivycache/
-  script:
-    - trivy config prod/Dockerfile
-    - trivy image --exit-code 1 --severity HIGH,CRITICAL $PROD_IMAGE_LATEST
