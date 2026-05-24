@@ -1,11 +1,9 @@
 pip-audit:
+  stage: security-dev
   image: $DEV_IMAGE_LATEST
-  services:
-    - docker:29-dind
   tags:
     - dev
   extends: .pip-audit-base
-  stage: security-dev
   needs:
     - test:registration
     - test:task
