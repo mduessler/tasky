@@ -1,5 +1,4 @@
 .trivy-base:
-  stage: security
   image:
     name: aquasec/trivy:latest
     entrypoint: [""]
