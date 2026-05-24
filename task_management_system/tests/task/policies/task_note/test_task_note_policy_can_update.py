@@ -52,8 +52,8 @@ class TestCanUpdate:
             log_record,
             "Permission granted: Can update own messages within 2 hours.",
             "DEBUG",
-            task=task_read_only.task.id,
-            note=task_read_only.id,
+            task=task_read_only.id,
+            note=note.id,
             actor_membership=actor_membership.id,
         )
 
