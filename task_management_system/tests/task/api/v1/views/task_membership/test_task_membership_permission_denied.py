@@ -14,18 +14,28 @@ BASENAME = "membership"
 
 @pytest.mark.django_db
 class TestPermissionDenied:
+    @pytest.fixture(scope="class", autouse=True)
+    def preload(
+        self,
+        member_is_owner_read_only,
+        member_is_admin_read_only,
+        member_is_member_read_only,
+        member_is_viewer_read_only,
+        user_is_not_member_read_only,
+        superuser_read_only,
+    ):
+        pass
+
     @pytest.mark.parametrize(
         "actor_fixture",
         [
-            "member_is_owner",
-            "member_is_admin",
-            "member_is_member",
-            "member_is_viewer",
+            "member_is_owner_read_only",
+            "member_is_admin_read_only",
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
         ],
     )
-    def test_list_actor_has_no_permission(
-        self, actor_fixture, request, task_memberships, api_client
-    ):
+    def test_list_actor_has_no_permission(self, actor_fixture, request, api_client):
         actor, _ = request.getfixturevalue(actor_fixture)
         url = parse_url(BASENAME, "list")
 
@@ -40,10 +50,10 @@ class TestPermissionDenied:
         }
 
     def test_retrieve_actor_has_no_permission(
-        self, user_is_not_member, task_membership, api_client, monkeypatch
+        self, user_is_not_member_read_only, task_membership_read_only, api_client, monkeypatch
     ):
-        actor, _ = user_is_not_member
-        url = parse_url(BASENAME, "detail", task_membership.id)
+        actor, _ = user_is_not_member_read_only
+        url = parse_url(BASENAME, "detail", task_membership_read_only.id)
 
         monkeypatch.setattr(TaskMembershipPolicy, "can_view", lambda a, u: False)
 
@@ -59,15 +69,19 @@ class TestPermissionDenied:
 
     @pytest.mark.parametrize(
         "actor_fixture",
-        ["member_is_member", "member_is_viewer", "user_is_not_member"],
+        [
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
+            "user_is_not_member_read_only",
+        ],
     )
     def test_patch_actor_has_no_permission(
-        self, actor_fixture, request, task_membership, api_client, monkeypatch
+        self, actor_fixture, request, task_membership_read_only, api_client, monkeypatch
     ):
         actor, _ = request.getfixturevalue(actor_fixture)
 
         data = {"role": "viewer"}
-        url = parse_url(BASENAME, "detail", task_membership.id)
+        url = parse_url(BASENAME, "detail", task_membership_read_only.id)
 
         monkeypatch.setattr(TaskMembershipPolicy, "can_view", lambda a, u: True)
 
@@ -83,14 +97,18 @@ class TestPermissionDenied:
 
     @pytest.mark.parametrize(
         "actor_fixture",
-        ["member_is_member", "member_is_viewer", "user_is_not_member"],
+        [
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
+            "user_is_not_member_read_only",
+        ],
     )
     def test_delete_actor_has_no_permission(
-        self, actor_fixture, request, task_membership, api_client, monkeypatch
+        self, actor_fixture, request, task_membership_read_only, api_client, monkeypatch
     ):
         actor, _ = request.getfixturevalue(actor_fixture)
 
-        url = parse_url(BASENAME, "detail", task_membership.id)
+        url = parse_url(BASENAME, "detail", task_membership_read_only.id)
 
         monkeypatch.setattr(TaskMembershipPolicy, "can_view", lambda a, u: True)
 

@@ -10,6 +10,18 @@ BASENAME = "membership"
 
 @pytest.mark.django_db
 class TestHttpMethods:
+    @pytest.fixture(scope="class", autouse=True)
+    def preload(
+        self,
+        member_is_owner_read_only,
+        member_is_admin_read_only,
+        member_is_member_read_only,
+        member_is_viewer_read_only,
+        user_is_not_member_read_only,
+        superuser_read_only,
+    ):
+        pass
+
     @pytest.mark.parametrize(
         "actor_fixture",
         [
@@ -64,12 +76,12 @@ class TestHttpMethods:
     @pytest.mark.parametrize(
         "actor_fixture",
         [
-            "member_is_owner",
-            "member_is_admin",
-            "member_is_member",
-            "member_is_viewer",
-            "superuser_is_not_member",
-            "user_is_not_member",
+            "member_is_owner_read_only",
+            "member_is_admin_read_only",
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
+            "superuser_is_not_member_read_only",
+            "user_is_not_member_read_only",
         ],
     )
     @pytest.mark.parametrize(
@@ -82,12 +94,12 @@ class TestHttpMethods:
         method,
         url_name,
         request,
-        task_membership,
+        task_membership_read_only,
         api_client,
     ):
         actor, _ = request.getfixturevalue(actor_fixture)
         data = {"role": "viewer"} if method == "patch" else {}
-        url = parse_url(BASENAME, url_name, task_membership.id)
+        url = parse_url(BASENAME, url_name, task_membership_read_only.id)
 
         api_client.force_authenticate(user=actor)
         response = getattr(api_client, method)(url, data=data)
