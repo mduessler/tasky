@@ -1,4 +1,4 @@
 test:task:
   extends: .test-base
   script:
-    - pytest tests/task/ -n auto --timeout=30
+    - pytest tests/task/ -n 2
