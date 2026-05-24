@@ -44,28 +44,22 @@ class TestTaskNote:
         with pytest.raises(ValidationError):
             TaskNote.objects.create(task=task_read_only, author=active_user_read_only, note="")
 
-    def test_on_delete_set_null_author(self, task_read_only, active_user_read_only):
-        TaskMembership.objects.create(
-            user=active_user_read_only, task=task_read_only, role=Role.MEMBER
-        )
+    def test_on_delete_set_null_author(self, task, active_user):
+        TaskMembership.objects.create(user=active_user, task=task, role=Role.MEMBER)
         note = TaskNote.objects.create(
-            task=task_read_only, author=active_user_read_only, note="This is an important note"
+            task=task, author=active_user, note="This is an important note"
         )
 
-        active_user_read_only.delete()
+        active_user.delete()
         note.refresh_from_db()
 
         assert note.author is None
         assert note.note == "This is an important note"
 
-    def test_on_delete_cascade_task(self, task_read_only, active_user_read_only):
-        TaskMembership.objects.create(
-            user=active_user_read_only, task=task_read_only, role=Role.MEMBER
-        )
-        TaskNote.objects.create(
-            task=task_read_only, author=active_user_read_only, note="This is an important note"
-        )
+    def test_on_delete_cascade_task(self, task, active_user):
+        TaskMembership.objects.create(user=active_user, task=task, role=Role.MEMBER)
+        TaskNote.objects.create(task=task, author=active_user, note="This is an important note")
 
-        task_read_only.delete()
+        task.delete()
 
         assert TaskNote.objects.count() == 0
