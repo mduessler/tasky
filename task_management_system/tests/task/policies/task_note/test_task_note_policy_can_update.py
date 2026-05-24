@@ -5,11 +5,9 @@ from django.db import connection
 from django.test import utils
 from django.utils import timezone
 from freezegun import freeze_time
-from task.models import TaskMembership
+from task.models import TaskMembership, TaskNote
 from task.policies import TaskNotePolicy
 from tests.utils import assert_log
-
-from task_management_system.task.models.task_note import TaskNote
 
 
 @pytest.mark.django_db
