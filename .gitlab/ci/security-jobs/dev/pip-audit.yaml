@@ -1,4 +1,9 @@
-pip-audit-dev:
+pip-audit:
+  image: $DEV_IMAGE_LATEST
+  services:
+    - docker:29-dind
+  tags:
+    - dev
   extends: .pip-audit-base
   stage: security-dev
   needs:
@@ -7,6 +12,5 @@ pip-audit-dev:
     - test:task_management_system
     - test:tms_auth
     - test:user
-  allow_failure: true
   script:
-    - docker run --rm --entrypoint pip $DEV_IMAGE_LATEST freeze | poetry run pip-audit -r /dev/stdin
+    - pip audit
