@@ -59,7 +59,8 @@ class TestTaskNote:
     def test_on_delete_cascade_task(self, task, active_user):
         TaskMembership.objects.create(user=active_user, task=task, role=Role.MEMBER)
         TaskNote.objects.create(task=task, author=active_user, note="This is an important note")
+        cnt = TaskNote.objects.count()
 
         task.delete()
 
-        assert TaskNote.objects.count() == 0
+        assert TaskNote.objects.count() == cnt - 1
