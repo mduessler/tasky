@@ -12,6 +12,7 @@ cert-subj=/CN=localhost
 
 test-data=/home/tms/web/tests/data
 docs = ./docs/
+docker-socket := $(shell docker context inspect --format '{{.Endpoints.docker.Host}}' | sed 's|unix://||')
 
 aws_account_id=REDACTED_AWS_ACCOUNT
 aws-user-admin=tasky-admin
@@ -78,7 +79,7 @@ full-clean-dev: stop-dev
 # Full tests (without timing)
 #
 
-tests: unit-tests pip-audit-tests
+tests: unit-tests security-tests
 
 # Unit tests without timing
 #
@@ -96,8 +97,28 @@ unit-tests-full: up-dev
 
 # Test python modules on vulnerabilities
 #
-pip-audit-tests:
-	docker compose --file $(file-dev) exec $(service-dev) pip-audit
+.ONESHELL:
+secruity-tests:
+	# Build production images
+	docker build -f prod/Dockerfile -t tms-prod:test .
+	docker build -f prod/Dockerfile.nginx -t tms-prod-nginx:test ./prod/
+
+	# Test pip audit
+	docker run --rm --entrypoint pip tms-prod:test freeze | poetry run pip-audit -r /dev/stdin
+
+	# Test production images with trivy
+	docker run --rm \
+		-v $(docker-socket):/var/run/docker.sock \
+		-v trivy-cache:/root/.cache/trivy \
+		aquasec/trivy image tms-prod:test
+	docker run --rm \
+		-v $(docker-socket):/var/run/docker.sock \
+		-v trivy-cache:/root/.cache/trivy \
+		aquasec/trivy image tms-prod-nginx:test
+
+	# clean up
+	docker image rm -f tms-prod:test tms-prod-nginx:test
+	docker volume rm trivy-cache
 
 #
 # Generate file objects
