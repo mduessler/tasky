@@ -10,6 +10,8 @@ variables:
   DEV_IMAGE_LATEST: $CI_REGISTRY_IMAGE/dev:latest
   PROD_IMAGE: $CI_REGISTRY_IMAGE/prod:$CI_COMMIT_SHORT_SHA
   PROD_IMAGE_LATEST: $CI_REGISTRY_IMAGE/prod:latest
+  PROD_NGINX_IMAGE: $CI_REGISTRY_IMAGE/prod-nginx:$CI_COMMIT_SHORT_SHA
+  PROD_NGINX_IMAGE_LATEST: $CI_REGISTRY_IMAGE/prod-nginx:latest
 include:
   - local: .gitlab/ci/build-jobs/dev/image.yaml
   - local: .gitlab/ci/lint-jobs/lint.yaml
