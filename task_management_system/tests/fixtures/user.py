@@ -98,7 +98,7 @@ def active_user_data_read_only():
         "username": "ZockerHeld99",
         "first_name": "Max",
         "last_name": "Mustermann",
-        "email": "max@example.com",
+        "email": "maxRO@example.com",
         "is_active": True,
     }
 
@@ -110,7 +110,7 @@ def inactive_user_data_read_only():
         "username": "NoobMaster",
         "first_name": "Kevin",
         "last_name": "Müller",
-        "email": "kevin@example.com",
+        "email": "kevinRO@example.com",
         "is_active": False,
     }
 
@@ -122,7 +122,7 @@ def superuser_data_read_only():
         "username": "PixelQueen",
         "first_name": "Sarah",
         "last_name": "Schmidt",
-        "email": "sara@example.com",
+        "email": "saraRO@example.com",
         "is_active": True,
     }
 
@@ -130,19 +130,19 @@ def superuser_data_read_only():
 @pytest.fixture(scope="class")
 def active_user_read_only(django_db_setup, django_db_blocker, active_user_data_read_only):
     with django_db_blocker.unblock():
-        return UserFactory(**active_user_data_read_only)
+        return UserFactory()
 
 
 @pytest.fixture(scope="class")
 def inactive_user_read_only(django_db_setup, django_db_blocker, inactive_user_data_read_only):
     with django_db_blocker.unblock():
-        return UserFactory(**inactive_user_data_read_only)
+        return UserFactory()
 
 
 @pytest.fixture(scope="class")
 def superuser_read_only(django_db_setup, django_db_blocker, superuser_data_read_only):
     with django_db_blocker.unblock():
-        return SuperuserFactory(**superuser_data_read_only)
+        return SuperuserFactory()
 
 
 @pytest.fixture(scope="class")
