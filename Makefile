@@ -1,6 +1,10 @@
 # Root-directory
 root-dir=$(shell pwd)
 
+ENV ?= dev
+-include .env.$(ENV)
+export
+
 # dev
 service-dev=tms-dev
 file-dev=dev/docker-compose.yaml
@@ -14,7 +18,6 @@ test-data=/home/tms/web/tests/data
 docs = ./docs/
 docker-socket = $(shell docker context inspect --format '{{.Endpoints.docker.Host}}' | sed 's|unix://||')
 
-aws_account_id=REDACTED_AWS_ACCOUNT
 aws-user-admin=tasky-admin
 aws-user-dev=tasky-dev
 
@@ -173,7 +176,6 @@ pre-commit:
 #
 
 bootstrap-create:
-	export TF_VAR_owner_id=$(aws_account_id)
 	export AWS_PROFILE=$(aws-user-admin)
 	./infrastructure/scripts/bootstrap create
 
@@ -197,12 +199,10 @@ create-runner-img:
 
 .ONESHELL:
 install-gitlab-runner:
-	export TF_VAR_owner_id=$(aws_account_id)
 	export AWS_PROFILE=$(aws-user-dev)
 	./infrastructure/scripts/gitlab-runner install
 
 .ONESHELL:
 destroy-gitlab-runner:
-	export TF_VAR_owner_id=$(aws_account_id)
 	export AWS_PROFILE=$(aws-user-dev)
 	./infrastructure/scripts/gitlab-runner destroy
