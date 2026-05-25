@@ -298,11 +298,28 @@ aws ssm start-session \
 
 ## How to run all
 
-The next sections describe how to set up the complete infrastructure from scratch.
-All commands are exposed through the [Makefile](../../Makefile) at the project
-root.
+The next sections describe how to set up the complete infrastructure from
+scratch. All commands are exposed through the [Makefile](../../Makefile) at the
+project root — see the [Make commands](../README.md#make-commands) section for
+the full list.
 
 ### Prerequisites
+
+The following tools must be installed locally:
+
+- **[Terraform](https://developer.hashicorp.com/terraform/install)** (`>=1.15.3`)\
+  Infrastructure-as-code tool used to provision the backend and the GitLab Runner on AWS.
+- **[Packer](https://developer.hashicorp.com/packer/install)** (`>=1.10`)\
+  Image builder used to create the hardened GitLab Runner AMI.
+- **[Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)** (`>=2.16`)\
+  Configuration management tool used to register and configure the GitLab Runner.
+  Installed together with [*boto3*](https://boto3.amazonaws.com/v1/documentation/api/latest/index.html)
+  and [*botocore*](https://botocore.amazonaws.com/v1/documentation/api/latest/index.html),
+  which are required by the `amazon.aws` and `community.aws` collections.
+- **[AWS CLI v2](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)**\
+  Command-line interface used to authenticate against AWS and to open SSM sessions.
+- **[Session Manager Plugin](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html)**\
+  AWS CLI plugin required by the Ansible SSM connection and for manual access to the runner.
 
 The following environment variables must be set before running any command:
 
@@ -310,10 +327,10 @@ The following environment variables must be set before running any command:
    reads this as the `owner_id` input variable.
 2. **`AWS_PROFILE`** — The local AWS profile used for authentication. Two profiles
    are used in this project:
-   - **`aws-user-admin`** — Permission to create the backend and build the AMI.
+   - **`tasky-admin`** — Permission to create the backend and build the AMI.
      Used for one-time setup steps.
-   - **`aws-user-dev`** — Limited permission to manage the runner lifecycle. Used
-     for the day-to-day operations.
+   - **`tasky-dev`** — Limited permission to manage the runner lifecycle. Used
+     for day-to-day operations.
 
 The split between *admin* and *dev* profiles follows the principle of *least
 privilege*: regular development work never requires admin credentials. Both
@@ -360,21 +377,3 @@ make destroy-gitlab-runner
 The backend can not be destroyed through the *Makefile*. This is intentional —
 destroying it would orphan all *TFState* files. An administrator has to remove
 it manually.
-
-### Prerequisites
-
-The following tools must be installed locally:
-
-- **[Terraform](https://developer.hashicorp.com/terraform/install)** (`>=1.15.3`)\
-  Infrastructure-as-code tool used to provision the backend and the GitLab Runner on AWS.
-- **[Packer](https://developer.hashicorp.com/packer/install)** (`>=1.10`)\
-  Image builder used to create the hardened GitLab Runner AMI.
-- **[Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)** (`>=2.16`)\
-  Configuration management tool used to register and configure the GitLab Runner.
-  Installed together with [*boto3*](https://boto3.amazonaws.com/v1/documentation/api/latest/index.html)
-  and [*botocore*](https://botocore.amazonaws.com/v1/documentation/api/latest/index.html),
-  which are required by the `amazon.aws` and `community.aws` collections.
-- **[AWS CLI v2](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)**\
-  Command-line interface used to authenticate against AWS and to open SSM sessions.
-- **[Session Manager Plugin](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html)**\
-  AWS CLI plugin required by the Ansible SSM connection and for manual access to the runner.

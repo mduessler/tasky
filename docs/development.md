@@ -152,13 +152,8 @@ Test targets are documented in the [Testing](#Testing) section.
 
 ### Infrastructure
 
-| Command                      | Description                                                        |
-| ---------------------------- | ------------------------------------------------------------------ |
-| `make bootstrap-create`      | Create the Terraform backend (uses the `tasky-admin` AWS profile). |
-| `make bootstrap-destroy`     | Destroy the Terraform backend.                                     |
-| `make create-runner-img`     | Build the GitLab runner AMI with Packer.                           |
-| `make install-gitlab-runner` | Provision a GitLab runner (uses the `tasky-dev` AWS profile).      |
-| `make destroy-gitlab-runner` | Tear down the GitLab runner.                                       |
+Infrastructure targets are documented in
+[infrastructure.md](./infrastructure.md#How-to-run-all).
 
 ## Environment Variables
 
