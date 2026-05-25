@@ -29,10 +29,10 @@
 - [OpenAPI schema generation with Django Spectacular](#openapi-schema-generation-with-django-spectacular)
   - [Explanation](#explanation)
 
-## Getting Started
+## Prerequisites
 
-The development stack runs entirely in Docker. The following tools must be
-installed on your machine:
+The following tools must be installed on your machine before you can run the
+development stack:
 
 - **[Docker](https://www.docker.com/)**\
   Container runtime used to run services consistently across environments.
@@ -40,8 +40,16 @@ installed on your machine:
   Tooling to orchestrate multi-service setups such as Neo4j and backend APIs.
 - **[Make](https://www.gnu.org/software/make/)**\
   Task runner used to standardize common development and test commands.
+- **[Poetry](https://python-poetry.org/)** (`2.2.1`)\
+  Python packaging and dependency management.
+  > Installation can be done with Make. Instructions listed below.
+- **[Infrastructure](./infrastructure.md)**\
+  The dependencies to install, modify or delete the infrastructure are defined
+  in the documentation of the infrastructure.
 
-To start the development stack run:
+## Getting Started
+
+The development stack runs entirely in Docker. To start it, run:
 
 ```shell
 make run-dev
