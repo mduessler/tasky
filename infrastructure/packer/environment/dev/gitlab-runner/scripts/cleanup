@@ -1,17 +1,19 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
 echo "INFO: Starting cleanup ..."
 
 sudo apt remove -y --purge \
-	snapd \
-	man-db \
-	manpages \
-	apport \
-	whoopsie \
-	landscape-common \
-	popularity-contest \
-	ubuntu-advantage-tools \
-	ufw 2>/dev/null || true
+    snapd \
+    man-db \
+    manpages \
+    apport \
+    whoopsie \
+    landscape-common \
+    popularity-contest \
+    ubuntu-advantage-tools \
+    ufw 2>/dev/null || true
 
 sudo apt autoremove -y --purge
 sudo apt clean

@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
 echo "INFO: Starting to initialized directory structure."
 
 keyring="/etc/apt/keyrings/"

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+set -euo pipefail
 
 if [ ! -f ./docs/.env.example ]; then
     echo "ERROR: This script needs to be executed in the root of the directory."
