@@ -321,23 +321,30 @@ The following tools must be installed locally:
 - **[Session Manager Plugin](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html)**\
   AWS CLI plugin required by the Ansible SSM connection and for manual access to the runner.
 
-### Environment variables
+## Environment Variables
 
-The following variables must be set before running any command:
+The infrastructure commands are configured via environment variables. These
+must be set in your shell before running any `make` target — they are not
+loaded from `.env`.
 
-| Variable          | Description                                                                | Used by                |
-| ----------------- | -------------------------------------------------------------------------- | ---------------------- |
-| `TF_VAR_owner_id` | The AWS account ID. Terraform reads this as the `owner_id` input variable. | All Terraform commands |
-| `AWS_PROFILE`     | The AWS profile for authentication (`tasky-admin` or `tasky-dev`).         | All AWS commands       |
+| Variable            | Description                                                    | Example        |
+| ------------------- | -------------------------------------------------------------- | -------------- |
+| `TF_VAR_owner_id`   | The AWS account ID. Read by Terraform as the `owner_id` input. | `123456789012` |
+| `TF_VAR_aws_region` | The AWS region in which resources are provisioned.             | `eu-central-1` |
+| `AWS_PROFILE`       | The local AWS profile used for authentication (see below).     | `tasky-dev`    |
 
 Two AWS profiles are used in this project, following the principle of *least
 privilege*:
 
-- **`tasky-admin`** — Used to create the backend and build the AMI.
-- **`tasky-dev`** — Used for the day-to-day runner lifecycle.
+| Profile       | Description                                                          |
+| ------------- | -------------------------------------------------------------------- |
+| `tasky-admin` | Create the backend and build the AMI. Used for one-time setup steps. |
+| `tasky-dev`   | Manage the runner lifecycle. Used for day-to-day operations.         |
 
-Both variables are exported by the *Makefile* targets, so they only have to be
-available in the shell environment (e.g. via `~/.aws/credentials`).
+Both `TF_VAR_*` variables and `AWS_PROFILE` are exported by the `Makefile`
+targets, so they only have to be available in the shell environment (e.g. via
+`~/.aws/credentials` for the profiles, or via `direnv` / your shell rc-file for
+the Terraform variables).
 
 ### 1. Create the backend
 
