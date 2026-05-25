@@ -255,7 +255,6 @@ use `scope="class"` so the underlying objects are created once per test class
 instead of per test, reducing overall test runtime. Use them whenever a test
 only reads from the fixture and does not modify its state.
 
-
 ## Celery
 
 Celery handles asynchronous and scheduled tasks. The dev stack runs two
@@ -344,18 +343,14 @@ conventions and unified logging across the entire system.
 - **membership**: Task membership identifier
 - **note**: Task note identifier
 
-______________________________________________________________________
+## OpenAPI Schema
 
-## OpenAPI schema generation with Django Spectacular
-
-We use Django Spectacular to generate the `openapi.yaml` specification for the API.
-
-In most cases, the schema is generated automatically from the default serializer
-configuration. However, if a custom serializer setup is used (for example different
-serializers for request and response bodies), the schema must be explicitly attached
-to the corresponding class or function using `@extend_schema`.
-
-Example:
+The `openapi.yaml` specification is generated with
+[drf-spectacular](https://drf-spectacular.readthedocs.io/). In most cases the
+schema is inferred from the default serializer setup. Use `@extend_schema` when
+an endpoint deviates from this — for example, when request and response use
+different serializers, or when the endpoint lives outside the default
+`api/v1/...` prefix and needs an explicit `tags` entry.
 
 ```python
 @extend_schema(
@@ -365,16 +360,5 @@ Example:
 )
 ```
 
-### Explanation
-
-- `request`\
-  Defines the serializer used for the incoming request body.
-
-- `responses`\
-  Defines the serializer returned by the endpoint.\
-  In this example, HTTP `201 Created` responses use `RegisterReadSerializer`.
-
-- `tags`\
-  Groups the endpoint in the generated OpenAPI documentation.\
-  This is only required if the endpoint path is **not** located under the default
-  API prefix (e.g. `api/v1/...`).
+See the [drf-spectacular documentation](https://drf-spectacular.readthedocs.io/)
+for the full set of options.
