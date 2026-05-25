@@ -80,67 +80,33 @@ The API is available at:
 
 The Swagger UI is available at `https://localhost:8443/api/docs/`.
 
-## Development Process Overview
+## Development Process
 
-This section describes the standard development workflow used in this repository.
+### Branches
 
-### Branch Structure
+Two long-lived branches:
 
-The repository uses two long-lived default branches:
+- **`main`** — production-ready, protected, only updated via release merges from `dev` or hotfixes.
+- **`dev`** — integration branch, protected, target for all feature work.
 
-- **main** → Production-ready code
-- **dev** → Active development integration branch
+### Workflow
 
-Both branches are protected to ensure stability and enforce the review process.
+1. **Open an issue** describing the work (feature, bug, refactor, etc.).
+2. **Create a branch from `dev`** named `<type>/<issue-id>-<short-description>`
+   (e.g. `feature/142-token-cleanup`).
+3. **Commit and push** regularly. Reference the issue ID in commit messages.
+4. **Open a merge request into `dev`**. At least one approval is required before
+   merging.
+5. **Release**: once enough changes have accumulated on `dev`, it is merged into
+   `main` and tagged following [SemVer](https://semver.org/).
 
-### Development Workflow
+### Hotfixes
 
-#### 1. Issue Creation
+Critical production issues bypass the normal cycle:
 
-All development work must start with an issue.
-
-Issues are created from the dev branch and represent a single unit of work, such as:
-
-- Feature
-- Bug Fix
-- Design change
-- Refactor
-- Other general development tasks
-
-#### 2. Feature Development
-
-For each issue:
-
-- A new branch is created from dev
-- Development is performed on that branch
-- Changes are committed and pushed regularly
-- A merge request is created back into dev
-
-#### 3. Merging into dev
-
-Once the work for an issue is completed:
-
-- The merge request is reviewed
-- After approval, it is merged into dev
-- The feature becomes part of the development integration branch
-
-#### 4. Release to main
-
-When a sufficient number of features or fixes have been integrated into dev:
-
-- dev is merged into main
-- A release is created from the updated main branch
-
-This ensures that main always reflects a stable, production-ready state.
-
-### Hotfix Workflow (Special Case)
-
-Hotfixes are urgent fixes for critical issues in production.
-
-- Hotfix branches are created from main (not dev)
-- Once the fix is completed and verified, it is merged directly into main
-- The same fix must also be merged back into dev to keep branches consistent
-- Hotfixes bypass the normal release cycle due to their urgency
+1. Branch from `main` as `hotfix/<issue-id>-<short-description>`.
+2. Merge the fix into `main` and tag a patch release.
+3. Merge `main` back into `dev` to keep the branches in sync.
 
 ## Make Commands
 
