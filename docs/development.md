@@ -157,9 +157,9 @@ Infrastructure targets are documented in
 
 ## Environment Variables
 
-The development environment is configured via the `.env` file in the root
-directory. Never commit this file to version control — use `.env.example` as
-a reference instead.
+The development stack is configured via a `.env` file in the project root.
+Never commit this file to version control! Copy [`.env.example`](../.env.example)
+to `.env` and fill in the values.
 
 | Variable                 | Description                                                       | Example                                       |
 | ------------------------ | ----------------------------------------------------------------- | --------------------------------------------- |
@@ -173,10 +173,13 @@ a reference instead.
 | `SQL_HOST`               | The database host — must match the service name in docker-compose | `db-dev`                                      |
 | `SQL_PORT`               | The database port                                                 | `5432`                                        |
 | `JWT_SECRET_KEY`         | The signing key used to sign and verify JWT tokens                | `a-very-strong-secret`                        |
-| `EMAIL_HOST`             | The SMTP host                                                     | `sandbox.smtp.mailtrap.io`                    |
+| `EMAIL_HOST`             | The SMTP host used by Celery to send verification emails          | `sandbox.smtp.mailtrap.io`                    |
 | `EMAIL_PORT`             | The SMTP port                                                     | `2525`                                        |
 | `EMAIL_HOST_USER`        | The SMTP user                                                     | `<mailtrap-user>`                             |
 | `EMAIL_HOST_PASSWORD`    | The SMTP password                                                 | `<mailtrap-password>`                         |
+
+> Variables for infrastructure work (`TF_VAR_*`, `AWS_PROFILE`) are documented
+> separately in [infrastructure.md](./infrastructure.md#environment-variables).
 
 ## Environment files
 
