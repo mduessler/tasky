@@ -157,7 +157,7 @@ Infrastructure targets are documented in
 
 ## Environment Variables
 
-The development environment is configured via the `dev/.env.dev` file in the root
+The development environment is configured via the `.env` file in the root
 directory. Never commit this file to version control — use `.env.example` as
 a reference instead.
 
@@ -177,6 +177,20 @@ a reference instead.
 | `EMAIL_PORT`             | The SMTP port                                                     | `2525`                                        |
 | `EMAIL_HOST_USER`        | The SMTP user                                                     | `<mailtrap-user>`                             |
 | `EMAIL_HOST_PASSWORD`    | The SMTP password                                                 | `<mailtrap-password>`                         |
+
+## Environment files
+
+By default, the `Makefile` loads variables from `.env` in the project root.
+To use an environment-specific file, append `ENV=dev` or `ENV=prod` to the
+command — the corresponding `.env.dev` or `.env.prod` will be loaded instead:
+
+```shell
+make run-dev               # uses .env
+make run-dev ENV=dev       # uses .env.dev
+make run-dev ENV=prod      # uses .env.prod
+```
+
+Only `dev` and `prod` are accepted; any other value falls back to `.env`.
 
 ## Pre-commit
 
