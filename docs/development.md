@@ -149,23 +149,63 @@ local development outside of Docker:
 - **[pre-commit](https://pre-commit.com/)** (`4.6.0`)\
   Git hooks framework used to enforce code quality checks before commits.
 
-## Makefile Commands
+## Make Commands
 
-All commands are run from the root directory of the project.
+The `Makefile` provides shortcuts for the most common development, test and
+infrastructure tasks. All commands are invoked from the repository root via
+`make <target>`.
 
-| Command               | Description                                                                               |
-| --------------------- | ----------------------------------------------------------------------------------------- |
-| `make run-dev`        | Starts the full dev stack and attaches to the logs                                        |
-| `make up-dev`         | Starts the full dev stack without attaching to the logs                                   |
-| `make down-dev`       | Stops and removes all containers                                                          |
-| `make stop-dev`       | Stops all containers without removing them                                                |
-| `make clean-dev`      | Stops and removes the app container and its image                                         |
-| `make full-clean-dev` | Stops and removes all containers, images and the database volume                          |
-| `make tests`          | Starts the dev stack, runs the default test suite and stops the stack                     |
-| `make tests-full`     | Starts the dev stack, runs the full test suite including timing tests and stops the stack |
-| `make gen-cert-dev`   | Generates a self-signed SSL certificate for local/dev nginx                               |
-| `make openapi`        | Generates the openapi.yaml file                                                           |
-| `make pre-commit`     | Installs the pre-commit                                                                   |
+### Local Setup
+
+| Command           | Description                                                 |
+| ----------------- | ----------------------------------------------------------- |
+| `make poetry`     | Install Poetry (version `2.2.1`) via `pipx`.                |
+| `make pre-commit` | Install project dependencies and register pre-commit hooks. |
+
+### Development Environment
+
+| Command               | Description                                                                  |
+| --------------------- | ---------------------------------------------------------------------------- |
+| `make up-dev`         | Build and start all containers, wait for the database, clean expired tokens. |
+| `make run-dev`        | Same as `up-dev` and additionally attach to the logs of all containers.      |
+| `make stop-dev`       | Stop all running dev containers without removing them.                       |
+| `make down-dev`       | Stop and remove dev containers (keeps images and volumes).                   |
+| `make clean-dev`      | Stop and remove the application container and its image.                     |
+| `make full-clean-dev` | Stop and remove all containers, images and the database volume.              |
+
+### Database & Seed Data
+
+| Command               | Description                                                                      |
+| --------------------- | -------------------------------------------------------------------------------- |
+| `make makemigrations` | Generate Django migrations for the project apps.                                 |
+| `make seed-dev`       | Import the default superuser and load test fixtures (tasks, memberships, notes). |
+
+### Tests
+
+| Command                  | Description                                                     |
+| ------------------------ | --------------------------------------------------------------- |
+| `make tests`             | Run unit tests and security tests in sequence.                  |
+| `make unit-tests`        | Run pytest, excluding tests marked `timing`.                    |
+| `make unit-tests-full`   | Run pytest including the `timing` suite.                        |
+| `make security-tests`    | Build production images, run `pip-audit`, then scan with Trivy. |
+| `make security-scan-dev` | Build the CI image and scan it with Trivy.                      |
+
+### Generated Artifacts
+
+| Command             | Description                                                         |
+| ------------------- | ------------------------------------------------------------------- |
+| `make openapi`      | Generate the OpenAPI specification at `docs/openapi.yaml`.          |
+| `make gen-cert-dev` | Generate a self-signed certificate for local HTTPS in `dev/certs/`. |
+
+### Infrastructure
+
+| Command                      | Description                                                        |
+| ---------------------------- | ------------------------------------------------------------------ |
+| `make bootstrap-create`      | Create the Terraform backend (uses the `tasky-admin` AWS profile). |
+| `make bootstrap-destroy`     | Destroy the Terraform backend.                                     |
+| `make create-runner-img`     | Build the GitLab runner AMI with Packer.                           |
+| `make install-gitlab-runner` | Provision a GitLab runner (uses the `tasky-dev` AWS profile).      |
+| `make destroy-gitlab-runner` | Tear down the GitLab runner.                                       |
 
 ## Environment Variables
 
