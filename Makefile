@@ -108,7 +108,7 @@ unit-tests-full: up-dev
 # Test python modules on vulnerabilities
 #
 .ONESHELL:
-secruity-tests:
+security-tests:
 	# Build production images
 	docker build -f prod/Dockerfile -t tms-prod:test .
 	docker build -f prod/Dockerfile.nginx -t tms-prod-nginx:test ./prod/
