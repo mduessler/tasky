@@ -166,7 +166,7 @@ gen-cert-dev:
 		-subj "$(cert-subj)"
 
 #
-# Lokal Development components
+# Local Development components
 #
 # Install pre-commit
 #
