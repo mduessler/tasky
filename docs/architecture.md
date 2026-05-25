@@ -153,7 +153,7 @@ The client sends the token to `POST /api/activate/`. The server verifies that
 the token exists, belongs to the user, and has not expired. On success, the user
 is set to active (`is_active = True`) and the token is deleted.
 
-> A user cannot log in until the account is activate.
+> A user cannot log in until the account is activated.
 
 ## Authentication
 
