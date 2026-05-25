@@ -125,7 +125,7 @@ is split between the three tools mentioned above. The shared *s3_bucket* and
 
 ```shell
 ├── packer
-│   └── environmnet
+│   └── environment
 │       └── dev
 │           └── gitlab-runner
 │               ├── gitlab-runner.pkr.hcl
@@ -183,7 +183,7 @@ is split between the three tools mentioned above. The shared *s3_bucket* and
 LTS*. The image is build once and reused for every runner instance. Like this the
 startup time of a new runner is reduced and the runtime environment stays
 reproducible. The build is configured in
-[gitlab-runner.pkr.hcl](../../infrastructure/packer/environmnet/dev/gitlab-runner/gitlab-runner.pkr.hcl)
+[gitlab-runner.pkr.hcl](../../infrastructure/packer/environment/dev/gitlab-runner/gitlab-runner.pkr.hcl)
 and runs the following provisioning scripts in order:
 
 1. **init-file-structure** — Prepare the keyring and apt source directories.
