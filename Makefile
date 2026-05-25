@@ -1,8 +1,15 @@
 # Root-directory
 root-dir=$(shell pwd)
 
-ENV ?= dev
--include .env.$(ENV)
+ENV ?=
+
+ifeq ($(filter dev prod,$(ENV)),$(ENV))
+  ENV_FILE := .env.$(ENV)
+else
+  ENV_FILE := .env
+endif
+
+-include $(ENV_FILE)
 export
 
 # dev
