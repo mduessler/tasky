@@ -321,20 +321,22 @@ The following tools must be installed locally:
 - **[Session Manager Plugin](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html)**\
   AWS CLI plugin required by the Ansible SSM connection and for manual access to the runner.
 
-The following environment variables must be set before running any command:
+### Environment variables
 
-1. **`TF_VAR_owner_id`** — The *AWS account ID* of the target account. Terraform
-   reads this as the `owner_id` input variable.
-2. **`AWS_PROFILE`** — The local AWS profile used for authentication. Two profiles
-   are used in this project:
-   - **`tasky-admin`** — Permission to create the backend and build the AMI.
-     Used for one-time setup steps.
-   - **`tasky-dev`** — Limited permission to manage the runner lifecycle. Used
-     for day-to-day operations.
+The following variables must be set before running any command:
 
-The split between *admin* and *dev* profiles follows the principle of *least
-privilege*: regular development work never requires admin credentials. Both
-variables are exported by the *Makefile* targets, so they only have to be
+| Variable          | Description                                                                | Used by                |
+| ----------------- | -------------------------------------------------------------------------- | ---------------------- |
+| `TF_VAR_owner_id` | The AWS account ID. Terraform reads this as the `owner_id` input variable. | All Terraform commands |
+| `AWS_PROFILE`     | The AWS profile for authentication (`tasky-admin` or `tasky-dev`).         | All AWS commands       |
+
+Two AWS profiles are used in this project, following the principle of *least
+privilege*:
+
+- **`tasky-admin`** — Used to create the backend and build the AMI.
+- **`tasky-dev`** — Used for the day-to-day runner lifecycle.
+
+Both variables are exported by the *Makefile* targets, so they only have to be
 available in the shell environment (e.g. via `~/.aws/credentials`).
 
 ### 1. Create the backend
