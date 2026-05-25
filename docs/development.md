@@ -43,6 +43,9 @@ development stack:
 - **[Poetry](https://python-poetry.org/)** (`2.2.1`)\
   Python packaging and dependency management.
   > Installation can be done with Make. Instructions listed below.
+- **[pre-commit](https://pre-commit.com/)** (`4.6.0`)\
+  Git hooks framework used to enforce code quality checks before commits.
+  > Installation can be done with Make. Instructions listed below.
 - **[Infrastructure](./infrastructure.md)**\
   The dependencies to install, modify or delete the infrastructure are defined
   in the documentation of the infrastructure.
@@ -139,16 +142,6 @@ Hotfixes are urgent fixes for critical issues in production.
 - The same fix must also be merged back into dev to keep branches consistent
 - Hotfixes bypass the normal release cycle due to their urgency
 
-## Dev Dependencies
-
-The following tools must be installed manually and are only required for
-local development outside of Docker:
-
-- **[Poetry](https://python-poetry.org/)** (`2.2.1`)\
-  Dependency management.
-- **[pre-commit](https://pre-commit.com/)** (`4.6.0`)\
-  Git hooks framework used to enforce code quality checks before commits.
-
 ## Make Commands
 
 The `Makefile` provides shortcuts for the most common development, test and
@@ -175,10 +168,10 @@ infrastructure tasks. All commands are invoked from the repository root via
 
 ### Database & Seed Data
 
-| Command               | Description                                                                      |
-| --------------------- | -------------------------------------------------------------------------------- |
-| `make makemigrations` | Generate Django migrations for the project apps.                                 |
-| `make seed-dev`       | Import the default superuser and load test fixtures (tasks, memberships, notes). |
+| Command               | Description                                          |
+| --------------------- | ---------------------------------------------------- |
+| `make makemigrations` | Generate Django migrations for the project apps.     |
+| `make seed-dev`       | Import the default superuser and load test fixtures. |
 
 ### Tests
 
