@@ -192,37 +192,35 @@ a reference instead.
 ## Pre-commit
 
 Pre-commit runs a set of hooks before every commit to ensure code quality and
-consistency. The following hooks are configured:
+consistency. If a hook fails, the commit is aborted; formatting hooks will
+modify files in place, so you can simply `git add` the changes and commit again.
 
-| Hook           | Description                            |
-| -------------- | -------------------------------------- |
-| `black`        | Code formatting                        |
-| `isort`        | Import sorting                         |
-| `flake8`       | Linting                                |
-| `mypy`         | Static type checking (strict mode)     |
-| `bandit`       | Security linting                       |
-| `hadolint`     | Dockerfile linting                     |
-| `yamlfmt`      | YAML formatting                        |
-| `djlint`       | Django template linting and formatting |
-| `markdownlint` | Markdown linting                       |
-| `mdformat`     | Markdown formatting                    |
-| `shfmt`        | Shell script formatting                |
-| `bashate`      | Shell script linting                   |
-| `poetry-check` | Validates `pyproject.toml`             |
-| `poetry-lock`  | Ensures `poetry.lock` is up to date    |
+The following hooks are configured:
+
+| Hook           | Description                         |
+| -------------- | ----------------------------------- |
+| `black`        | Code formatting                     |
+| `isort`        | Import sorting                      |
+| `flake8`       | Linting                             |
+| `mypy`         | Static type checking (strict mode)  |
+| `bandit`       | Security linting                    |
+| `poetry-check` | Validates `pyproject.toml`          |
+| `poetry-lock`  | Ensures `poetry.lock` is up to date |
+| `yamlfmt`      | YAML formatting                     |
+| `hadolint`     | Dockerfile linting                  |
+| `shellcheck`   | Shell script linting                |
+| `shfmt`        | Shell script formatting             |
+| `markdownlint` | Markdown linting                    |
+| `mdformat`     | Markdown formatting                 |
 
 To install the hooks run:
 
 ```shell
-pip install pre-commit
-pre-commit install
+make pre-commit
 ```
 
-The hooks will now run automatically before every commit. To run them manually:
-
-```shell
-pre-commit run --all-files
-```
+> The same hooks run in CI, so bypassing them locally with `--no-verify` will
+> only delay the failure.
 
 ## Testing
 
