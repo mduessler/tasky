@@ -17,6 +17,7 @@ service-dev=tms-dev
 file-dev=dev/docker-compose.yaml
 database-dev=postgres
 apps=user tms_auth task registration
+poetry-version=2.2.1
 
 cert-path-dev=dev/certs
 cert-subj=/CN=localhost
@@ -168,6 +169,12 @@ gen-cert-dev:
 #
 # Local Development components
 #
+# Install poetry
+#  
+
+poetry:
+	pipx install poetry==$(poetry-version)
+
 # Install pre-commit
 #
 
