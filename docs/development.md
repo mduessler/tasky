@@ -141,13 +141,7 @@ infrastructure tasks. All commands are invoked from the repository root via
 
 ### Tests
 
-| Command                  | Description                                                     |
-| ------------------------ | --------------------------------------------------------------- |
-| `make tests`             | Run unit tests and security tests in sequence.                  |
-| `make unit-tests`        | Run pytest, excluding tests marked `timing`.                    |
-| `make unit-tests-full`   | Run pytest including the `timing` suite.                        |
-| `make security-tests`    | Build production images, run `pip-audit`, then scan with Trivy. |
-| `make security-scan-dev` | Build the CI image and scan it with Trivy.                      |
+Test targets are documented in the [Testing](#Testing) section.
 
 ### Generated Artifacts
 
@@ -226,10 +220,16 @@ make pre-commit
 
 Tests are run via pytest. The test suite is split into two groups:
 
-| Command           | Description                                     |
-| ----------------- | ----------------------------------------------- |
-| `make tests`      | Runs the default test suite                     |
-| `make tests-full` | Runs the full test suite including timing tests |
+| Command                  | Description                                                     |
+| ------------------------ | --------------------------------------------------------------- |
+| `make tests`             | Run unit tests and security tests in sequence.                  |
+| `make unit-tests`        | Run pytest, excluding tests marked `timing`.                    |
+| `make unit-tests-full`   | Run pytest including the `timing` suite.                        |
+| `make security-tests`    | Build production images, run `pip-audit`, then scan with Trivy. |
+| `make security-scan-dev` | Build the CI dev image and scan it with Trivy.                  |
+
+> All tests are also executed in CI when a merge request targets a [long-lived branch](#branches).
+> Failing tests block the pipeline and prevent merging.
 
 ### Configuration
 
@@ -238,9 +238,10 @@ with 10 workers by default (`-n 10`).
 
 ### Markers
 
-| Marker   | Description                                                                                                          |
-| -------- | -------------------------------------------------------------------------------------------------------------------- |
-| `timing` | Tests that verify time-sensitive behavior such as token expiry or note edit windows. Only run with `make tests-full` |
+| Marker   | Description                                                                                  |
+| -------- | -------------------------------------------------------------------------------------------- |
+| `timing` | Timing side-channel tests for passphrase verification. Only run with `make unit-tests-full`. |
+| `slow`   | Tests that take noticeably longer to run. Skip with `-m "not slow"`.                         |
 
 ### Factories & Fixtures
 
@@ -248,6 +249,12 @@ The test suite uses [**factory-boy**](https://factoryboy.readthedocs.io/) to gen
 test data. Shared factories and fixtures are defined under `tests/fixtures/` and
 are available across all tests. App-specific fixtures are defined in the respective
 `conftest.py` files.
+
+Each fixture also has a read-only counterpart suffixed with `_read_only`. These
+use `scope="class"` so the underlying objects are created once per test class
+instead of per test, reducing overall test runtime. Use them whenever a test
+only reads from the fixture and does not modify its state.
+
 
 ## Celery
 
