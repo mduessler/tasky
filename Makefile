@@ -200,7 +200,7 @@ bootstrap-destroy:
 # Create AMI gitlab-runner image
 #
 
-ONESHELL:
+.ONESHELL:
 create-runner-img:
 	cd $(packer-dir)
 	export AWS_PROFILE=$(aws-user-admin)
