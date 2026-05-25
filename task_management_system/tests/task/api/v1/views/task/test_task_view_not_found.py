@@ -26,7 +26,7 @@ class TestNotFound:
         self,
         method,
         url_name,
-        superuser,
+        superuser_read_only,
         api_client,
         data_task,
         data_task_membership,
@@ -37,7 +37,7 @@ class TestNotFound:
         )
         url = parse_url(BASENAME, url_name, 9999)
 
-        api_client.force_authenticate(user=superuser)
+        api_client.force_authenticate(user=superuser_read_only)
         response = getattr(api_client, method)(url, data=data)
 
         assert response.status_code == 404

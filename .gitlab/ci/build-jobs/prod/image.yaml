@@ -1,10 +1,12 @@
 build:prod-image:
   stage: build
   image: docker:29
+  tags:
+    - dev
   services:
     - docker:29-dind
   needs:
-    - security
+    - pip-audit
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
     PROD_IMAGE: $CI_REGISTRY_IMAGE/prod:$CI_COMMIT_SHORT_SHA

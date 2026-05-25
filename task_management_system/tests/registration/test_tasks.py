@@ -27,6 +27,7 @@ class TestCleanUpExpiredTokens:
             cleanup_expired_tokens()
             assert not EmailVerificationToken.objects.filter(id=token.id).exists()
 
+    @pytest.mark.slow
     def test_mass_deletion_performance(self, inactive_user, register_data):
         register_data.pop("email_verification")
         register_data.pop("password_verification")

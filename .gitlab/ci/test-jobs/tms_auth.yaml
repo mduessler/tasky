@@ -1,4 +1,4 @@
 test:tms_auth:
   extends: .test-base
   script:
-    - pytest tests/tms_auth/ -n auto
+    - pytest tests/tms_auth/ -n 2

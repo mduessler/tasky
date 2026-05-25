@@ -9,6 +9,18 @@ BASENAME = "task"
 
 @pytest.mark.django_db
 class TestAuthentication:
+    @pytest.fixture(scope="class", autouse=True)
+    def preload(
+        self,
+        member_is_owner_read_only,
+        member_is_admin_read_only,
+        member_is_member_read_only,
+        member_is_viewer_read_only,
+        user_is_not_member_read_only,
+        superuser_read_only,
+    ):
+        pass
+
     @pytest.mark.parametrize(
         "method, url_name",
         [
@@ -24,10 +36,17 @@ class TestAuthentication:
         ],
     )
     def test_unauthenticated_actor_not_allowed(
-        self, method, url_name, task, api_client, data_task, data_task_membership, data_task_note
+        self,
+        method,
+        url_name,
+        task_read_only,
+        api_client,
+        data_task,
+        data_task_membership,
+        data_task_note,
     ):
         data = select_data_dict(method, url_name, data_task, data_task_membership, data_task_note)
-        url = parse_url(BASENAME, url_name, task.id)
+        url = parse_url(BASENAME, url_name, task_read_only.id)
 
         response = getattr(api_client, method)(url, data=data)
 
@@ -36,27 +55,31 @@ class TestAuthentication:
     @pytest.mark.parametrize(
         "actor_data",
         [
-            "member_is_owner",
-            "member_is_admin",
-            "member_is_member",
-            "member_is_viewer",
-            "user_is_not_member",
+            "member_is_owner_read_only",
+            "member_is_admin_read_only",
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
+            "user_is_not_member_read_only",
         ],
     )
-    def test_get_list_permission_denied(self, actor_data, request, superuser, api_client):
+    def test_get_list_permission_denied(
+        self, actor_data, request, superuser_read_only, api_client
+    ):
         actor, _ = request.getfixturevalue(actor_data)
 
         url = parse_url(BASENAME, "list")
 
         api_client.force_authenticate(user=actor)
-        response = api_client.get(url, data={"user": superuser.id})
+        response = api_client.get(url, data={"user": superuser_read_only.id})
 
         assert response.status_code == 403
 
-    def test_retrieve_permission_denied(self, user_is_not_member, task, api_client):
-        actor, _ = user_is_not_member
+    def test_retrieve_permission_denied(
+        self, user_is_not_member_read_only, task_read_only, api_client
+    ):
+        actor, _ = user_is_not_member_read_only
 
-        url = parse_url(BASENAME, "detail", task.id)
+        url = parse_url(BASENAME, "detail", task_read_only.id)
 
         api_client.force_authenticate(user=actor)
         response = api_client.get(url)
@@ -64,12 +87,17 @@ class TestAuthentication:
         assert response.status_code == 403
 
     @pytest.mark.parametrize(
-        "actor_data", ["member_is_member", "member_is_viewer", "user_is_not_member"]
+        "actor_data",
+        [
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
+            "user_is_not_member_read_only",
+        ],
     )
-    def test_patch_permission_denied(self, actor_data, request, task, api_client):
+    def test_patch_permission_denied(self, actor_data, request, task_read_only, api_client):
         actor, _ = request.getfixturevalue(actor_data)
 
-        url = parse_url(BASENAME, "detail", task.id)
+        url = parse_url(BASENAME, "detail", task_read_only.id)
 
         api_client.force_authenticate(user=actor)
         response = api_client.patch(url, data={"title": "updated"})
@@ -78,12 +106,17 @@ class TestAuthentication:
 
     @pytest.mark.parametrize(
         "actor_data",
-        ["member_is_admin", "member_is_member", "member_is_viewer", "user_is_not_member"],
+        [
+            "member_is_admin_read_only",
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
+            "user_is_not_member_read_only",
+        ],
     )
-    def test_delete_permission_denied(self, actor_data, request, task, api_client):
+    def test_delete_permission_denied(self, actor_data, request, task_read_only, api_client):
         actor, _ = request.getfixturevalue(actor_data)
 
-        url = parse_url(BASENAME, "detail", task.id)
+        url = parse_url(BASENAME, "detail", task_read_only.id)
 
         api_client.force_authenticate(user=actor)
         response = api_client.delete(url)
@@ -91,7 +124,12 @@ class TestAuthentication:
         assert response.status_code == 403
 
     @pytest.mark.parametrize(
-        "actor_data", ["member_is_member", "member_is_viewer", "user_is_not_member"]
+        "actor_data",
+        [
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
+            "user_is_not_member_read_only",
+        ],
     )
     def test_membership_create_permission_denied(
         self, actor_data, request, task, superuser, api_client
@@ -105,17 +143,21 @@ class TestAuthentication:
 
         assert response.status_code == 403
 
-    def test_memberships_view_permission_denied(self, user_is_not_member, task, api_client):
-        actor, _ = user_is_not_member
+    def test_memberships_view_permission_denied(
+        self, user_is_not_member_read_only, task_read_only, api_client
+    ):
+        actor, _ = user_is_not_member_read_only
 
-        url = parse_url(BASENAME, "memberships", task.id)
+        url = parse_url(BASENAME, "memberships", task_read_only.id)
 
         api_client.force_authenticate(user=actor)
         response = api_client.get(url)
 
         assert response.status_code == 403
 
-    @pytest.mark.parametrize("actor_data", ["member_is_viewer", "user_is_not_member"])
+    @pytest.mark.parametrize(
+        "actor_data", ["member_is_viewer_read_only", "user_is_not_member_read_only"]
+    )
     def test_note_create_permission_denied(self, actor_data, request, task, api_client):
         actor, _ = request.getfixturevalue(actor_data)
 
@@ -126,10 +168,12 @@ class TestAuthentication:
 
         assert response.status_code == 403
 
-    def test_notes_view_permission_denied(self, user_is_not_member, task, api_client):
-        actor, _ = user_is_not_member
+    def test_notes_view_permission_denied(
+        self, user_is_not_member_read_only, task_read_only, api_client
+    ):
+        actor, _ = user_is_not_member_read_only
 
-        url = parse_url(BASENAME, "notes", task.id)
+        url = parse_url(BASENAME, "notes", task_read_only.id)
 
         api_client.force_authenticate(user=actor)
         response = api_client.get(url)
@@ -154,8 +198,8 @@ class TestAuthentication:
         self,
         method,
         url_name,
-        superuser,
-        task,
+        superuser_read_only,
+        task_read_only,
         api_client,
         access_token_factory,
         data_task,
@@ -163,9 +207,9 @@ class TestAuthentication:
         data_task_note,
     ):
         data = select_data_dict(method, url_name, data_task, data_task_membership, data_task_note)
-        url = parse_url(BASENAME, url_name, task.id)
+        url = parse_url(BASENAME, url_name, task_read_only.id)
 
-        expired_token = access_token_factory(user=superuser, expired=True)
+        expired_token = access_token_factory(user=superuser_read_only, expired=True)
         api_client.credentials(HTTP_AUTHORIZATION=f"Bearer {expired_token}")
         response = getattr(api_client, method)(url, data=data)
 
@@ -188,10 +232,17 @@ class TestAuthentication:
         ],
     )
     def test_invalid_token_not_allowed(
-        self, method, url_name, task, api_client, data_task, data_task_membership, data_task_note
+        self,
+        method,
+        url_name,
+        task_read_only,
+        api_client,
+        data_task,
+        data_task_membership,
+        data_task_note,
     ):
         data = select_data_dict(method, url_name, data_task, data_task_membership, data_task_note)
-        url = parse_url(BASENAME, url_name, task.id)
+        url = parse_url(BASENAME, url_name, task_read_only.id)
 
         api_client.credentials(HTTP_AUTHORIZATION="Bearer invalid.token.value")
         response = getattr(api_client, method)(url, data=data)

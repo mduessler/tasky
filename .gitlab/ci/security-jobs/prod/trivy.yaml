@@ -1,0 +1,11 @@
+trivy:
+  extends: .trivy-base
+  stage: security
+  needs:
+    - build:prod-image
+    - build:prod-nginx-image
+  script:
+    - trivy config prod/Dockerfile
+    - trivy image --exit-code 1 --severity HIGH,CRITICAL $PROD_IMAGE_LATEST
+    - trivy config prod/Dockerfile.nginx
+    - trivy image --exit-code 1 --severity HIGH,CRITICAL $PROD_NGINX_IMAGE_LATEST

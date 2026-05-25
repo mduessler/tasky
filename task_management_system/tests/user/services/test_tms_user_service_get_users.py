@@ -12,8 +12,8 @@ from user.services import TmsUserService
 
 @pytest.mark.django_db
 class TestGetUsers:
-    def test_success(self, superuser, caplog_loguru):
-        result = TmsUserService.get_users(superuser)
+    def test_success(self, superuser_read_only, caplog_loguru):
+        result = TmsUserService.get_users(superuser_read_only)
 
         assert isinstance(result, QuerySet)
         assert result.count() == TmsUser.objects.count()
@@ -23,14 +23,14 @@ class TestGetUsers:
             log_record,
             "Allowed: Returning users.",
             "DEBUG",
-            user=superuser.id,
+            user=superuser_read_only.id,
         )
 
-    def test_permission_denied(self, superuser, caplog_loguru, monkeypatch):
+    def test_permission_denied(self, superuser_read_only, caplog_loguru, monkeypatch):
         monkeypatch.setattr(TmsUserPolicy, "can_view_users", lambda a: False)
 
         with pytest.raises(PermissionDenied) as exc:
-            TmsUserService.get_users(superuser)
+            TmsUserService.get_users(superuser_read_only)
 
         assert PERMISSION_DENIED_TO_VIEW_USER == str(exc.value)
 
@@ -41,8 +41,8 @@ class TestGetUsers:
             "WARNING",
         )
 
-    def test_is_efficient(self, superuser):
+    def test_is_efficient(self, superuser_read_only):
         with utils.CaptureQueriesContext(connection) as queries:
-            TmsUserService.get_users(superuser)
+            TmsUserService.get_users(superuser_read_only)
 
         assert len(queries) <= 1

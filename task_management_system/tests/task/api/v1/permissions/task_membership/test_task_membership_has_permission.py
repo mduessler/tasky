@@ -18,8 +18,8 @@ class TestHasPermission:
             "WARNING",
         )
 
-    def test_view_has_no_action(self, member_is_owner, caplog_loguru):
-        actor, _ = member_is_owner
+    def test_view_has_no_action(self, member_is_owner_read_only, caplog_loguru):
+        actor, _ = member_is_owner_read_only
         req = build_request("get", actor)
         result = TaskMembershipPermission().has_permission(req, object())
 
@@ -31,12 +31,12 @@ class TestHasPermission:
     @pytest.mark.parametrize(
         "actor_data",
         [
-            "member_is_owner",
-            "member_is_admin",
-            "member_is_member",
-            "member_is_viewer",
-            "superuser_is_not_member",
-            "user_is_not_member",
+            "member_is_owner_read_only",
+            "member_is_admin_read_only",
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
+            "superuser_is_not_member_read_only",
+            "user_is_not_member_read_only",
         ],
     )
     def test_action_create_not_allowed(self, actor_data, request, caplog_loguru):
@@ -49,11 +49,11 @@ class TestHasPermission:
     @pytest.mark.parametrize(
         "actor_data",
         [
-            "member_is_owner",
-            "member_is_admin",
-            "member_is_member",
-            "member_is_viewer",
-            "superuser_is_not_member",
+            "member_is_owner_read_only",
+            "member_is_admin_read_only",
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
+            "superuser_is_not_member_read_only",
         ],
     )
     def test_action_list_allowed(self, actor_data, request, caplog_loguru):
@@ -72,9 +72,9 @@ class TestHasPermission:
         )
 
     def test_action_list_not_allowed(
-        self, user_is_not_member, request, caplog_loguru, monkeypatch
+        self, user_is_not_member_read_only, request, caplog_loguru, monkeypatch
     ):
-        actor, _ = user_is_not_member
+        actor, _ = user_is_not_member_read_only
         req = build_request("get", actor)
         monkeypatch.setattr("task.policies.TaskMembershipPolicy.can_access", lambda *a, **k: False)
 
@@ -93,11 +93,11 @@ class TestHasPermission:
     @pytest.mark.parametrize(
         "actor_data",
         [
-            "member_is_owner",
-            "member_is_admin",
-            "member_is_member",
-            "member_is_viewer",
-            "superuser_is_not_member",
+            "member_is_owner_read_only",
+            "member_is_admin_read_only",
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
+            "superuser_is_not_member_read_only",
         ],
     )
     def test_action_retrive_and_other(self, actor_data, request, caplog_loguru):
@@ -115,8 +115,10 @@ class TestHasPermission:
             action="retrieve",
         )
 
-    def test_action_retrieve_not_allowed(self, user_is_not_member, caplog_loguru, monkeypatch):
-        actor, _ = user_is_not_member
+    def test_action_retrieve_not_allowed(
+        self, user_is_not_member_read_only, caplog_loguru, monkeypatch
+    ):
+        actor, _ = user_is_not_member_read_only
         req = build_request("get", actor)
         monkeypatch.setattr("task.policies.TaskMembershipPolicy.can_access", lambda *a, **k: False)
 

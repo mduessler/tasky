@@ -2,7 +2,8 @@
 logs
 node_modules
 dev/certs/
-dev/.env.dev
+.env.dev
+.env.prod
 logs/
 
 # Terraform

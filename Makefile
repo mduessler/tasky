@@ -1,6 +1,10 @@
 # Root-directory
 root-dir=$(shell pwd)
 
+ENV ?= dev
+-include .env.$(ENV)
+export
+
 # dev
 service-dev=tms-dev
 file-dev=dev/docker-compose.yaml
@@ -12,12 +16,14 @@ cert-subj=/CN=localhost
 
 test-data=/home/tms/web/tests/data
 docs = ./docs/
+docker-socket = $(shell docker context inspect --format '{{.Endpoints.docker.Host}}' | sed 's|unix://||')
 
-aws_account_id=REDACTED_AWS_ACCOUNT
 aws-user-admin=tasky-admin
 aws-user-dev=tasky-dev
 
-
+#
+# Commands to run dev environment
+#
 .SILENT:
 .ONESHELL:
 up-dev:
@@ -48,9 +54,12 @@ seed-dev:
 	docker compose --file $(file-dev) exec $(service-dev) python manage.py loaddata $(test-data)/task/task_memberships.json
 	docker compose --file $(file-dev) exec $(service-dev) python manage.py loaddata $(test-data)/task/task_notes.json
 
+
+#
+# Destroy and clean dev relicts
+#
 down-dev:
 	docker compose --file $(file-dev) down
-
 .SILENT:
 stop-dev:
 	docker compose --file $(file-dev) stop
@@ -66,13 +75,79 @@ full-clean-dev: stop-dev
 	docker image rm $(service-dev) $(database-dev)
 	docker volume rm $(service-dev)-db
 
-tests: up-dev
-	docker compose --file $(file-dev) exec $(service-dev) pytest
+
+#
+# Tests
+#
+# Full tests (without timing)
+#
+
+tests: unit-tests security-tests
+
+# Unit tests without timing
+#
+
+unit-tests: up-dev
+	docker compose --file $(file-dev) exec $(service-dev) pytest -m "not timing"
 	docker compose --file $(file-dev) stop
 
-tests-full: up-dev
+# Unit test with timing
+#
+
+unit-tests-full: up-dev
 	docker compose --file $(file-dev) exec $(service-dev) pytest timing
 	docker compose --file $(file-dev) stop
+
+# Test python modules on vulnerabilities
+#
+.ONESHELL:
+secruity-tests:
+	# Build production images
+	docker build -f prod/Dockerfile -t tms-prod:test .
+	docker build -f prod/Dockerfile.nginx -t tms-prod-nginx:test ./prod/
+
+	# Test pip audit
+	docker run --rm --entrypoint pip tms-prod:test freeze | poetry run pip-audit -r /dev/stdin
+
+	# Test production images with trivy
+	docker run --rm \
+		-v $(docker-socket):/var/run/docker.sock \
+		-v trivy-cache:/root/.cache/trivy \
+		aquasec/trivy image tms-prod:test
+	docker run --rm \
+		-v $(docker-socket):/var/run/docker.sock \
+		-v trivy-cache:/root/.cache/trivy \
+		aquasec/trivy image tms-prod-nginx:test
+
+	# clean up
+	docker image rm -f tms-prod:test tms-prod-nginx:test
+	docker volume rm trivy-cache
+
+# Test dev image with trivy
+#
+security-scan-dev:
+	docker build -f prod/Dockerfile.ci -t tms:ci .
+
+	docker run --rm \
+		-v $(docker-socket):/var/run/docker.sock \
+		-v trivy-cache:/root/.cache/trivy \
+		aquasec/trivy image tms:ci
+
+docker image rm -f tms:ci
+	docker volume rm trivy-cache
+
+
+#
+# Generate file objects
+#
+# Generate OpenAPI specfication
+#
+
+openapi:
+	poetry run python task_management_system/manage.py spectacular --file $(docs)/openapi.yaml
+
+# Generate Certificats for Lets Encrypt
+#
 
 .ONESHELL:
 gen-cert-dev:
@@ -83,8 +158,11 @@ gen-cert-dev:
 		-out $(cert-path-dev)/local.crt \
 		-subj "$(cert-subj)"
 
-openapi:
-	poetry run python task_management_system/manage.py spectacular --file $(docs)/openapi.yaml
+#
+# Lokal Development components
+#
+# Install pre-commit
+#
 
 pre-commit:
 	poetry install
@@ -98,7 +176,6 @@ pre-commit:
 #
 
 bootstrap-create:
-	export TF_VAR_owner_id=$(aws_account_id)
 	export AWS_PROFILE=$(aws-user-admin)
 	./infrastructure/scripts/bootstrap create
 
@@ -122,12 +199,10 @@ create-runner-img:
 
 .ONESHELL:
 install-gitlab-runner:
-	export TF_VAR_owner_id=$(aws_account_id)
 	export AWS_PROFILE=$(aws-user-dev)
 	./infrastructure/scripts/gitlab-runner install
 
 .ONESHELL:
 destroy-gitlab-runner:
-	export TF_VAR_owner_id=$(aws_account_id)
 	export AWS_PROFILE=$(aws-user-dev)
 	./infrastructure/scripts/gitlab-runner destroy

@@ -23,8 +23,22 @@ def expired_task_note(db, task, member_is_owner):
     return note
 
 
+@pytest.fixture(scope="class")
+def expired_task_note_read_only(
+    django_db_setup, django_db_blocker, task_read_only, member_is_owner_read_only
+):
+    with django_db_blocker.unblock():
+        note = TaskNoteFactory(
+            note="This is just a test note.",
+            author=member_is_owner_read_only[0],
+            task=task_read_only,
+        )
+        TaskNote.objects.filter(pk=note.pk).update(created_at=timezone.now() - timedelta(hours=3))
+        note.refresh_from_db()
+        return note
+
+
 @pytest.fixture
-@pytest.mark.django_db
 def user_is_none():
     return None, None
 

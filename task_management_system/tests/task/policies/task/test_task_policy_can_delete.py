@@ -8,10 +8,10 @@ from tests.utils import assert_log
 
 @pytest.mark.django_db
 class TestCanDelete:
-    @pytest.mark.parametrize("actor_fixture", ["member_is_owner"])
-    def test_permission_granted_role(self, actor_fixture, request, task, caplog_loguru):
+    @pytest.mark.parametrize("actor_fixture", ["member_is_owner_read_only"])
+    def test_permission_granted_role(self, actor_fixture, request, task_read_only, caplog_loguru):
         actor, actor_membership = request.getfixturevalue(actor_fixture)
-        result = TaskPolicy.can_delete(actor, task)
+        result = TaskPolicy.can_delete(actor, task_read_only)
 
         assert result is True
 
@@ -20,16 +20,17 @@ class TestCanDelete:
             log_record,
             "Permission granted to delete task: True.",
             "DEBUG",
-            task=task.id,
+            task=task_read_only.id,
             actor_membership=actor_membership.id,
         )
 
     @pytest.mark.parametrize(
-        "actor_fixture", ["member_is_admin", "member_is_member", "member_is_viewer"]
+        "actor_fixture",
+        ["member_is_admin_read_only", "member_is_member_read_only", "member_is_viewer_read_only"],
     )
-    def test_permission_denied_role(self, actor_fixture, request, task, caplog_loguru):
+    def test_permission_denied_role(self, actor_fixture, request, task_read_only, caplog_loguru):
         actor, actor_membership = request.getfixturevalue(actor_fixture)
-        result = TaskPolicy.can_delete(actor, task)
+        result = TaskPolicy.can_delete(actor, task_read_only)
 
         assert result is False
 
@@ -38,13 +39,15 @@ class TestCanDelete:
             log_record,
             "Permission granted to delete task: False.",
             "DEBUG",
-            task=task.id,
+            task=task_read_only.id,
             actor_membership=actor_membership.id,
         )
 
-    def test_permission_denied_no_membership(self, user_is_not_member, task, caplog_loguru):
-        actor, _ = user_is_not_member
-        result = TaskPolicy.can_delete(actor, task)
+    def test_permission_denied_no_membership(
+        self, user_is_not_member_read_only, task_read_only, caplog_loguru
+    ):
+        actor, _ = user_is_not_member_read_only
+        result = TaskPolicy.can_delete(actor, task_read_only)
 
         assert result is False
 
@@ -53,11 +56,13 @@ class TestCanDelete:
             log_record,
             "Permission denied to delete task: User has no membership for task.",
             "WARNING",
-            task=task.id,
+            task=task_read_only.id,
         )
 
-    def test_permission_granted_superuser(self, superuser, task, caplog_loguru):
-        result = TaskPolicy.can_delete(superuser, task)
+    def test_permission_granted_superuser(
+        self, superuser_read_only, task_read_only, caplog_loguru
+    ):
+        result = TaskPolicy.can_delete(superuser_read_only, task_read_only)
 
         assert result is True
 
@@ -66,17 +71,17 @@ class TestCanDelete:
             log_record,
             "Permission granted to delete task: Actor is superuser.",
             "INFO",
-            task=task.id,
+            task=task_read_only.id,
         )
 
     def test_denies_unsupported_future_role(
-        self, member_is_owner, task, task_memberships, caplog_loguru
+        self, member_is_owner_read_only, task_read_only, caplog_loguru
     ):
-        actor, actor_membership = member_is_owner
+        actor, actor_membership = member_is_owner_read_only
         TaskMembership.objects.filter(pk=actor_membership.id).update(role="non-role")
 
         with pytest.raises(RuntimeError):
-            TaskPolicy.can_delete(actor, task)
+            TaskPolicy.can_delete(actor, task_read_only)
 
         log_record = caplog_loguru.records[-1]
         assert_log(
@@ -86,8 +91,8 @@ class TestCanDelete:
             "CRITICAL",
         )
 
-    def test_is_efficient(self, member_is_owner, task):
-        actor, _ = member_is_owner
+    def test_is_efficient(self, member_is_owner_read_only, task):
+        actor, _ = member_is_owner_read_only
 
         with utils.CaptureQueriesContext(connection) as queries:
             TaskPolicy.can_delete(actor, task)

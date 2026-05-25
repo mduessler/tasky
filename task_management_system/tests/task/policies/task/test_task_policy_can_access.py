@@ -8,12 +8,12 @@ class TestCanAccess:
     @pytest.mark.parametrize(
         "actor_fixture",
         [
-            "member_is_owner",
-            "member_is_admin",
-            "member_is_member",
-            "member_is_viewer",
-            "superuser_is_not_member",
-            "user_is_not_member",
+            "member_is_owner_read_only",
+            "member_is_admin_read_only",
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
+            "superuser_is_not_member_read_only",
+            "user_is_not_member_read_only",
         ],
     )
     def test_tms_user(self, actor_fixture, request, caplog_loguru):
@@ -25,8 +25,8 @@ class TestCanAccess:
         log_record = caplog_loguru.records[-1]
         assert_log(log_record, "Permission granted: User is allowed to access tasks.", "DEBUG")
 
-    def test_anonymous_user(self, anonymous_user, caplog_loguru):
-        result = TaskPolicy.can_access(anonymous_user)
+    def test_anonymous_user(self, anonymous_user_read_only, caplog_loguru):
+        result = TaskPolicy.can_access(anonymous_user_read_only)
 
         assert result is False
 

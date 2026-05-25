@@ -10,13 +10,18 @@ from tests.utils import assert_log
 class TestCanView:
     @pytest.mark.parametrize(
         "actor_fixture",
-        ["member_is_owner", "member_is_admin", "member_is_member", "member_is_viewer"],
+        [
+            "member_is_owner_read_only",
+            "member_is_admin_read_only",
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
+        ],
     )
     def test_permission_granted_allowed_roles(
-        self, actor_fixture, request, user_is_not_member, caplog_loguru
+        self, actor_fixture, request, user_is_not_member_read_only, caplog_loguru
     ):
         actor, actor_membership = request.getfixturevalue(actor_fixture)
-        user, _ = user_is_not_member
+        user, _ = user_is_not_member_read_only
         membership = TaskMembership.objects.create(
             task=actor_membership.task, user=user, role=Role.MEMBER
         )
@@ -35,8 +40,10 @@ class TestCanView:
             actor_membership=actor_membership.id,
         )
 
-    def test_permission_granted_superuser(self, superuser, member_is_viewer, caplog_loguru):
-        _, membership = member_is_viewer
+    def test_permission_granted_superuser(
+        self, superuser, member_is_viewer_read_only, caplog_loguru
+    ):
+        _, membership = member_is_viewer_read_only
         result = TaskMembershipPolicy.can_view(superuser, membership)
 
         assert result is True
@@ -51,7 +58,12 @@ class TestCanView:
 
     @pytest.mark.parametrize(
         "actor_fixture",
-        ["member_is_owner", "member_is_admin", "member_is_member", "member_is_viewer"],
+        [
+            "member_is_owner_read_only",
+            "member_is_admin_read_only",
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
+        ],
     )
     def test_permission_granted_user_can_watch_own_membership(
         self, actor_fixture, request, caplog_loguru
@@ -72,10 +84,10 @@ class TestCanView:
         )
 
     def test_permission_denied_user_has_no_membership(
-        self, user_is_not_member, member_is_viewer, caplog_loguru
+        self, user_is_not_member_read_only, member_is_viewer_read_only, caplog_loguru
     ):
-        actor, _ = user_is_not_member
-        _, membership = member_is_viewer
+        actor, _ = user_is_not_member_read_only
+        _, membership = member_is_viewer_read_only
         result = TaskMembershipPolicy.can_view(actor, membership)
 
         assert result is False
@@ -89,10 +101,10 @@ class TestCanView:
         )
 
     def test_denied_unsupported_future_role(
-        self, member_is_owner, member_is_viewer, caplog_loguru
+        self, member_is_owner_read_only, member_is_viewer_read_only, caplog_loguru
     ):
-        actor, actor_membership = member_is_owner
-        _, membership = member_is_viewer
+        actor, actor_membership = member_is_owner_read_only
+        _, membership = member_is_viewer_read_only
         TaskMembership.objects.filter(pk=actor_membership.id).update(role="non-role")
 
         with pytest.raises(RuntimeError):
@@ -106,9 +118,9 @@ class TestCanView:
             "CRITICAL",
         )
 
-    def test_is_efficient(self, member_is_owner, member_is_viewer, task_memberships):
-        actor, _ = member_is_owner
-        _, membership = member_is_viewer
+    def test_is_efficient(self, member_is_owner_read_only, member_is_viewer_read_only):
+        actor, _ = member_is_owner_read_only
+        _, membership = member_is_viewer_read_only
 
         with utils.CaptureQueriesContext(connection) as queries:
             TaskMembershipPolicy.can_view(actor, membership)
