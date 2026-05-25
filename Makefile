@@ -120,6 +120,20 @@ secruity-tests:
 	docker image rm -f tms-prod:test tms-prod-nginx:test
 	docker volume rm trivy-cache
 
+# Test dev image with trivy
+#
+security-scan-dev:
+	docker build -f prod/Dockerfile.ci -t tms:ci .
+
+	docker run --rm \
+		-v $(docker-socket):/var/run/docker.sock \
+		-v trivy-cache:/root/.cache/trivy \
+		aquasec/trivy image tms:ci
+
+docker image rm -f tms:ci
+	docker volume rm trivy-cache
+
+
 #
 # Generate file objects
 #
