@@ -149,7 +149,7 @@ docker image rm -f tms:ci
 #
 # Generate file objects
 #
-# Generate OpenAPI specfication
+# Generate OpenAPI specification
 #
 
 openapi:
