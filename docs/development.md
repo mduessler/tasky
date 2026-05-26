@@ -158,7 +158,7 @@ Infrastructure targets are documented in
 ## Environment Variables
 
 The development stack is configured via a `.env` file in the project root.
-Never commit this file to version control! Copy [`.env.example`](../.env.example)
+Never commit this file to version control! Copy [`.env.example`](../docs/.env.example)
 to `.env` and fill in the values.
 
 | Variable                 | Description                                                       | Example                                       |
