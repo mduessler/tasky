@@ -184,6 +184,10 @@ is used.
 | Access Token  | 15 min   |
 | Refresh Token | 1 days   |
 
+Refresh tokens are rotated on every use (with the previous token blacklisted),
+giving a sliding-window session: daily-active users stay authenticated indefinitely,
+inactive sessions expire after 24 hours.
+
 ### Why JWT
 
 JWT is stateless — the server does not store sessions. All required information
