@@ -346,7 +346,7 @@ The logging implementation is centralized within the core of the application:
   Logger configuration, sink definitions, and interception.
 - [**middleware.py**](../task_management_system/task_management_system/core/logging/middleware.py):
   Custom logging middleware for request tracking.
-- [**utils.py**](../task_management_system/task_management_system/core/logging/config.py)
+- [**utils.py**](../task_management_system/task_management_system/core/logging/utils.py)
   Context storage and thread-local "extra" dictionary management.
 
 ### Context Storage
