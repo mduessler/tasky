@@ -37,7 +37,7 @@ development stack:
 - **[Docker](https://www.docker.com/)**\
   Container runtime used to run services consistently across environments.
 - **[Docker Compose](https://docs.docker.com/compose/)**\
-  Tooling to orchestrate multi-service setups such as Neo4j and backend APIs.
+  Tooling to orchestrate multi-service setup of dev environment.
 - **[Make](https://www.gnu.org/software/make/)**\
   Task runner used to standardize common development and test commands.
 - **[Poetry](https://python-poetry.org/)** (`2.2.1`)\
