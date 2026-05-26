@@ -106,8 +106,13 @@ and ships through the CI/CD pipeline in this repository.
 
 ## Documentation
 
-- [Architecture](docs/architecture.md) — Data model, authentication, permissions, registration flow
+- [Architecture](docs/architecture.md) — Data model, authentication, permissions,
+  registration flow
 - [Development](docs/development.md) — Setup, environment variables, testing, logging
+- [CI/CD](docs/ci-cd.md) — Documentation of the CI/CD.
+- [Infrastructure](docs/infrastructure.md) — Documentation how to setup the infrastructure.
+- [requests.http](docs/requests.http) — A list of requests, for testing dev environment.
+- [OpenAPI](docs/openapi.yaml) — OpenAPI documentation.
 
 ## Repository Layout
 
