@@ -23,7 +23,7 @@ def cleanup_expired_tokens() -> None:
     max_retries=5,
 )
 def send_verification_email_task(self: object, user_id: int, token_id: int) -> None:
-    bind_context_dict(user=user_id, verification_toke=token_id)
+    bind_context_dict(user=user_id, verification_token=token_id)
     try:
         user = TmsUser.objects.get(pk=user_id)
         token_obj = EmailVerificationToken.objects.get(pk=token_id)
