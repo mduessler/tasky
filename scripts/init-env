@@ -2,17 +2,26 @@
 
 set -euo pipefail
 
-function generate_env_file() {
-    suffix="$1"
-    echo "INFO: No env${suffix} file found — generating .env from .env.example..."
-    cp ./docs/.env.example .env
+function generate_env_dev_file() {
+    tee .env.dev <<EOF
+DJANGO_SETTINGS_MODULE=task_management_system.settings.development
+SECRET_KEY=django-insecure-$(openssl rand -hex 32)
+DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1] 0.0.0.0
 
-    sed -i "s|^SECRET_KEY=.*|SECRET_KEY=$(openssl rand -hex 32)|" .env
-    sed -i "s|^JWT_SECRET_KEY=.*|JWT_SECRET_KEY=$(openssl rand -hex 32)|" .env
+SQL_ENGINE=django.db.backends.postgresql
+SQL_DB=postgres-dev
+SQL_USER=postgres
+SQL_PASSWORD=postgres
+SQL_HOST=db-dev
+SQL_PORT=5432
 
-    echo "INFO: Generated .env with random dev secrets."
-    echo "NOTIFICATION: Edit email_host_user / email_host_password if you need email features."
-    exit 0
+JWT_SECRET_KEY=$(openssl rand -hex 32)
+
+EMAIL_HOST=sandbox.smtp.mailtrap.io
+EMAIL_PORT=2525
+EMAIL_HOST_USER=<dein-mailtrap-user>
+EMAIL_HOST_PASSWORD=<dein-mailtrap-password>
+EOF
 
 }
 
@@ -21,18 +30,10 @@ if [ "$1" == "dev" ]; then
         echo "INFO: .env.dev already exists."
         exit 0
     fi
-    generate_env_file ".dev"
-elif [ "$1" == "prod" ]; then
-    # TODO: build prod environment.
-    if [ -f .env.prod ]; then
-        echo "INFO: .env.prod already exists."
-        exit 0
-    fi
-    generate_env_file ".prod"
+    echo "INFO: No .env.dev found. Generating one with predefined values."
+    generate_env_dev_file
+
 else
-    if [ -f .env ]; then
-        echo "INFO: .env.prod already exists."
-        exit 0
-    fi
-    generate_env_file ""
+    echo "WARNING: Read the section in the documentation."
+    exit 1
 fi

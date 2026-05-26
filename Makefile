@@ -35,7 +35,7 @@ aws-user-dev=tasky-dev
 .SILENT:
 .ONESHELL:
 up-dev:
-	./scripts/init-env
+	./scripts/init-env "dev"
 	docker compose --file $(file-dev) up -d
 	echo "Checking connection to database..."
 	while ! docker compose --file $(file-dev) exec $(service-dev) python manage.py check --database default; do
