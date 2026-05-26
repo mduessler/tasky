@@ -216,8 +216,6 @@ Infrastructure targets are documented in
 
 ## Environment Variables
 
-The development environment is configured via the `dev/.env.dev` file in the root
-directory. **Never commit this file to version control!**.
 The development stack is configured via a `.env` file in the project root.
 **Never commit `.env` to version control.** If no `.env` exists, `make up-dev`
 generates one from `docs/.env.example` with random secrets. The exceptions
