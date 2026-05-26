@@ -144,7 +144,7 @@ and *EMAIL_HOST_PASSWORD*. These values must always be set manually. However, th
 are only needed when a user is to be registered.
 
 ```shell
-make first-run   # 
+make first-run   
 ```
 
 The API is then available at:
