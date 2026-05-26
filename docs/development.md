@@ -328,7 +328,7 @@ Both services are started automatically via `make run-dev`.
 | Task                           | Type     | Description                                                                                                                                               |
 | ------------------------------ | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `send_verification_email_task` | Async    | Sends the verification email after registration. Retries up to 5 times on `SMTPException`, `ConnectionError`, or `TimeoutError` with exponential backoff. |
-| `cleanup_expired_tokens`       | Periodic | Deletes expired `EmailVerificationToken` entries. Runs every 60 seconds via Celery Beat.                                                                  |
+| `cleanup_expired_tokens`       | Periodic | Registers a task, which deletes all expired `EmailVerificationToken` and runs every 60 seconds via Celery Beat.                                           |
 
 ## Logging
 
