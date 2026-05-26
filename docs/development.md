@@ -62,10 +62,9 @@ This will:
 
 1. Build and start all containers
 2. Wait for the database to be ready
-3. Run migrations
-4. Import the default superuser
-5. Clean expired tokens
-6. Attach to the logs of all containers
+3. Run migrations (via [entrypoint](task_mangement_system/entrypoint))
+4. Clean expired tokens
+5. Attach to the logs of all containers
 
 The API is available at:
 
