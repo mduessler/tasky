@@ -182,7 +182,7 @@ is used.
 | Token         | Lifetime |
 | ------------- | -------- |
 | Access Token  | 15 min   |
-| Refresh Token | 1 days   |
+| Refresh Token | 1 day    |
 
 Refresh tokens are rotated on every use (with the previous token blacklisted),
 giving a sliding-window session: daily-active users stay authenticated indefinitely,
@@ -246,9 +246,9 @@ a user may have different roles across different tasks.
 | MEMBER | ✔️   | ✔️     | ❌²    | — ³           |
 | VIEWER | ✔️   | ❌     | ❌     | —             |
 
-> ² An author can delete its own node in a time frame of 2 hours after creation.
+> ² An author can delete its own note in a time frame of 2 hours after creation.
 
-> ³ An author can update its own node within of 2 hours after creation.
+> ³ An author can update its own note within of 2 hours after creation.
 
 ______________________________________________________________________
 
