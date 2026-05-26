@@ -80,6 +80,64 @@ The API is available at:
 
 The Swagger UI is available at `https://localhost:8443/api/docs/`.
 
+## Default Data
+
+`make seed-dev` populates the development database with default users and
+example tasks, memberships, and notes. It is the recommended starting point
+for trying out the API locally — every endpoint can be exercised against the
+seeded fixtures without manually creating users first.
+
+### Default Users
+
+Four users are created. `admin` is a superuser; the remaining accounts
+represent typical non-privileged users and are pre-assigned to the seeded
+tasks with different roles.
+
+| Username | Password   | Role      |
+| -------- | ---------- | --------- |
+| admin    | <password> | superuser |
+| user1    | <password> | user      |
+| user2    | <password> | user      |
+| user3    | <password> | user      |
+
+> These credentials exist only in the development environment. The seed
+> command does not run against production settings.
+
+### Running the Seed
+
+`make seed-dev` requires the development stack to already be running — it
+executes the seeding inside the running application container. Two equivalent
+workflows are supported:
+
+**Two terminals** (recommended — keeps container logs visible):
+
+```shell
+# Terminal 1 — start the stack and attach to logs
+make run-dev
+
+# Terminal 2 — seed once the stack is up
+make seed-dev
+```
+
+**Single terminal:**
+
+```shell
+make up-dev      # starts the stack detached
+make seed-dev    # seeds users and fixtures
+make run-dev     # attaches to the logs of the already-running stack
+```
+
+> `make up-dev` and `make run-dev` are documented in
+> [Make Commands → Development Environment](#development-environment).
+
+### Trying the API
+
+Example requests covering login, token refresh, and the main task endpoints
+— using the default users above — are provided in
+[`requests.http`](./requests.http). The file is compatible with the JetBrains
+HTTP client, the [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
+extension for VS Code, and [httpYac](https://httpyac.github.io/).
+
 ## Development Process
 
 ### Branches
@@ -272,29 +330,6 @@ Both services are started automatically via `make run-dev`.
 | ------------------------------ | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `send_verification_email_task` | Async    | Sends the verification email after registration. Retries up to 5 times on `SMTPException`, `ConnectionError`, or `TimeoutError` with exponential backoff. |
 | `cleanup_expired_tokens`       | Periodic | Deletes expired `EmailVerificationToken` entries. Runs every 60 seconds via Celery Beat.                                                                  |
-
-## Management Commands
-
-The following custom management commands are available:
-
-### `import_user`
-
-Creates a default superuser if no superuser exists yet. The command is
-automatically run on `make up-dev`.
-
-```shell
-python manage.py import_user
-```
-
-### `clean_tokens`
-
-Deletes all expired `EmailVerificationToken` entries from the database.
-The command is automatically run on `make up-dev` and periodically by
-Celery Beat every 60 seconds.
-
-```shell
-python manage.py clean_tokens
-```
 
 ## Logging
 
