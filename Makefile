@@ -47,8 +47,9 @@ up-dev:
 run-dev: up-dev
 	docker compose --file $(file-dev) logs -f
 
-makemigrations:
+makemigrations: up-dev
 	docker compose --file $(file-dev) exec $(service-dev) python manage.py makemigrations --no-input $(apps)
+	docker compose --file $(file-dev) down
 
 .ONESHELL:
 seed-dev:
