@@ -30,11 +30,13 @@ packer-dir = ./infrastructure/packer/environment/dev/gitlab-runner/
 aws-user-admin=tasky-admin
 aws-user-dev=tasky-dev
 
+
+.SILENT:
+.ONESHELL:
+
 #
 # Commands to run dev environment
 #
-.SILENT:
-.ONESHELL:
 up-dev:
 	./scripts/init-env "dev"
 	docker compose --file $(file-dev) up -d
@@ -52,7 +54,6 @@ makemigrations: up-dev
 	docker compose --file $(file-dev) exec $(service-dev) python manage.py makemigrations --no-input $(apps)
 	docker compose --file $(file-dev) down
 
-.ONESHELL:
 seed-dev:
 	echo "Checking connection to database..."
 	if ! docker compose --file $(file-dev) exec $(service-dev) python manage.py check --database default; then
@@ -68,7 +69,7 @@ seed-dev:
 
 # Command to run the  application the first time.
 #
-.ONESHELL:
+
 first-run: gen-cert-dev up-dev seed-dev run-dev
 
 #
@@ -76,16 +77,13 @@ first-run: gen-cert-dev up-dev seed-dev run-dev
 #
 down-dev:
 	docker compose --file $(file-dev) down
-.SILENT:
 stop-dev:
 	docker compose --file $(file-dev) stop
 
-.SILENT:
 clean-dev: stop-dev
 	docker compose --file $(file-dev) rm -f $(service-dev)
 	docker image rm $(service-dev)
 
-.SILENT:
 full-clean-dev: stop-dev
 	docker compose --file $(file-dev) rm -f
 	docker image rm $(service-dev) $(database-dev)
@@ -116,7 +114,6 @@ unit-tests-full: up-dev
 
 # Test python modules on vulnerabilities
 #
-.ONESHELL:
 security-tests:
 	# Build production images
 	docker build -f prod/Dockerfile -t tms-prod:test .
@@ -165,7 +162,6 @@ openapi:
 # Generate Certificats for Lets Encrypt
 #
 
-.ONESHELL:
 gen-cert-dev:
 	mkdir -p $(cert-path-dev)
 	openssl req -x509 -nodes -days 365 \
@@ -208,7 +204,6 @@ bootstrap-destroy:
 # Create AMI gitlab-runner image
 #
 
-.ONESHELL:
 create-runner-img:
 	cd $(packer-dir)
 	export AWS_PROFILE=$(aws-user-admin)
@@ -219,12 +214,10 @@ create-runner-img:
 # Commands to install or destroy a gitlab-runner
 #
 
-.ONESHELL:
 install-gitlab-runner:
 	export AWS_PROFILE=$(aws-user-dev)
 	./infrastructure/scripts/gitlab-runner install
 
-.ONESHELL:
 destroy-gitlab-runner:
 	export AWS_PROFILE=$(aws-user-dev)
 	./infrastructure/scripts/gitlab-runner destroy
