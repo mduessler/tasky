@@ -2,12 +2,12 @@
 name = "TaskManager"
 version = "0.1.0"
 description = "A simple task management system."
-authors = ["Max Düssler", "max.duessler@posteo.net"]
+authors = [{ name = "Max Düssler", email = "max.duessler@posteo.net" }]
 
 [tool.poetry.dependencies]
 python = ">=3.13.0 <3.14"
 django = "6.0.5"
-psycopg = {version = "3.2.5", extras = ["binary"]}
+psycopg = { version = "3.2.5", extras = ["binary"] }
 loguru = "0.7.3"
 pyjwt = "2.12.1"
 cryptography = "46.0.7"
