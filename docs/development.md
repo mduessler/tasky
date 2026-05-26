@@ -157,9 +157,13 @@ Infrastructure targets are documented in
 
 ## Environment Variables
 
+The development environment is configured via the `dev/.env.dev` file in the root
+directory. **Never commit this file to version control!**.
 The development stack is configured via a `.env` file in the project root.
-Never commit this file to version control! Copy [`.env.example`](../docs/.env.example)
-to `.env` and fill in the values.
+**Never commit `.env` to version control.** If no `.env` exists, `make up-dev`
+generates one from `docs/.env.example` with random secrets. The exceptions
+are `EMAIL_HOST_USER` and `EMAIL_HOST_PASSWORD` — these must be set manually
+if you want to test the email verification step of registration.
 
 | Variable                 | Description                                                       | Example                                       |
 | ------------------------ | ----------------------------------------------------------------- | --------------------------------------------- |
@@ -173,27 +177,10 @@ to `.env` and fill in the values.
 | `SQL_HOST`               | The database host — must match the service name in docker-compose | `db-dev`                                      |
 | `SQL_PORT`               | The database port                                                 | `5432`                                        |
 | `JWT_SECRET_KEY`         | The signing key used to sign and verify JWT tokens                | `a-very-strong-secret`                        |
-| `EMAIL_HOST`             | The SMTP host used by Celery to send verification emails          | `sandbox.smtp.mailtrap.io`                    |
+| `EMAIL_HOST`             | The SMTP host                                                     | `sandbox.smtp.mailtrap.io`                    |
 | `EMAIL_PORT`             | The SMTP port                                                     | `2525`                                        |
 | `EMAIL_HOST_USER`        | The SMTP user                                                     | `<mailtrap-user>`                             |
 | `EMAIL_HOST_PASSWORD`    | The SMTP password                                                 | `<mailtrap-password>`                         |
-
-> Variables for infrastructure work (`TF_VAR_*`, `AWS_PROFILE`) are documented
-> separately in [infrastructure.md](./infrastructure.md#environment-variables).
-
-## Environment files
-
-By default, the `Makefile` loads variables from `.env` in the project root.
-To use an environment-specific file, append `ENV=dev` or `ENV=prod` to the
-command — the corresponding `.env.dev` or `.env.prod` will be loaded instead:
-
-```shell
-make run-dev               # uses .env
-make run-dev ENV=dev       # uses .env.dev
-make run-dev ENV=prod      # uses .env.prod
-```
-
-Only `dev` and `prod` are accepted; any other value falls back to `.env`.
 
 ## Pre-commit
 
