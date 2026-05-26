@@ -47,7 +47,7 @@ email address before they can log in.
 | `is_active`    | BooleanField | default `False`                  |
 | `is_staff`     | BooleanField | default `False`                  |
 | `is_superuser` | BooleanField | default `False`                  |
-| `date_joined`  | DateTime     | auto-updated on every save       |
+| `date_joined`  | DateTime     | time when user joined.           |
 
 ______________________________________________________________________
 
