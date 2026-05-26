@@ -66,6 +66,11 @@ seed-dev:
 	docker compose --file $(file-dev) exec $(service-dev) python manage.py loaddata $(test-data)/task/task_notes.json
 
 
+# Command to run the  application the first time.
+#
+.ONESHELL:
+first-run: gen-cert-dev up-dev seed-dev run-dev
+
 #
 # Destroy and clean dev relicts
 #
