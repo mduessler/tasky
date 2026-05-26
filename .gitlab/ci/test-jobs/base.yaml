@@ -20,10 +20,10 @@
     POSTGRES_DB: postgres
     POSTGRES_USER: postgres
     POSTGRES_PASSWORD: postgres
-    email_host: sandbox.smtp.mailtrap.io
-    email_port: "2525"
-    email_host_user: $email_host_user
-    email_host_password: $email_host_password
+    EMAIL_HOST: sandbox.smtp.mailtrap.io
+    EMAIL_PORT: "2525"
+    EMAIL_HOST_USER: $email_host_user
+    EMAIL_HOST_PASSWORD: $email_host_password
   services:
     - name: postgres:18.4-alpine
       alias: postgres
