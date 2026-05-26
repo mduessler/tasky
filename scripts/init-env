@@ -19,8 +19,8 @@ JWT_SECRET_KEY=$(openssl rand -hex 32)
 
 EMAIL_HOST=sandbox.smtp.mailtrap.io
 EMAIL_PORT=2525
-EMAIL_HOST_USER=<dein-mailtrap-user>
-EMAIL_HOST_PASSWORD=<dein-mailtrap-password>
+EMAIL_HOST_USER=<your-mailtrap-user>
+EMAIL_HOST_PASSWORD=<your-mailtrap-password>
 EOF
 
 }
