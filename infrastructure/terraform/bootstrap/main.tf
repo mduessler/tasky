@@ -12,14 +12,6 @@ module "security_dev" {
   bucket_id = module.state_bucket_dev.id
 }
 
-module "terraform_locks_dev" {
-  source      = "./modules/dynamo_db"
-  environment = "dev"
-  tags = {
-    Component = "terraform-lock-table"
-  }
-}
-
 data "aws_iam_policy_document" "state_bucket_dev" {
   statement {
     sid     = "DenyNonTLS"
