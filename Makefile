@@ -144,7 +144,7 @@ security-scan-dev:
 		-v trivy-cache:/root/.cache/trivy \
 		aquasec/trivy image tms:ci
 
-docker image rm -f tms:ci
+	docker image rm -f tms:ci
 	docker volume rm trivy-cache
 
 
