@@ -26,9 +26,6 @@ and ships through the CI/CD pipeline in this repository.
 - **Two access-control paradigms in one codebase.** Tasks use RBAC (owner / member
   roles assigned through `TaskMembership`). User-to-user visibility uses ReBAC
   (a user is visible to another user only via a shared task membership).
-- **REST API** for users, tasks, memberships, and notes with API versioning
-  (`/api/v1/`), JWT authentication with token blacklisting on logout, and per-endpoint
-  throttling.
 - **Email-verification registration flow** backed by Celery + Redis, with scheduled
   cleanup of expired tokens via Celery Beat.
 - **Comprehensive test suite** — 213 test files executed in parallel across all
