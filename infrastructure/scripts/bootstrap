@@ -38,7 +38,7 @@ elif [[ "$1" == "create" ]]; then
 elif [[ "$1" == "destroy" ]]; then
 	echo "INFO: This operation is not allowed. Admin has to do it manually."
 else
-	echo "ERROR: Unkown command."
+	echo "ERROR: Unknown command."
 	help && exit 1
 fi
 exit 0
