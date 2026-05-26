@@ -2,16 +2,11 @@
 
 set -euo pipefail
 
-if [ ! -f ./docs/.env.example ]; then
-    echo "ERROR: This script needs to be executed in the root of the directory."
-    exit 1
-fi
-
 if [ -f .env ] || [ -f .env.dev ] || [ -f .env.prod ]; then
     exit 0
 fi
 
-if [ ! -f .env.example ]; then
+if [ ! -f ./docs/.env.example ]; then
     echo "ERROR: .env.example not found." >&2
     exit 1
 fi
