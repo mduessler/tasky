@@ -2,21 +2,37 @@
 
 set -euo pipefail
 
-if [ -f .env ] || [ -f .env.dev ] || [ -f .env.prod ]; then
+function generate_env_file() {
+    suffix="$1"
+    echo "INFO: No env${suffix} file found — generating .env from .env.example..."
+    cp ./docs/.env.example .env
+
+    sed -i "s|^SECRET_KEY=.*|SECRET_KEY=$(openssl rand -hex 32)|" .env
+    sed -i "s|^JWT_SECRET_KEY=.*|JWT_SECRET_KEY=$(openssl rand -hex 32)|" .env
+
+    echo "INFO: Generated .env with random dev secrets."
+    echo "NOTIFICATION: Edit email_host_user / email_host_password if you need email features."
     exit 0
+
+}
+
+if [ "$1" == "dev" ]; then
+    if [ -f .env.dev ]; then
+        echo "INFO: .env.dev already exists."
+        exit 0
+    fi
+    generate_env_file ".dev"
+elif [ "$1" == "prod" ]; then
+    # TODO: build prod environment.
+    if [ -f .env.prod ]; then
+        echo "INFO: .env.prod already exists."
+        exit 0
+    fi
+    generate_env_file ".prod"
+else
+    if [ -f .env ]; then
+        echo "INFO: .env.prod already exists."
+        exit 0
+    fi
+    generate_env_file ""
 fi
-
-if [ ! -f ./docs/.env.example ]; then
-    echo "ERROR: .env.example not found." >&2
-    exit 1
-fi
-
-echo "INFO: No env file found — generating .env from .env.example..."
-cp ./docs/.env.example .env
-
-sed -i "s|^SECRET_KEY=.*|SECRET_KEY=$(openssl rand -hex 32)|" .env
-sed -i "s|^JWT_SECRET_KEY=.*|JWT_SECRET_KEY=$(openssl rand -hex 32)|" .env
-
-echo "INFO: Generated .env with random dev secrets."
-echo "NOTIFICATION: Edit email_host_user / email_host_password if you need email features."
-exit 0
