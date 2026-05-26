@@ -26,6 +26,7 @@ test-data=/home/tms/web/tests/data
 docs = ./docs/
 docker-socket = $(shell docker context inspect --format '{{.Endpoints.docker.Host}}' | sed 's|unix://||')
 
+packer-dir = ./infrastructure/packer/environment/dev/gitlab-runner/
 aws-user-admin=tasky-admin
 aws-user-dev=tasky-dev
 
