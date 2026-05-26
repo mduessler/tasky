@@ -142,7 +142,7 @@ security-tests:
 # Test dev image with trivy
 #
 security-scan-dev:
-	docker build -f prod/Dockerfile.ci -t tms:ci .
+	docker build -f dev/Dockerfile.ci -t tms:ci .
 
 	docker run --rm \
 		-v $(docker-socket):/var/run/docker.sock \
