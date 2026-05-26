@@ -64,7 +64,7 @@ This will:
 
 1. Build and start all containers
 2. Wait for the database to be ready
-3. Run migrations (via [entrypoint](task_mangement_system/entrypoint))
+3. Run migrations (via [entrypoint](task_management_system/entrypoint))
 4. Clean expired tokens
 5. Attach to the logs of all containers
 
@@ -333,14 +333,14 @@ Both services are started automatically via `make run-dev`.
 ## Logging
 
 This chapter outlines the architecture and implementation of the logging system
-within the `task_mangement_system`. The system leverages the [loguru](https://github.com/delgan/loguru)
+within the `task_management_system`. The system leverages the [loguru](https://github.com/delgan/loguru)
 library to provide structured, context-aware logging across asynchronous requests
 and multiple threads.
 
 ### Directory Structure
 
 The logging implementation is centralized within the core of the application:
-`task_mangement_system/task_mangement_system/core/logging/`.
+`task_management_system/task_mangement_system/core/logging/`.
 
 - [**config.py**](../task_management_system/task_management_system/core/logging/config.py):
   Logger configuration, sink definitions, and interception.
