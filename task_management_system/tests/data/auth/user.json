@@ -150,7 +150,7 @@
     "first_name": "Jonas",
     "last_name": "Schneider",
     "email": "jonas@example.com",
-    "is_staff": false,
+    "is_staff": true,
     "is_active": true
   }
 ]
