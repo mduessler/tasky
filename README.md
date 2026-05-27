@@ -23,9 +23,9 @@ and ships through the CI/CD pipeline in this repository.
   `tms_auth`) separates view, service, policy, and model concerns. Business rules
   live in services, authorization decisions live in policies, DRF permission classes
   consume policies. No fat views, no fat models.
-- **Two access-control paradigms in one codebase.** Tasks use RBAC (owner / member
-  roles assigned through `TaskMembership`). User-to-user visibility uses ReBAC
-  (a user is visible to another user only via a shared task membership).
+- **Two access-control paradigms in one codebase.** Tasks use RBAC (OWNER, ADMIN,
+  MEMBER, VIEWER roles assigned through `TaskMembership`). User-to-user visibility
+  uses ReBAC (a user is visible to another user only via a shared task membership).
 - **Email-verification registration flow** backed by Celery + Redis, with scheduled
   cleanup of expired tokens via Celery Beat.
 - **Comprehensive test suite** — 213 test files executed in parallel across all
