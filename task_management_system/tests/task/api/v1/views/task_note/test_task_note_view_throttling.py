@@ -18,9 +18,9 @@ BASENAME = "note"
 
 @pytest.mark.django_db
 class TestThrottling:
-    def test_read_burst_throttle(self, superuser, api_client):
+    def test_read_burst_throttle(self, superuser_read_only, api_client):
         assert_burst_throttle(
-            superuser,
+            superuser_read_only,
             parse_url(BASENAME, "list"),
             "get",
             api_client,
@@ -31,9 +31,9 @@ class TestThrottling:
             TaskNoteReadSustained,
         )
 
-    def test_read_sustained_throttle(self, superuser, api_client):
+    def test_read_sustained_throttle(self, superuser_read_only, api_client):
         assert_sustained_throttle(
-            superuser,
+            superuser_read_only,
             parse_url(BASENAME, "list"),
             "get",
             api_client,
@@ -44,12 +44,14 @@ class TestThrottling:
             TaskNoteReadSustained,
         )
 
-    def test_delete_burst_throttle(self, superuser, task_note, api_client, monkeypatch):
+    def test_delete_burst_throttle(
+        self, superuser_read_only, task_note_read_only, api_client, monkeypatch
+    ):
         monkeypatch.setattr(TaskNoteService, "delete", lambda a, n: None)
 
         assert_burst_throttle(
-            superuser,
-            parse_url(BASENAME, "detail", task_note.id),
+            superuser_read_only,
+            parse_url(BASENAME, "detail", task_note_read_only.id),
             "delete",
             api_client,
             "task_note_delete",
@@ -59,12 +61,14 @@ class TestThrottling:
             TaskNoteDeleteSustained,
         )
 
-    def test_delete_sustained_throttle(self, superuser, task_note, api_client, monkeypatch):
+    def test_delete_sustained_throttle(
+        self, superuser_read_only, task_note_read_only, api_client, monkeypatch
+    ):
         monkeypatch.setattr(TaskNoteService, "delete", lambda a, n: None)
 
         assert_sustained_throttle(
-            superuser,
-            parse_url(BASENAME, "detail", task_note.id),
+            superuser_read_only,
+            parse_url(BASENAME, "detail", task_note_read_only.id),
             "delete",
             api_client,
             "task_note_delete",
@@ -74,12 +78,14 @@ class TestThrottling:
             TaskNoteDeleteSustained,
         )
 
-    def test_update_burst_throttle(self, superuser, task_note, api_client, monkeypatch):
-        monkeypatch.setattr(TaskNoteWriteSerializer, "save", lambda s: task_note)
+    def test_update_burst_throttle(
+        self, superuser_read_only, task_note_read_only, api_client, monkeypatch
+    ):
+        monkeypatch.setattr(TaskNoteWriteSerializer, "save", lambda s: task_note_read_only)
 
         assert_burst_throttle(
-            superuser,
-            parse_url(BASENAME, "detail", task_note.id),
+            superuser_read_only,
+            parse_url(BASENAME, "detail", task_note_read_only.id),
             "patch",
             api_client,
             "task_note_update",
@@ -89,12 +95,14 @@ class TestThrottling:
             TaskNoteUpdateSustained,
         )
 
-    def test_update_sustained_throttle(self, superuser, task_note, api_client, monkeypatch):
-        monkeypatch.setattr(TaskNoteWriteSerializer, "save", lambda s: task_note)
+    def test_update_sustained_throttle(
+        self, superuser_read_only, task_note_read_only, api_client, monkeypatch
+    ):
+        monkeypatch.setattr(TaskNoteWriteSerializer, "save", lambda s: task_note_read_only)
 
         assert_sustained_throttle(
-            superuser,
-            parse_url(BASENAME, "detail", task_note.id),
+            superuser_read_only,
+            parse_url(BASENAME, "detail", task_note_read_only.id),
             "patch",
             api_client,
             "task_note_update",

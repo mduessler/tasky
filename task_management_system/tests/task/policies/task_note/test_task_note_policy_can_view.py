@@ -11,17 +11,17 @@ class TestCanView:
     @pytest.mark.parametrize(
         "actor_fixture",
         [
-            "member_is_owner",
-            "member_is_admin",
-            "member_is_member",
-            "member_is_viewer",
+            "member_is_owner_read_only",
+            "member_is_admin_read_only",
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
         ],
     )
     def test_permission_granted_member(
-        self, actor_fixture, request, task_note, task_memberships, caplog_loguru
+        self, actor_fixture, request, task_note_read_only, caplog_loguru
     ):
         actor, actor_membership = request.getfixturevalue(actor_fixture)
-        result = TaskNotePolicy.can_view(actor, task_note)
+        result = TaskNotePolicy.can_view(actor, task_note_read_only)
 
         assert result is True
 
@@ -30,15 +30,15 @@ class TestCanView:
             log_record,
             "Permission granted to view task note: True",
             "DEBUG",
-            task=task_note.task.id,
-            note=task_note.id,
+            task=task_note_read_only.task.id,
+            note=task_note_read_only.id,
             actor_membership=actor_membership.id,
         )
 
     def test_permission_granted_superuser(
-        self, superuser, task_note, task_memberships, caplog_loguru
+        self, superuser_read_only, task_note_read_only, caplog_loguru
     ):
-        result = TaskNotePolicy.can_view(superuser, task_note)
+        result = TaskNotePolicy.can_view(superuser_read_only, task_note_read_only)
 
         assert result is True
 
@@ -47,15 +47,15 @@ class TestCanView:
             log_record,
             "Permission granted: Actor is superuser.",
             "INFO",
-            task=task_note.task.id,
-            note=task_note.id,
+            task=task_note_read_only.task.id,
+            note=task_note_read_only.id,
         )
 
     def test_permission_denied(
-        self, user_is_not_member, task_note, task_memberships, caplog_loguru
+        self, user_is_not_member_read_only, task_note_read_only, caplog_loguru
     ):
-        actor, _ = user_is_not_member
-        result = TaskNotePolicy.can_view(actor, task_note)
+        actor, _ = user_is_not_member_read_only
+        result = TaskNotePolicy.can_view(actor, task_note_read_only)
 
         assert result is False
 
@@ -64,18 +64,18 @@ class TestCanView:
             log_record,
             "Permission denied: User has no membership for task.",
             "WARNING",
-            task=task_note.task.id,
-            note=task_note.id,
+            task=task_note_read_only.task.id,
+            note=task_note_read_only.id,
         )
 
     def test_denied_unsupported_future_role(
-        self, member_is_owner, task_note, task_memberships, caplog_loguru
+        self, member_is_owner_read_only, task_note_read_only, caplog_loguru
     ):
-        actor, actor_membership = member_is_owner
+        actor, actor_membership = member_is_owner_read_only
         TaskMembership.objects.filter(pk=actor_membership.id).update(role="non-role")
 
         with pytest.raises(RuntimeError):
-            TaskNotePolicy.can_view(actor, task_note)
+            TaskNotePolicy.can_view(actor, task_note_read_only)
 
         log_record = caplog_loguru.records[-1]
         assert_log(
@@ -85,8 +85,8 @@ class TestCanView:
             "CRITICAL",
         )
 
-    def test_is_efficient(self, member_is_viewer, task_note):
-        actor, _ = member_is_viewer
+    def test_is_efficient(self, member_is_viewer_read_only, task_note):
+        actor, _ = member_is_viewer_read_only
 
         with utils.CaptureQueriesContext(connection) as queries:
             TaskNotePolicy.can_view(actor, task_note)

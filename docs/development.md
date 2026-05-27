@@ -1,16 +1,22 @@
 # Development
 
+- [Prerequisites](#prerequisites)
 - [Getting Started](#getting-started)
-- [Development Process Overview](#development-process-overview)
-  - [Branch Structure](#branch-structure)
-  - [Development Workflow](#development-workflow)
-    - [1. Issue Creation](#1-issue-creation)
-    - [2. Feature Development](#2-feature-development)
-    - [3. Merging into dev](#3-merging-into-dev)
-    - [4. Release to main](#4-release-to-main)
-  - [Hotfix Workflow (Special Case)](#hotfix-workflow-special-case)
-- [Dev Dependencies](#dev-dependencies)
-- [Makefile Commands](#makefile-commands)
+- [Default Data](#default-data)
+  - [Default Users](#default-users)
+  - [Running the Seed](#running-the-seed)
+  - [Trying the API](#trying-the-api)
+- [Development Process](#development-process)
+  - [Branches](#branches)
+  - [Workflow](#workflow)
+  - [Hotfixes](#hotfixes)
+- [Make Commands](#make-commands)
+  - [Local Setup](#local-setup)
+  - [Development Environment](#development-environment)
+  - [Database & Seed Data](#database--seed-data)
+  - [Tests](#tests)
+  - [Generated Artifacts](#generated-artifacts)
+  - [Infrastructure](#infrastructure)
 - [Environment Variables](#environment-variables)
 - [Pre-commit](#pre-commit)
 - [Testing](#testing)
@@ -19,29 +25,36 @@
   - [Factories & Fixtures](#factories--fixtures)
 - [Celery](#celery)
   - [Tasks](#tasks)
-- [Management Commands](#management-commands)
-  - [`import_user`](#import_user)
-  - [`clean_tokens`](#clean_tokens)
 - [Logging](#logging)
   - [Directory Structure](#directory-structure)
   - [Context Storage](#context-storage)
   - [Other Variables](#other-variables)
-- [OpenAPI schema generation with Django Spectacular](#openapi-schema-generation-with-django-spectacular)
-  - [Explanation](#explanation)
+- [OpenAPI Schema](#openapi-schema)
 
-## Getting Started
+## Prerequisites
 
-The development stack runs entirely in Docker. The following tools must be
-installed on your machine:
+The following tools must be installed on your machine before you can run the
+development stack:
 
 - **[Docker](https://www.docker.com/)**\
   Container runtime used to run services consistently across environments.
 - **[Docker Compose](https://docs.docker.com/compose/)**\
-  Tooling to orchestrate multi-service setups such as Neo4j and backend APIs.
+  Tooling to orchestrate multi-service setup of dev environment.
 - **[Make](https://www.gnu.org/software/make/)**\
   Task runner used to standardize common development and test commands.
+- **[Poetry](https://python-poetry.org/)** (`2.2.1`)\
+  Python packaging and dependency management.
+  > Installation can be done with Make. Instructions listed below.
+- **[pre-commit](https://pre-commit.com/)** (`4.6.0`)\
+  Git hooks framework used to enforce code quality checks before commits.
+  > Installation can be done with Make. Instructions listed below.
+- **[Infrastructure](./infrastructure.md)**\
+  The dependencies to install, modify or delete the infrastructure are defined
+  in the documentation of the infrastructure.
 
-To start the development stack run:
+## Getting Started
+
+The development stack runs entirely in Docker. To start it, run:
 
 ```shell
 make run-dev
@@ -51,10 +64,9 @@ This will:
 
 1. Build and start all containers
 2. Wait for the database to be ready
-3. Run migrations
-4. Import the default superuser
-5. Clean expired tokens
-6. Attach to the logs of all containers
+3. Run migrations (via [entrypoint](task_management_system/entrypoint))
+4. Clean expired tokens
+5. Attach to the logs of all containers
 
 The API is available at:
 
@@ -69,101 +81,145 @@ The API is available at:
 
 The Swagger UI is available at `https://localhost:8443/api/docs/`.
 
-## Development Process Overview
+## Default Data
 
-This section describes the standard development workflow used in this repository.
+`make seed-dev` populates the development database with default users and
+example tasks, memberships, and notes. It is the recommended starting point
+for trying out the API locally — every endpoint can be exercised against the
+seeded fixtures without manually creating users first.
 
-### Branch Structure
+### Default Users
 
-The repository uses two long-lived default branches:
+Fourteen users are created. One of them is a superuser. For testing purposes,
+using 2 users is sufficient. The login credentials for the 2 users are listed
+below. Otherwise, the [`request.http`](./requests.http) file contains a request
+for each API endpoint. These users only exists in the development environment.
 
-- **main** → Production-ready code
-- **dev** → Active development integration branch
+| Email             | Password     | Role      |
+| ----------------- | ------------ | --------- |
+| max@example.com   | customXXXX1  | user      |
+| jonas@example.com | customXXXX14 | superuser |
 
-Both branches are protected to ensure stability and enforce the review process.
+> These credentials exist only in the development environment. The seed
+> command does not run against production settings.
 
-### Development Workflow
+### Running the Seed
 
-#### 1. Issue Creation
+`make seed-dev` requires the development stack to already be running — it
+executes the seeding inside the running application container. Two equivalent
+workflows are supported:
 
-All development work must start with an issue.
+**Two terminals** (recommended — keeps container logs visible):
 
-Issues are created from the dev branch and represent a single unit of work, such as:
+```shell
+# Terminal 1 — start the stack and attach to logs
+make run-dev
 
-- Feature
-- Bug Fix
-- Design change
-- Refactor
-- Other general development tasks
+# Terminal 2 — seed once the stack is up
+make seed-dev
+```
 
-#### 2. Feature Development
+**Single terminal:**
 
-For each issue:
+```shell
+make up-dev      # starts the stack detached
+make seed-dev    # seeds users and fixtures
+make run-dev     # attaches to the logs of the already-running stack
+```
 
-- A new branch is created from dev
-- Development is performed on that branch
-- Changes are committed and pushed regularly
-- A merge request is created back into dev
+> `make up-dev` and `make run-dev` are documented in
+> [Make Commands → Development Environment](#development-environment).
 
-#### 3. Merging into dev
+### Trying the API
 
-Once the work for an issue is completed:
+Example requests covering login, token refresh, and the main task endpoints
+— using the default users above — are provided in
+[`requests.http`](./requests.http). The file is compatible with the JetBrains
+HTTP client, the [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
+extension for VS Code, and [httpYac](https://httpyac.github.io/).
 
-- The merge request is reviewed
-- After approval, it is merged into dev
-- The feature becomes part of the development integration branch
+## Development Process
 
-#### 4. Release to main
+### Branches
 
-When a sufficient number of features or fixes have been integrated into dev:
+Two long-lived branches:
 
-- dev is merged into main
-- A release is created from the updated main branch
+- **`main`** — production-ready, protected, only updated via release merges from `dev` or hotfixes.
+- **`dev`** — integration branch, protected, target for all feature work.
 
-This ensures that main always reflects a stable, production-ready state.
+### Workflow
 
-### Hotfix Workflow (Special Case)
+1. **Open an issue** describing the work (feature, bug, refactor, etc.).
+2. **Create a branch from `dev`** named `<type>/<issue-id>-<short-description>`
+   (e.g. `feature/142-token-cleanup`).
+3. **Commit and push** regularly. Reference the issue ID in commit messages.
+4. **Open a merge request into `dev`**. At least one approval is required before
+   merging.
+5. **Release**: once enough changes have accumulated on `dev`, it is merged into
+   `main` and tagged following [SemVer](https://semver.org/).
 
-Hotfixes are urgent fixes for critical issues in production.
+### Hotfixes
 
-- Hotfix branches are created from main (not dev)
-- Once the fix is completed and verified, it is merged directly into main
-- The same fix must also be merged back into dev to keep branches consistent
-- Hotfixes bypass the normal release cycle due to their urgency
+Critical production issues bypass the normal cycle:
 
-## Dev Dependencies
+1. Branch from `main` as `hotfix/<issue-id>-<short-description>`.
+2. Merge the fix into `main` and tag a patch release.
+3. Merge `main` back into `dev` to keep the branches in sync.
 
-The following tools must be installed manually and are only required for
-local development outside of Docker:
+## Make Commands
 
-- **[Poetry](https://python-poetry.org/)** (`2.2.1`)\
-  Dependency management.
-- **[pre-commit](https://pre-commit.com/)** (`4.6.0`)\
-  Git hooks framework used to enforce code quality checks before commits.
+The `Makefile` provides shortcuts for the most common development, test and
+infrastructure tasks. All commands are invoked from the repository root via
+`make <target>`.
 
-## Makefile Commands
+### Local Setup
 
-All commands are run from the root directory of the project.
+| Command           | Description                                                 |
+| ----------------- | ----------------------------------------------------------- |
+| `make poetry`     | Install Poetry (version `2.2.1`) via `pipx`.                |
+| `make pre-commit` | Install project dependencies and register pre-commit hooks. |
 
-| Command               | Description                                                                               |
-| --------------------- | ----------------------------------------------------------------------------------------- |
-| `make run-dev`        | Starts the full dev stack and attaches to the logs                                        |
-| `make up-dev`         | Starts the full dev stack without attaching to the logs                                   |
-| `make down-dev`       | Stops and removes all containers                                                          |
-| `make stop-dev`       | Stops all containers without removing them                                                |
-| `make clean-dev`      | Stops and removes the app container and its image                                         |
-| `make full-clean-dev` | Stops and removes all containers, images and the database volume                          |
-| `make tests`          | Starts the dev stack, runs the default test suite and stops the stack                     |
-| `make tests-full`     | Starts the dev stack, runs the full test suite including timing tests and stops the stack |
-| `make gen-cert-dev`   | Generates a self-signed SSL certificate for local/dev nginx                               |
-| `make openapi`        | Generates the openapi.yaml file                                                           |
-| `make pre-commit`     | Installs the pre-commit                                                                   |
+### Development Environment
+
+| Command               | Description                                                                  |
+| --------------------- | ---------------------------------------------------------------------------- |
+| `make up-dev`         | Build and start all containers, wait for the database, clean expired tokens. |
+| `make run-dev`        | Same as `up-dev` and additionally attach to the logs of all containers.      |
+| `make stop-dev`       | Stop all running dev containers without removing them.                       |
+| `make down-dev`       | Stop and remove dev containers (keeps images and volumes).                   |
+| `make clean-dev`      | Stop and remove the application container and its image.                     |
+| `make full-clean-dev` | Stop and remove all containers, images and the database volume.              |
+
+### Database & Seed Data
+
+| Command               | Description                                          |
+| --------------------- | ---------------------------------------------------- |
+| `make makemigrations` | Generate Django migrations for the project apps.     |
+| `make seed-dev`       | Import the default superuser and load test fixtures. |
+
+### Tests
+
+Test targets are documented in the [Testing](#Testing) section.
+
+### Generated Artifacts
+
+| Command             | Description                                                         |
+| ------------------- | ------------------------------------------------------------------- |
+| `make openapi`      | Generate the OpenAPI specification at `docs/openapi.yaml`.          |
+| `make gen-cert-dev` | Generate a self-signed certificate for local HTTPS in `dev/certs/`. |
+
+### Infrastructure
+
+Infrastructure targets are documented in
+[infrastructure.md](./infrastructure.md#How-to-run-all).
 
 ## Environment Variables
 
-The development environment is configured via the `dev/.env.dev` file in the root
-directory. Never commit this file to version control — use `.env.example` as
-a reference instead.
+The development stack is configured via a `.env.dev` file in the project root.
+**Never commit `.env*` to version control.** If no `.env*` exists, `make up-dev`
+generates one from `docs/.env.example` with random secrets. The exceptions
+are `EMAIL_HOST_USER` and `EMAIL_HOST_PASSWORD` — these must be set manually
+if you want to test the email verification step of registration.
 
 | Variable                 | Description                                                       | Example                                       |
 | ------------------------ | ----------------------------------------------------------------- | --------------------------------------------- |
@@ -185,46 +241,50 @@ a reference instead.
 ## Pre-commit
 
 Pre-commit runs a set of hooks before every commit to ensure code quality and
-consistency. The following hooks are configured:
+consistency. If a hook fails, the commit is aborted; formatting hooks will
+modify files in place, so you can simply `git add` the changes and commit again.
 
-| Hook           | Description                            |
-| -------------- | -------------------------------------- |
-| `black`        | Code formatting                        |
-| `isort`        | Import sorting                         |
-| `flake8`       | Linting                                |
-| `mypy`         | Static type checking (strict mode)     |
-| `bandit`       | Security linting                       |
-| `hadolint`     | Dockerfile linting                     |
-| `yamlfmt`      | YAML formatting                        |
-| `djlint`       | Django template linting and formatting |
-| `markdownlint` | Markdown linting                       |
-| `mdformat`     | Markdown formatting                    |
-| `shfmt`        | Shell script formatting                |
-| `bashate`      | Shell script linting                   |
-| `poetry-check` | Validates `pyproject.toml`             |
-| `poetry-lock`  | Ensures `poetry.lock` is up to date    |
+The following hooks are configured:
+
+| Hook           | Description                         |
+| -------------- | ----------------------------------- |
+| `black`        | Code formatting                     |
+| `isort`        | Import sorting                      |
+| `flake8`       | Linting                             |
+| `mypy`         | Static type checking (strict mode)  |
+| `bandit`       | Security linting                    |
+| `poetry-check` | Validates `pyproject.toml`          |
+| `poetry-lock`  | Ensures `poetry.lock` is up to date |
+| `yamlfmt`      | YAML formatting                     |
+| `hadolint`     | Dockerfile linting                  |
+| `shellcheck`   | Shell script linting                |
+| `shfmt`        | Shell script formatting             |
+| `markdownlint` | Markdown linting                    |
+| `mdformat`     | Markdown formatting                 |
 
 To install the hooks run:
 
 ```shell
-pip install pre-commit
-pre-commit install
+make pre-commit
 ```
 
-The hooks will now run automatically before every commit. To run them manually:
-
-```shell
-pre-commit run --all-files
-```
+> The same hooks run in CI, so bypassing them locally with `--no-verify` will
+> only delay the failure.
 
 ## Testing
 
 Tests are run via pytest. The test suite is split into two groups:
 
-| Command           | Description                                     |
-| ----------------- | ----------------------------------------------- |
-| `make tests`      | Runs the default test suite                     |
-| `make tests-full` | Runs the full test suite including timing tests |
+| Command                  | Description                                                     |
+| ------------------------ | --------------------------------------------------------------- |
+| `make tests`             | Run unit tests and security tests in sequence.                  |
+| `make unit-tests`        | Run pytest, excluding tests marked `timing`.                    |
+| `make unit-tests-full`   | Run pytest including the `timing` suite.                        |
+| `make security-tests`    | Build production images, run `pip-audit`, then scan with Trivy. |
+| `make security-scan-dev` | Build the CI dev image and scan it with Trivy.                  |
+
+> All tests are also executed in CI when a merge request targets a [long-lived branch](#branches).
+> Failing tests block the pipeline and prevent merging.
 
 ### Configuration
 
@@ -233,9 +293,10 @@ with 10 workers by default (`-n 10`).
 
 ### Markers
 
-| Marker   | Description                                                                                                          |
-| -------- | -------------------------------------------------------------------------------------------------------------------- |
-| `timing` | Tests that verify time-sensitive behavior such as token expiry or note edit windows. Only run with `make tests-full` |
+| Marker   | Description                                                                                  |
+| -------- | -------------------------------------------------------------------------------------------- |
+| `timing` | Timing side-channel tests for passphrase verification. Only run with `make unit-tests-full`. |
+| `slow`   | Tests that take noticeably longer to run. Skip with `-m "not slow"`.                         |
 
 ### Factories & Fixtures
 
@@ -243,6 +304,11 @@ The test suite uses [**factory-boy**](https://factoryboy.readthedocs.io/) to gen
 test data. Shared factories and fixtures are defined under `tests/fixtures/` and
 are available across all tests. App-specific fixtures are defined in the respective
 `conftest.py` files.
+
+Each fixture also has a read-only counterpart suffixed with `_read_only`. These
+use `scope="class"` so the underlying objects are created once per test class
+instead of per test, reducing overall test runtime. Use them whenever a test
+only reads from the fixture and does not modify its state.
 
 ## Celery
 
@@ -261,48 +327,25 @@ Both services are started automatically via `make run-dev`.
 | Task                           | Type     | Description                                                                                                                                               |
 | ------------------------------ | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `send_verification_email_task` | Async    | Sends the verification email after registration. Retries up to 5 times on `SMTPException`, `ConnectionError`, or `TimeoutError` with exponential backoff. |
-| `cleanup_expired_tokens`       | Periodic | Deletes expired `EmailVerificationToken` entries. Runs every 60 seconds via Celery Beat.                                                                  |
-
-## Management Commands
-
-The following custom management commands are available:
-
-### `import_user`
-
-Creates a default superuser if no superuser exists yet. The command is
-automatically run on `make up-dev`.
-
-```shell
-python manage.py import_user
-```
-
-### `clean_tokens`
-
-Deletes all expired `EmailVerificationToken` entries from the database.
-The command is automatically run on `make up-dev` and periodically by
-Celery Beat every 60 seconds.
-
-```shell
-python manage.py clean_tokens
-```
+| `cleanup_expired_tokens`       | Periodic | Registers a task, which deletes all expired `EmailVerificationToken` and runs every 60 seconds via Celery Beat.                                           |
 
 ## Logging
 
 This chapter outlines the architecture and implementation of the logging system
-within the `task_mangement_system`. The system leverages the [loguru](https://github.com/delgan/loguru)
+within the `task_management_system`. The system leverages the [loguru](https://github.com/delgan/loguru)
 library to provide structured, context-aware logging across asynchronous requests
 and multiple threads.
 
 ### Directory Structure
 
 The logging implementation is centralized within the core of the application:
-`task_mangement_system/task_mangement_system/core/logging/`.
+`task_management_system/task_management_system/core/logging/`.
 
 - [**config.py**](../task_management_system/task_management_system/core/logging/config.py):
   Logger configuration, sink definitions, and interception.
 - [**middleware.py**](../task_management_system/task_management_system/core/logging/middleware.py):
   Custom logging middleware for request tracking.
-- [**utils.py**](../task_management_system/task_management_system/core/logging/config.py)
+- [**utils.py**](../task_management_system/task_management_system/core/logging/utils.py)
   Context storage and thread-local "extra" dictionary management.
 
 ### Context Storage
@@ -332,18 +375,14 @@ conventions and unified logging across the entire system.
 - **membership**: Task membership identifier
 - **note**: Task note identifier
 
-______________________________________________________________________
+## OpenAPI Schema
 
-## OpenAPI schema generation with Django Spectacular
-
-We use Django Spectacular to generate the `openapi.yaml` specification for the API.
-
-In most cases, the schema is generated automatically from the default serializer
-configuration. However, if a custom serializer setup is used (for example different
-serializers for request and response bodies), the schema must be explicitly attached
-to the corresponding class or function using `@extend_schema`.
-
-Example:
+The `openapi.yaml` specification is generated with
+[drf-spectacular](https://drf-spectacular.readthedocs.io/). In most cases the
+schema is inferred from the default serializer setup. Use `@extend_schema` when
+an endpoint deviates from this — for example, when request and response use
+different serializers, or when the endpoint lives outside the default
+`api/v1/...` prefix and needs an explicit `tags` entry.
 
 ```python
 @extend_schema(
@@ -353,16 +392,5 @@ Example:
 )
 ```
 
-### Explanation
-
-- `request`\
-  Defines the serializer used for the incoming request body.
-
-- `responses`\
-  Defines the serializer returned by the endpoint.\
-  In this example, HTTP `201 Created` responses use `RegisterReadSerializer`.
-
-- `tags`\
-  Groups the endpoint in the generated OpenAPI documentation.\
-  This is only required if the endpoint path is **not** located under the default
-  API prefix (e.g. `api/v1/...`).
+See the [drf-spectacular documentation](https://drf-spectacular.readthedocs.io/)
+for the full set of options.

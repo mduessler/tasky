@@ -8,11 +8,11 @@ class TestCanCreate:
     @pytest.mark.parametrize(
         "actor_fixture",
         [
-            "member_is_owner",
-            "member_is_admin",
-            "member_is_member",
-            "member_is_viewer",
-            "user_is_not_member",
+            "member_is_owner_read_only",
+            "member_is_admin_read_only",
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
+            "user_is_not_member_read_only",
         ],
     )
     def test_permission_granted(self, actor_fixture, request, caplog_loguru):
@@ -24,8 +24,8 @@ class TestCanCreate:
         log_record = caplog_loguru.records[-1]
         assert_log(log_record, "Permission granted to create task: True.", "DEBUG")
 
-    def test_permission_granted_superuser(self, superuser, caplog_loguru):
-        result = TaskPolicy.can_create(superuser)
+    def test_permission_granted_superuser(self, superuser_read_only, caplog_loguru):
+        result = TaskPolicy.can_create(superuser_read_only)
 
         assert result is True
 

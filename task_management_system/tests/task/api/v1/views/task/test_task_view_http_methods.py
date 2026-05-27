@@ -11,6 +11,18 @@ BASENAME = "task"
 
 @pytest.mark.django_db
 class TestHttpMethods:
+    @pytest.fixture(scope="class", autouse=True)
+    def preload(
+        self,
+        member_is_owner_read_only,
+        member_is_admin_read_only,
+        member_is_member_read_only,
+        member_is_viewer_read_only,
+        user_is_not_member_read_only,
+        superuser_read_only,
+    ):
+        pass
+
     @pytest.mark.parametrize(
         "actor_fixture",
         [
@@ -80,12 +92,12 @@ class TestHttpMethods:
     @pytest.mark.parametrize(
         "actor_fixture",
         [
-            "member_is_owner",
-            "member_is_admin",
-            "member_is_member",
-            "member_is_viewer",
-            "superuser_is_not_member",
-            "user_is_not_member",
+            "member_is_owner_read_only",
+            "member_is_admin_read_only",
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
+            "superuser_is_not_member_read_only",
+            "user_is_not_member_read_only",
         ],
     )
     @pytest.mark.parametrize(
@@ -95,11 +107,11 @@ class TestHttpMethods:
         ],
     )
     def test_forbidden(
-        self, actor_fixture, method, url_name, request, task, data_task, api_client
+        self, actor_fixture, method, url_name, request, task_read_only, data_task, api_client
     ):
         actor, _ = request.getfixturevalue(actor_fixture)
 
-        url = parse_url(BASENAME, url_name, task.id)
+        url = parse_url(BASENAME, url_name, task_read_only.id)
 
         api_client.force_authenticate(user=actor)
         response = getattr(api_client, method)(url, data=data_task)

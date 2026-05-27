@@ -8,9 +8,11 @@ from tests.utils import assert_log
 
 @pytest.mark.django_db
 class TestCanUpdate:
-    def test_permission_granted_superuser(self, superuser, member_is_member, caplog_loguru):
-        _, membership = member_is_member
-        result = TaskMembershipPolicy.can_update(superuser, membership, {"any_field"})
+    def test_permission_granted_superuser(
+        self, superuser_read_only, member_is_member_read_only, caplog_loguru
+    ):
+        _, membership = member_is_member_read_only
+        result = TaskMembershipPolicy.can_update(superuser_read_only, membership, {"any_field"})
 
         assert result is True
 
@@ -23,9 +25,11 @@ class TestCanUpdate:
             membership=membership.id,
         )
 
-    def test_owner_allowed_fields(self, member_is_owner, member_is_member, caplog_loguru):
-        actor, actor_membership = member_is_owner
-        _, membership = member_is_member
+    def test_owner_allowed_fields(
+        self, member_is_owner_read_only, member_is_member_read_only, caplog_loguru
+    ):
+        actor, actor_membership = member_is_owner_read_only
+        _, membership = member_is_member_read_only
 
         result = TaskMembershipPolicy.can_update(actor, membership, {"role"})
 
@@ -42,10 +46,10 @@ class TestCanUpdate:
         )
 
     def test_owner_denied_restricted_fields(
-        self, member_is_owner, member_is_member, caplog_loguru
+        self, member_is_owner_read_only, member_is_member_read_only, caplog_loguru
     ):
-        actor, actor_membership = member_is_owner
-        _, membership = member_is_member
+        actor, actor_membership = member_is_owner_read_only
+        _, membership = member_is_member_read_only
         requested = {"user", "task"}
 
         result = TaskMembershipPolicy.can_update(actor, membership, requested)
@@ -63,9 +67,11 @@ class TestCanUpdate:
             membership=membership.id,
         )
 
-    def test_admin_allowed_fields(self, member_is_admin, member_is_member, caplog_loguru):
-        actor, actor_membership = member_is_admin
-        _, membership = member_is_member
+    def test_admin_allowed_fields(
+        self, member_is_admin_read_only, member_is_member_read_only, caplog_loguru
+    ):
+        actor, actor_membership = member_is_admin_read_only
+        _, membership = member_is_member_read_only
         result = TaskMembershipPolicy.can_update(actor, membership, {"role"})
 
         assert result is True
@@ -80,12 +86,14 @@ class TestCanUpdate:
             membership=membership.id,
         )
 
-    @pytest.mark.parametrize("role_fixture", ["member_is_member", "member_is_viewer"])
+    @pytest.mark.parametrize(
+        "role_fixture", ["member_is_member_read_only", "member_is_viewer_read_only"]
+    )
     def test_permission_denied_disallowed_roles(
-        self, role_fixture, request, member_is_owner, caplog_loguru
+        self, role_fixture, request, member_is_owner_read_only, caplog_loguru
     ):
         actor, actor_membership = request.getfixturevalue(role_fixture)
-        _, membership = member_is_owner
+        _, membership = member_is_owner_read_only
         result = TaskMembershipPolicy.can_update(actor, membership, {"role"})
 
         assert result is False
@@ -101,10 +109,10 @@ class TestCanUpdate:
         )
 
     def test_denied_unsupported_future_role(
-        self, member_is_owner, member_is_viewer, caplog_loguru
+        self, member_is_owner_read_only, member_is_viewer_read_only, caplog_loguru
     ):
-        actor, actor_membership = member_is_owner
-        _, membership = member_is_viewer
+        actor, actor_membership = member_is_owner_read_only
+        _, membership = member_is_viewer_read_only
         TaskMembership.objects.filter(pk=actor_membership.id).update(role="non-role")
 
         with pytest.raises(RuntimeError):
@@ -118,9 +126,9 @@ class TestCanUpdate:
             "CRITICAL",
         )
 
-    def test_is_efficient(self, member_is_owner, member_is_viewer):
-        actor, _ = member_is_owner
-        _, membership = member_is_viewer
+    def test_is_efficient(self, member_is_owner_read_only, member_is_viewer_read_only):
+        actor, _ = member_is_owner_read_only
+        _, membership = member_is_viewer_read_only
 
         with utils.CaptureQueriesContext(connection) as queries:
             TaskMembershipPolicy.can_update(actor, membership, {"role"})

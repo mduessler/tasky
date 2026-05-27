@@ -18,15 +18,6 @@ repos:
       - id: detect-private-key
       - id: end-of-file-fixer
       - id: trailing-whitespace
-  - repo: https://github.com/scop/pre-commit-shfmt
-    rev: v3.10.0-2
-    hooks:
-      - id: shfmt
-        args: ["-i", "4", "-bn", "-ci"]
-  - repo: https://github.com/openstack/bashate
-    rev: 2.1.1
-    hooks:
-      - id: bashate
   - repo: https://github.com/markdownlint/markdownlint
     rev: v0.12.0
     hooks:
@@ -40,7 +31,7 @@ repos:
         additional_dependencies:
           - mdformat-gfm
   - repo: https://github.com/psf/black
-    rev: 25.1.0
+    rev: 26.3.1
     hooks:
       - id: black
         exclude: ^.*/migrations/
@@ -102,3 +93,12 @@ repos:
             Dockerfile |
             Dockerfile.nginx |
           )
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.11.0.1
+    hooks:
+      - id: shellcheck
+  - repo: https://github.com/scop/pre-commit-shfmt
+    rev: v3.13.1-1
+    hooks:
+      - id: shfmt
+        args: ["-w"]

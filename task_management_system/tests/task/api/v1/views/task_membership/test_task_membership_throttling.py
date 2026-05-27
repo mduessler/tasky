@@ -22,9 +22,9 @@ BASENAME = "membership"
 
 @pytest.mark.django_db
 class TestThrottling:
-    def test_read_burst_throttle(self, superuser, api_client):
+    def test_read_burst_throttle(self, superuser_read_only, api_client):
         assert_burst_throttle(
-            superuser,
+            superuser_read_only,
             parse_url(BASENAME, "list"),
             "get",
             api_client,
@@ -35,9 +35,9 @@ class TestThrottling:
             TaskMembershipReadSustained,
         )
 
-    def test_read_sustained_throttle(self, superuser, api_client):
+    def test_read_sustained_throttle(self, superuser_read_only, api_client):
         assert_sustained_throttle(
-            superuser,
+            superuser_read_only,
             parse_url(BASENAME, "list"),
             "get",
             api_client,
@@ -48,12 +48,14 @@ class TestThrottling:
             TaskMembershipReadSustained,
         )
 
-    def test_delete_burst_throttle(self, superuser, task_membership, api_client, monkeypatch):
+    def test_delete_burst_throttle(
+        self, superuser_read_only, task_membership_read_only, api_client, monkeypatch
+    ):
         monkeypatch.setattr(TaskMembershipService, "delete", lambda a, m: None)
 
         assert_burst_throttle(
-            superuser,
-            parse_url(BASENAME, "detail", task_membership.id),
+            superuser_read_only,
+            parse_url(BASENAME, "detail", task_membership_read_only.id),
             "delete",
             api_client,
             "task_membership_delete",
@@ -63,12 +65,14 @@ class TestThrottling:
             TaskMembershipDeleteSustained,
         )
 
-    def test_delete_sustained_throttle(self, superuser, task_membership, api_client, monkeypatch):
+    def test_delete_sustained_throttle(
+        self, superuser_read_only, task_membership_read_only, api_client, monkeypatch
+    ):
         monkeypatch.setattr(TaskMembershipService, "delete", lambda a, m: None)
 
         assert_sustained_throttle(
-            superuser,
-            parse_url(BASENAME, "detail", task_membership.id),
+            superuser_read_only,
+            parse_url(BASENAME, "detail", task_membership_read_only.id),
             "delete",
             api_client,
             "task_membership_delete",
@@ -78,12 +82,16 @@ class TestThrottling:
             TaskMembershipDeleteSustained,
         )
 
-    def test_update_burst_throttle(self, superuser, task_membership, api_client, monkeypatch):
-        monkeypatch.setattr(TaskMembershipWriteSerializer, "save", lambda s: task_membership)
+    def test_update_burst_throttle(
+        self, superuser_read_only, task_membership_read_only, api_client, monkeypatch
+    ):
+        monkeypatch.setattr(
+            TaskMembershipWriteSerializer, "save", lambda s: task_membership_read_only
+        )
 
         assert_burst_throttle(
-            superuser,
-            parse_url(BASENAME, "detail", task_membership.id),
+            superuser_read_only,
+            parse_url(BASENAME, "detail", task_membership_read_only.id),
             "patch",
             api_client,
             "task_membership_update",
@@ -93,12 +101,16 @@ class TestThrottling:
             TaskMembershipUpdateSustained,
         )
 
-    def test_update_sustained_throttle(self, superuser, task_membership, api_client, monkeypatch):
-        monkeypatch.setattr(TaskMembershipWriteSerializer, "save", lambda s: task_membership)
+    def test_update_sustained_throttle(
+        self, superuser_read_only, task_membership_read_only, api_client, monkeypatch
+    ):
+        monkeypatch.setattr(
+            TaskMembershipWriteSerializer, "save", lambda s: task_membership_read_only
+        )
 
         assert_sustained_throttle(
-            superuser,
-            parse_url(BASENAME, "detail", task_membership.id),
+            superuser_read_only,
+            parse_url(BASENAME, "detail", task_membership_read_only.id),
             "patch",
             api_client,
             "task_membership_update",

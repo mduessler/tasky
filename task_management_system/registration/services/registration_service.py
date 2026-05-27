@@ -29,7 +29,7 @@ class RegistrationService:
             logger.debug("Found: User exists.")
             return user
         except TmsUser.DoesNotExist as exc:
-            logger.warning(f"Not found: User not found. Reaseon {exc}.")
+            logger.warning(f"Not found: User not found. Reason {exc}.")
             raise NotFound(USER_DOES_NOT_EXIST)
         except MultipleObjectsReturned as exc:
             logger.critical(f"Critical: Multiple Users returned! Reason {exc}.")

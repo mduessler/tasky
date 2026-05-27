@@ -6,7 +6,9 @@ from tests.utils import assert_log
 
 @pytest.mark.django_db
 class TestHasPermissionToCreate:
-    @pytest.mark.parametrize("actor_fixture", ["member_is_owner", "member_is_admin"])
+    @pytest.mark.parametrize(
+        "actor_fixture", ["member_is_owner_read_only", "member_is_admin_read_only"]
+    )
     def test_has_permission_to_create_true(self, actor_fixture, request, caplog_loguru):
         actor, _ = request.getfixturevalue(actor_fixture)
 
@@ -21,8 +23,8 @@ class TestHasPermissionToCreate:
             "DEBUG",
         )
 
-    def test_has_permission_to_create_true_superuser(self, superuser, caplog_loguru):
-        result = TaskMembershipPolicy.has_permission_to_create(superuser)
+    def test_has_permission_to_create_true_superuser(self, superuser_read_only, caplog_loguru):
+        result = TaskMembershipPolicy.has_permission_to_create(superuser_read_only)
 
         assert result is True
 
@@ -34,7 +36,12 @@ class TestHasPermissionToCreate:
         )
 
     @pytest.mark.parametrize(
-        "actor_fixture", ["member_is_member", "member_is_viewer", "user_is_not_member"]
+        "actor_fixture",
+        [
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
+            "user_is_not_member_read_only",
+        ],
     )
     def test_has_permission_to_create_false(self, actor_fixture, request, caplog_loguru):
         actor, _ = request.getfixturevalue(actor_fixture)
@@ -51,8 +58,8 @@ class TestHasPermissionToCreate:
             "DEBUG",
         )
 
-    def test_anonymous_user(self, anonymous_user, caplog_loguru):
-        result = TaskMembershipPolicy.has_permission_to_create(anonymous_user)
+    def test_anonymous_user(self, anonymous_user_read_only, caplog_loguru):
+        result = TaskMembershipPolicy.has_permission_to_create(anonymous_user_read_only)
 
         assert result is False
 

@@ -11,10 +11,10 @@ from tests.utils import assert_log
 
 @pytest.mark.django_db
 class TestGetTasks:
-    def test_success(self, member_is_owner, tasks, caplog_loguru, monkeypatch):
+    def test_success(self, member_is_owner_read_only, tasks_read_only, caplog_loguru, monkeypatch):
         monkeypatch.setattr(TaskPolicy, "can_view_tasks", lambda *a, **k: True)
 
-        actor, _ = member_is_owner
+        actor, _ = member_is_owner_read_only
         result = TaskService.get_tasks(actor)
 
         assert result.count() == Task.objects.count()
@@ -26,10 +26,12 @@ class TestGetTasks:
             "DEBUG",
         )
 
-    def test_success_filter_status(self, member_is_owner, tasks, caplog_loguru, monkeypatch):
+    def test_success_filter_status(
+        self, member_is_owner_read_only, tasks_read_only, caplog_loguru, monkeypatch
+    ):
         monkeypatch.setattr(TaskPolicy, "can_view_tasks", lambda *a, **k: True)
 
-        actor, _ = member_is_owner
+        actor, _ = member_is_owner_read_only
         result = TaskService.get_tasks(actor, status="todo")
 
         assert result.count() == Task.objects.filter(status="todo").count()
@@ -41,10 +43,12 @@ class TestGetTasks:
             "DEBUG",
         )
 
-    def test_success_empty_result(self, member_is_owner, tasks, caplog_loguru, monkeypatch):
+    def test_success_empty_result(
+        self, member_is_owner_read_only, tasks_read_only, caplog_loguru, monkeypatch
+    ):
         monkeypatch.setattr(TaskPolicy, "can_view_tasks", lambda *a, **k: True)
 
-        actor, _ = member_is_owner
+        actor, _ = member_is_owner_read_only
         result = TaskService.get_tasks(actor, status="non-existent")
 
         assert result.count() == 0
@@ -56,8 +60,8 @@ class TestGetTasks:
             "DEBUG",
         )
 
-    def test_permission_denied(self, member_is_owner, caplog_loguru, monkeypatch):
-        actor, _ = member_is_owner
+    def test_permission_denied(self, member_is_owner_read_only, caplog_loguru, monkeypatch):
+        actor, _ = member_is_owner_read_only
 
         monkeypatch.setattr(TaskPolicy, "can_view_tasks", lambda *a, **k: False)
 
@@ -73,8 +77,8 @@ class TestGetTasks:
             "WARNING",
         )
 
-    def test_is_efficient(self, member_is_owner, tasks, monkeypatch):
-        actor, _ = member_is_owner
+    def test_is_efficient(self, member_is_owner_read_only, tasks_read_only, monkeypatch):
+        actor, _ = member_is_owner_read_only
 
         monkeypatch.setattr(TaskPolicy, "can_view_tasks", lambda *a, **k: True)
 

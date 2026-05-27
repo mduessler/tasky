@@ -33,9 +33,9 @@ BASENAME = "task"
 
 @pytest.mark.django_db
 class TestThrottling:
-    def test_read_burst_throttle(self, superuser, api_client):
+    def test_read_burst_throttle(self, superuser_read_only, api_client):
         assert_burst_throttle(
-            superuser,
+            superuser_read_only,
             parse_url(BASENAME, "list"),
             "get",
             api_client,
@@ -46,9 +46,9 @@ class TestThrottling:
             TaskReadSustained,
         )
 
-    def test_read_sustained_throttle(self, superuser, api_client):
+    def test_read_sustained_throttle(self, superuser_read_only, api_client):
         assert_sustained_throttle(
-            superuser,
+            superuser_read_only,
             parse_url(BASENAME, "list"),
             "get",
             api_client,
@@ -59,15 +59,17 @@ class TestThrottling:
             TaskReadSustained,
         )
 
-    def test_create_burst_throttle(self, superuser, api_client, monkeypatch, task):
+    def test_create_burst_throttle(
+        self, superuser_read_only, api_client, monkeypatch, task_read_only
+    ):
         monkeypatch.setattr(
             TaskWriteSerializer,
             "save",
-            lambda s: task,
+            lambda s: task_read_only,
         )
 
         assert_burst_throttle(
-            superuser,
+            superuser_read_only,
             parse_url(BASENAME, "list"),
             "post",
             api_client,
@@ -83,15 +85,17 @@ class TestThrottling:
             },
         )
 
-    def test_create_sustained_throttle(self, superuser, api_client, monkeypatch, task):
+    def test_create_sustained_throttle(
+        self, superuser_read_only, api_client, monkeypatch, task_read_only
+    ):
         monkeypatch.setattr(
             TaskWriteSerializer,
             "save",
-            lambda s: task,
+            lambda s: task_read_only,
         )
 
         assert_sustained_throttle(
-            superuser,
+            superuser_read_only,
             parse_url(BASENAME, "list"),
             "post",
             api_client,
@@ -107,16 +111,18 @@ class TestThrottling:
             },
         )
 
-    def test_update_burst_throttle(self, superuser, task, api_client, monkeypatch):
+    def test_update_burst_throttle(
+        self, superuser_read_only, task_read_only, api_client, monkeypatch
+    ):
         monkeypatch.setattr(
             TaskWriteSerializer,
             "save",
-            lambda s: task,
+            lambda s: task_read_only,
         )
 
         assert_burst_throttle(
-            superuser,
-            parse_url(BASENAME, "detail", task.id),
+            superuser_read_only,
+            parse_url(BASENAME, "detail", task_read_only.id),
             "patch",
             api_client,
             "task_update",
@@ -127,12 +133,14 @@ class TestThrottling:
             data={"title": "Updated"},
         )
 
-    def test_update_sustained_throttle(self, superuser, task, api_client, monkeypatch):
-        monkeypatch.setattr(TaskWriteSerializer, "save", lambda s: task)
+    def test_update_sustained_throttle(
+        self, superuser_read_only, task_read_only, api_client, monkeypatch
+    ):
+        monkeypatch.setattr(TaskWriteSerializer, "save", lambda s: task_read_only)
 
         assert_sustained_throttle(
-            superuser,
-            parse_url(BASENAME, "detail", task.id),
+            superuser_read_only,
+            parse_url(BASENAME, "detail", task_read_only.id),
             "patch",
             api_client,
             "task_update",
@@ -143,12 +151,14 @@ class TestThrottling:
             data={"title": "Updated"},
         )
 
-    def test_delete_burst_throttle(self, superuser, task, api_client, monkeypatch):
+    def test_delete_burst_throttle(
+        self, superuser_read_only, task_read_only, api_client, monkeypatch
+    ):
         monkeypatch.setattr(TaskService, "delete", lambda a, t: None)
 
         assert_burst_throttle(
-            superuser,
-            parse_url(BASENAME, "detail", task.id),
+            superuser_read_only,
+            parse_url(BASENAME, "detail", task_read_only.id),
             "delete",
             api_client,
             "task_delete",
@@ -158,12 +168,14 @@ class TestThrottling:
             TaskDeleteSustained,
         )
 
-    def test_delete_sustained_throttle(self, superuser, task, api_client, monkeypatch):
+    def test_delete_sustained_throttle(
+        self, superuser_read_only, task_read_only, api_client, monkeypatch
+    ):
         monkeypatch.setattr(TaskService, "delete", lambda a, t: None)
 
         assert_sustained_throttle(
-            superuser,
-            parse_url(BASENAME, "detail", task.id),
+            superuser_read_only,
+            parse_url(BASENAME, "detail", task_read_only.id),
             "delete",
             api_client,
             "task_delete",
@@ -174,14 +186,22 @@ class TestThrottling:
         )
 
     def test_membership_create_burst_throttle(
-        self, superuser, task, user_is_not_member, task_membership, api_client, monkeypatch
+        self,
+        superuser_read_only,
+        task_read_only,
+        user_is_not_member_read_only,
+        task_membership_read_only,
+        api_client,
+        monkeypatch,
     ):
-        monkeypatch.setattr(TaskMembershipWriteSerializer, "save", lambda s: task_membership)
-        user, _ = user_is_not_member
+        monkeypatch.setattr(
+            TaskMembershipWriteSerializer, "save", lambda s: task_membership_read_only
+        )
+        user, _ = user_is_not_member_read_only
 
         assert_burst_throttle(
-            superuser,
-            reverse(f"{BASENAME}-membership", kwargs={"pk": task.id}),
+            superuser_read_only,
+            reverse(f"{BASENAME}-membership", kwargs={"pk": task_read_only.id}),
             "post",
             api_client,
             "task_membership_create",
@@ -193,14 +213,22 @@ class TestThrottling:
         )
 
     def test_membership_create_sustained_throttle(
-        self, superuser, task, user_is_not_member, task_membership, api_client, monkeypatch
+        self,
+        superuser_read_only,
+        task_read_only,
+        user_is_not_member_read_only,
+        task_membership_read_only,
+        api_client,
+        monkeypatch,
     ):
-        monkeypatch.setattr(TaskMembershipWriteSerializer, "save", lambda s: task_membership)
-        user, _ = user_is_not_member
+        monkeypatch.setattr(
+            TaskMembershipWriteSerializer, "save", lambda s: task_membership_read_only
+        )
+        user, _ = user_is_not_member_read_only
 
         assert_sustained_throttle(
-            superuser,
-            reverse(f"{BASENAME}-membership", kwargs={"pk": task.id}),
+            superuser_read_only,
+            reverse(f"{BASENAME}-membership", kwargs={"pk": task_read_only.id}),
             "post",
             api_client,
             "task_membership_create",
@@ -211,10 +239,12 @@ class TestThrottling:
             data={"user_id": user.id, "role": "viewer"},
         )
 
-    def test_memberships_read_burst_throttle(self, superuser, task, api_client):
+    def test_memberships_read_burst_throttle(
+        self, superuser_read_only, task_read_only, api_client
+    ):
         assert_burst_throttle(
-            superuser,
-            reverse(f"{BASENAME}-memberships", kwargs={"pk": task.id}),
+            superuser_read_only,
+            reverse(f"{BASENAME}-memberships", kwargs={"pk": task_read_only.id}),
             "get",
             api_client,
             "task_membership_read",
@@ -224,10 +254,12 @@ class TestThrottling:
             TaskMembershipReadSustained,
         )
 
-    def test_memberships_read_sustained_throttle(self, superuser, task, api_client):
+    def test_memberships_read_sustained_throttle(
+        self, superuser_read_only, task_read_only, api_client
+    ):
         assert_sustained_throttle(
-            superuser,
-            reverse(f"{BASENAME}-memberships", kwargs={"pk": task.id}),
+            superuser_read_only,
+            reverse(f"{BASENAME}-memberships", kwargs={"pk": task_read_only.id}),
             "get",
             api_client,
             "task_membership_read",
@@ -237,12 +269,14 @@ class TestThrottling:
             TaskMembershipReadSustained,
         )
 
-    def test_note_create_burst_throttle(self, superuser, task, task_note, api_client, monkeypatch):
-        monkeypatch.setattr(TaskNoteWriteSerializer, "save", lambda s: task_note)
+    def test_note_create_burst_throttle(
+        self, superuser_read_only, task_read_only, task_note_read_only, api_client, monkeypatch
+    ):
+        monkeypatch.setattr(TaskNoteWriteSerializer, "save", lambda s: task_note_read_only)
 
         assert_burst_throttle(
-            superuser,
-            reverse(f"{BASENAME}-note", kwargs={"pk": task.id}),
+            superuser_read_only,
+            reverse(f"{BASENAME}-note", kwargs={"pk": task_read_only.id}),
             "post",
             api_client,
             "task_note_create",
@@ -250,17 +284,17 @@ class TestThrottling:
             100,
             TaskNoteCreateBurst,
             TaskNoteCreateSustained,
-            data={"author_id": task_note.author_id, "note": "A very important note."},
+            data={"author_id": task_note_read_only.author_id, "note": "A very important note."},
         )
 
     def test_note_create_sustained_throttle(
-        self, superuser, task, task_note, api_client, monkeypatch
+        self, superuser_read_only, task_read_only, task_note_read_only, api_client, monkeypatch
     ):
-        monkeypatch.setattr(TaskNoteWriteSerializer, "save", lambda s: task_note)
+        monkeypatch.setattr(TaskNoteWriteSerializer, "save", lambda s: task_note_read_only)
 
         assert_sustained_throttle(
-            superuser,
-            reverse(f"{BASENAME}-note", kwargs={"pk": task.id}),
+            superuser_read_only,
+            reverse(f"{BASENAME}-note", kwargs={"pk": task_read_only.id}),
             "post",
             api_client,
             "task_note_create",
@@ -268,13 +302,13 @@ class TestThrottling:
             2,
             TaskNoteCreateBurst,
             TaskNoteCreateSustained,
-            data={"author_id": task_note.author_id, "note": "A very important note."},
+            data={"author_id": task_note_read_only.author_id, "note": "A very important note."},
         )
 
-    def test_notes_read_burst_throttle(self, superuser, task, api_client):
+    def test_notes_read_burst_throttle(self, superuser_read_only, task_read_only, api_client):
         assert_burst_throttle(
-            superuser,
-            reverse(f"{BASENAME}-notes", kwargs={"pk": task.id}),
+            superuser_read_only,
+            reverse(f"{BASENAME}-notes", kwargs={"pk": task_read_only.id}),
             "get",
             api_client,
             "task_note_read",
@@ -284,10 +318,10 @@ class TestThrottling:
             TaskNoteReadSustained,
         )
 
-    def test_notes_read_sustained_throttle(self, superuser, task, api_client):
+    def test_notes_read_sustained_throttle(self, superuser_read_only, task_read_only, api_client):
         assert_sustained_throttle(
-            superuser,
-            reverse(f"{BASENAME}-notes", kwargs={"pk": task.id}),
+            superuser_read_only,
+            reverse(f"{BASENAME}-notes", kwargs={"pk": task_read_only.id}),
             "get",
             api_client,
             "task_note_read",

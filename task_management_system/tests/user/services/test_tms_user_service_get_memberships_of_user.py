@@ -12,12 +12,14 @@ from user.services import TmsUserService
 
 @pytest.mark.django_db
 class TestGetUserMemberships:
-    def test_success(self, member_is_owner, superuser, caplog_loguru, monkeypatch):
-        user, _ = member_is_owner
+    def test_success(
+        self, member_is_owner_read_only, superuser_read_only, caplog_loguru, monkeypatch
+    ):
+        user, _ = member_is_owner_read_only
 
         monkeypatch.setattr(TmsUserPolicy, "can_view_memberships_of_user", lambda a, u: True)
 
-        result = TmsUserService.get_memberships_of_user(superuser, user.id)
+        result = TmsUserService.get_memberships_of_user(superuser_read_only, user.id)
 
         assert isinstance(result, QuerySet)
         assert result.count() == TaskMembership.objects.filter(user=user).count()
@@ -29,13 +31,15 @@ class TestGetUserMemberships:
             "DEBUG",
         )
 
-    def test_permission_denied(self, member_is_owner, superuser, caplog_loguru, monkeypatch):
-        user, _ = member_is_owner
+    def test_permission_denied(
+        self, member_is_owner_read_only, superuser_read_only, caplog_loguru, monkeypatch
+    ):
+        user, _ = member_is_owner_read_only
 
         monkeypatch.setattr(TmsUserPolicy, "can_view_memberships_of_user", lambda a, u: False)
 
         with pytest.raises(PermissionDenied) as exc:
-            TmsUserService.get_memberships_of_user(superuser, user.id)
+            TmsUserService.get_memberships_of_user(superuser_read_only, user.id)
 
         assert PERMISSION_DENIED_TO_VIEW_USER_TASK_MEMBERSHIPS == str(exc.value)
 
@@ -46,10 +50,10 @@ class TestGetUserMemberships:
             "WARNING",
         )
 
-    def test_is_efficient(self, superuser, member_is_owner):
-        user, _ = member_is_owner
+    def test_is_efficient(self, superuser_read_only, member_is_owner_read_only):
+        user, _ = member_is_owner_read_only
 
         with utils.CaptureQueriesContext(connection) as queries:
-            TmsUserService.get_memberships_of_user(superuser, user.id)
+            TmsUserService.get_memberships_of_user(superuser_read_only, user.id)
 
         assert len(queries) <= 1

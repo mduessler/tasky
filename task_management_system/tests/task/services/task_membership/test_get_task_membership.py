@@ -11,10 +11,10 @@ from tests.utils import assert_log
 
 @pytest.mark.django_db
 class TestGetMembership:
-    def test_success(self, member_is_owner, caplog_loguru, monkeypatch):
+    def test_success(self, member_is_owner_read_only, caplog_loguru, monkeypatch):
         monkeypatch.setattr(TaskMembershipPolicy, "can_view", lambda *a, **k: True)
 
-        actor, actor_membership = member_is_owner
+        actor, actor_membership = member_is_owner_read_only
         result = TaskMembershipService.get_task_membership(actor, actor_membership.id)
 
         assert result is not None
@@ -29,15 +29,13 @@ class TestGetMembership:
             task=actor_membership.task.id,
         )
 
-    def test_not_found(self, member_is_owner, caplog_loguru, monkeypatch):
-        actor, actor_membership = member_is_owner
-        actor_membership_id = actor_membership.id
-        actor_membership.delete()
+    def test_not_found(self, member_is_owner_read_only, caplog_loguru, monkeypatch):
+        actor, _ = member_is_owner_read_only
 
         monkeypatch.setattr(TaskMembershipPolicy, "can_view", lambda *a, **k: True)
 
         with pytest.raises(NotFound) as exc:
-            TaskMembershipService.get_task_membership(actor, actor_membership_id)
+            TaskMembershipService.get_task_membership(actor, 9999)
         assert TASK_MEMBERSHIP_DOES_NOT_EXIST == str(exc.value)
 
         log_record = caplog_loguru.records[-1]
@@ -45,11 +43,11 @@ class TestGetMembership:
             log_record,
             "Not found: Task membership not found.",
             "WARNING",
-            membership=actor_membership_id,
+            membership=9999,
         )
 
-    def test_permission_denied(self, member_is_owner, caplog_loguru, monkeypatch):
-        actor, actor_membership = member_is_owner
+    def test_permission_denied(self, member_is_owner_read_only, caplog_loguru, monkeypatch):
+        actor, actor_membership = member_is_owner_read_only
 
         monkeypatch.setattr(TaskMembershipPolicy, "can_view", lambda *a, **k: False)
 
@@ -66,8 +64,8 @@ class TestGetMembership:
             task=actor_membership.task.id,
         )
 
-    def test_is_efficient(self, member_is_owner, monkeypatch):
-        actor, actor_membership = member_is_owner
+    def test_is_efficient(self, member_is_owner_read_only, monkeypatch):
+        actor, actor_membership = member_is_owner_read_only
 
         monkeypatch.setattr(TaskMembershipPolicy, "can_view", lambda *args, **kwargs: True)
 

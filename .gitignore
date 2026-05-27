@@ -2,8 +2,29 @@
 logs
 node_modules
 dev/certs/
-dev/.env.dev
+.env.dev
+.env.prod
 logs/
+
+# Terraform
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+crash.*.log
+
+# Sensitive var files — commit *.tfvars.example instead
+*.tfvars
+!*.tfvars.example
+
+# Lock files — DO commit these (they pin provider versions)
+!.terraform.lock.hcl
+
+# Ansible
+infrastructure/ansible/**/collections/
+*.retry
+.vault_pass
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

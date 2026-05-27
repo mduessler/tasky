@@ -47,7 +47,7 @@ email address before they can log in.
 | `is_active`    | BooleanField | default `False`                  |
 | `is_staff`     | BooleanField | default `False`                  |
 | `is_superuser` | BooleanField | default `False`                  |
-| `date_joined`  | DateTime     | auto-updated on every save       |
+| `date_joined`  | DateTime     | time when user joined.           |
 
 ______________________________________________________________________
 
@@ -140,7 +140,7 @@ verification email, then activates the account via the token in that email.
 
 ### 1. Register
 
-The client sends credentials to `POST /api/register/`. The server creates
+The client sends credentials to `POST /api/auth/register/`. The server creates
 an inactive user (`is_active = False`) and generates an `EmailVerificationToken`
 — a 6-digit numeric code that expires after 15 minutes. The token is immutable:
 it cannot be updated after creation, only deleted. Sending the verification email
@@ -149,11 +149,11 @@ asynchronously after the transaction commits.
 
 ### 2. Activate
 
-The client sends the token to `POST /api/activate/`. The server verifies that
+The client sends the token to `POST /api/auth/activate/`. The server verifies that
 the token exists, belongs to the user, and has not expired. On success, the user
 is set to active (`is_active = True`) and the token is deleted.
 
-> A user cannot log in until the account is activate.
+> A user cannot log in until the account is activated.
 
 ## Authentication
 
@@ -182,7 +182,11 @@ is used.
 | Token         | Lifetime |
 | ------------- | -------- |
 | Access Token  | 15 min   |
-| Refresh Token | 1 days   |
+| Refresh Token | 1 day    |
+
+Refresh tokens are rotated on every use (with the previous token blacklisted),
+giving a sliding-window session: daily-active users stay authenticated indefinitely,
+inactive sessions expire after 24 hours.
 
 ### Why JWT
 
@@ -242,9 +246,9 @@ a user may have different roles across different tasks.
 | MEMBER | ✔️   | ✔️     | ❌²    | — ³           |
 | VIEWER | ✔️   | ❌     | ❌     | —             |
 
-> ² An author can delete its own node in a time frame of 2 hours after creation.
+> ² An author can delete its own note in a time frame of 2 hours after creation.
 
-> ³ An author can update its own node within of 2 hours after creation.
+> ³ An author can update its own note within of 2 hours after creation.
 
 ______________________________________________________________________
 

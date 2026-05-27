@@ -27,7 +27,6 @@ def register_data(inactive_user_data):
 
 
 @pytest.fixture
-@pytest.mark.django_db
 def email_token(inactive_user):
     token = EmailVerificationToken(user=inactive_user)
     token.full_clean()

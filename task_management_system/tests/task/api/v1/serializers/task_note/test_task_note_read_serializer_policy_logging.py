@@ -5,11 +5,13 @@ from tests.utils import assert_log, build_request
 
 @pytest.mark.django_db
 class TestPolicyLogging:
-    def test_can_delete_logging(self, task_note, member_is_owner, caplog_loguru):
-        actor, _ = member_is_owner
+    def test_can_delete_logging(
+        self, task_note_read_only, member_is_owner_read_only, caplog_loguru
+    ):
+        actor, _ = member_is_owner_read_only
 
         serializer = TaskNoteReadSerializer(
-            instance=task_note,
+            instance=task_note_read_only,
             context={"request": build_request("get", actor)},
         )
 
@@ -21,15 +23,17 @@ class TestPolicyLogging:
             log_record,
             "Permission granted: User can delete itself.",
             "DEBUG",
-            task=task_note.task_id,
-            note=task_note.id,
+            task=task_note_read_only.task_id,
+            note=task_note_read_only.id,
         )
 
-    def test_editable_fields_logging(self, task_note, member_is_owner, caplog_loguru):
-        actor, _ = member_is_owner
+    def test_editable_fields_logging(
+        self, task_note_read_only, member_is_owner_read_only, caplog_loguru
+    ):
+        actor, _ = member_is_owner_read_only
 
         serializer = TaskNoteReadSerializer(
-            instance=task_note,
+            instance=task_note_read_only,
             context={"request": build_request("get", actor)},
         )
 
@@ -41,6 +45,6 @@ class TestPolicyLogging:
             log_record,
             "User is allowed to update task note: {'note'}.",
             "DEBUG",
-            task=task_note.task_id,
-            note=task_note.id,
+            task=task_note_read_only.task_id,
+            note=task_note_read_only.id,
         )

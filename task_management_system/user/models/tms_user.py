@@ -11,7 +11,7 @@ class TmsUser(AbstractUser):  # type: ignore[misc]
     username = CharField(max_length=128, unique=False)
     is_active = BooleanField(default=False)
     is_staff = BooleanField(default=False)
-    date_joined = DateTimeField(auto_now=True)
+    date_joined = DateTimeField(auto_now_add=True)
 
     objects: TmsUserManager["TmsUser"] = TmsUserManager()
 

@@ -1,5 +1,3 @@
-from rest_framework.parsers import JSONParser
-
 from task_management_system.settings import production
 
 
@@ -35,8 +33,7 @@ class TestRestFramework:
         assert self.rf_settings["DEFAULT_SCHEMA_CLASS"] == expected
 
     def test_media_type(self):
-        expected = JSONParser
-        assert self.rf_settings["DEFAULT_PARSER_CLASS"] == [expected]
+        assert self.rf_settings["DEFAULT_PARSER_CLASSES"] == ["rest_framework.parsers.JSONParser"]
 
     def test_throttle_rates_integrity(self):
 

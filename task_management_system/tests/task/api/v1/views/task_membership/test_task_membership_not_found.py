@@ -10,11 +10,11 @@ BASENAME = "membership"
 @pytest.mark.django_db
 class TestNotFound:
     @pytest.mark.parametrize("method", ["get", "patch", "delete"])
-    def test_detail(self, method, superuser, api_client):
+    def test_detail(self, method, superuser_read_only, api_client):
         data = {"role": "viewer"} if method == "patch" else {}
         url = parse_url(BASENAME, "detail", 9999)
 
-        api_client.force_authenticate(user=superuser)
+        api_client.force_authenticate(user=superuser_read_only)
         response = getattr(api_client, method)(url, data=data)
 
         assert response.status_code == 404

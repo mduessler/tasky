@@ -31,14 +31,20 @@ class TestTask:
                 status="invalid",
             )
 
-    def test_task_members_relationship(self, task, active_user, superuser):
-        cnt = TaskMembership.objects.count()
-        TaskMembership.objects.create(user=active_user, task=task, role=Role.VIEWER)
-        TaskMembership.objects.create(user=superuser, task=task, role=Role.MEMBER)
+    def test_task_members_relationship(
+        self, task_read_only, active_user_read_only, superuser_read_only
+    ):
+        cnt = TaskMembership.objects.filter(task=task_read_only).count()
+        TaskMembership.objects.create(
+            user=active_user_read_only, task=task_read_only, role=Role.VIEWER
+        )
+        TaskMembership.objects.create(
+            user=superuser_read_only, task=task_read_only, role=Role.MEMBER
+        )
 
-        assert task.members.count() == cnt + 2
-        assert active_user in task.members.all()
-        assert superuser in task.members.all()
+        assert task_read_only.members.count() == cnt + 2
+        assert active_user_read_only in task_read_only.members.all()
+        assert superuser_read_only in task_read_only.members.all()
 
     def test_str_representation(self):
         task = Task(title="An important project")

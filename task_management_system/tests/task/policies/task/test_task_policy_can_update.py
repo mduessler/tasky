@@ -8,8 +8,10 @@ from tests.utils import assert_log
 
 @pytest.mark.django_db
 class TestCanUpdate:
-    def test_permission_granted_superuser(self, superuser, task, caplog_loguru):
-        result = TaskPolicy.can_update(superuser, task, {"any_field"})
+    def test_permission_granted_superuser(
+        self, superuser_read_only, task_read_only, caplog_loguru
+    ):
+        result = TaskPolicy.can_update(superuser_read_only, task_read_only, {"any_field"})
 
         assert result is True
 
@@ -18,12 +20,14 @@ class TestCanUpdate:
             log_record,
             "Permission granted to update task: Actor is superuser.",
             "INFO",
-            task=task.id,
+            task=task_read_only.id,
         )
 
-    def test_permission_denied_no_membership(self, user_is_not_member, task, caplog_loguru):
-        actor, _ = user_is_not_member
-        result = TaskPolicy.can_update(actor, task, {"status"})
+    def test_permission_denied_no_membership(
+        self, user_is_not_member_read_only, task_read_only, caplog_loguru
+    ):
+        actor, _ = user_is_not_member_read_only
+        result = TaskPolicy.can_update(actor, task_read_only, {"status"})
 
         assert result is False
 
@@ -32,14 +36,14 @@ class TestCanUpdate:
             log_record,
             "Permission denied to update task: User has no membership for task.",
             "WARNING",
-            task=task.id,
+            task=task_read_only.id,
         )
 
-    def test_owner_allowed_fields(self, member_is_owner, task, caplog_loguru):
-        actor, actor_membership = member_is_owner
+    def test_owner_allowed_fields(self, member_is_owner_read_only, task_read_only, caplog_loguru):
+        actor, actor_membership = member_is_owner_read_only
         fields = {"title", "description", "status"}
 
-        result = TaskPolicy.can_update(actor, task, fields)
+        result = TaskPolicy.can_update(actor, task_read_only, fields)
 
         assert result is True
 
@@ -48,15 +52,17 @@ class TestCanUpdate:
             log_record,
             "Permission granted to update task fields: True.",
             "DEBUG",
-            task=task.id,
+            task=task_read_only.id,
             actor_membership=actor_membership.id,
         )
 
-    def test_owner_denied_restricted_fields(self, member_is_owner, task, caplog_loguru):
-        actor, actor_membership = member_is_owner
+    def test_owner_denied_restricted_fields(
+        self, member_is_owner_read_only, task_read_only, caplog_loguru
+    ):
+        actor, actor_membership = member_is_owner_read_only
         requested = {"internal_note"}
 
-        result = TaskPolicy.can_update(actor, task, requested)
+        result = TaskPolicy.can_update(actor, task_read_only, requested)
 
         assert result is False
 
@@ -66,15 +72,15 @@ class TestCanUpdate:
             "Permission denied: owner actor attempted to update restricted fields: "
             "{'internal_note'}.",
             "WARNING",
-            task=task.id,
+            task=task_read_only.id,
             actor_membership=actor_membership.id,
         )
 
-    def test_admin_allowed_fields(self, member_is_admin, task, caplog_loguru):
-        actor, actor_membership = member_is_admin
+    def test_admin_allowed_fields(self, member_is_admin_read_only, task_read_only, caplog_loguru):
+        actor, actor_membership = member_is_admin_read_only
         fields = {"status"}
 
-        result = TaskPolicy.can_update(actor, task, fields)
+        result = TaskPolicy.can_update(actor, task_read_only, fields)
 
         assert result is True
 
@@ -83,15 +89,17 @@ class TestCanUpdate:
             log_record,
             "Permission granted to update task fields: True.",
             "DEBUG",
-            task=task.id,
+            task=task_read_only.id,
             actor_membership=actor_membership.id,
         )
 
-    def test_admin_denied_restricted_fields(self, member_is_admin, task, caplog_loguru):
-        actor, actor_membership = member_is_admin
+    def test_admin_denied_restricted_fields(
+        self, member_is_admin_read_only, task_read_only, caplog_loguru
+    ):
+        actor, actor_membership = member_is_admin_read_only
         requested = {"title"}
 
-        result = TaskPolicy.can_update(actor, task, requested)
+        result = TaskPolicy.can_update(actor, task_read_only, requested)
 
         assert result is False
 
@@ -100,13 +108,15 @@ class TestCanUpdate:
             log_record,
             "Permission denied: admin actor attempted to update restricted fields: {'title'}.",
             "WARNING",
-            task=task.id,
+            task=task_read_only.id,
             actor_membership=actor_membership.id,
         )
 
-    def test_permission_denied_member_role(self, member_is_member, task, caplog_loguru):
-        actor, actor_membership = member_is_member
-        result = TaskPolicy.can_update(actor, task, {"status"})
+    def test_permission_denied_member_role(
+        self, member_is_member_read_only, task_read_only, caplog_loguru
+    ):
+        actor, actor_membership = member_is_member_read_only
+        result = TaskPolicy.can_update(actor, task_read_only, {"status"})
 
         assert result is False
 
@@ -115,13 +125,15 @@ class TestCanUpdate:
             log_record,
             "Permission granted to update task: False.",
             "DEBUG",
-            task=task.id,
+            task=task_read_only.id,
             actor_membership=actor_membership.id,
         )
 
-    def test_permission_denied_viewer_role(self, member_is_viewer, task, caplog_loguru):
-        actor, actor_membership = member_is_viewer
-        result = TaskPolicy.can_update(actor, task, {"status"})
+    def test_permission_denied_viewer_role(
+        self, member_is_viewer_read_only, task_read_only, caplog_loguru
+    ):
+        actor, actor_membership = member_is_viewer_read_only
+        result = TaskPolicy.can_update(actor, task_read_only, {"status"})
 
         assert result is False
 
@@ -130,16 +142,18 @@ class TestCanUpdate:
             log_record,
             "Permission granted to update task: False.",
             "DEBUG",
-            task=task.id,
+            task=task_read_only.id,
             actor_membership=actor_membership.id,
         )
 
-    def test_denies_unsupported_future_role(self, member_is_owner, task, caplog_loguru):
-        actor, actor_membership = member_is_owner
+    def test_denies_unsupported_future_role(
+        self, member_is_owner_read_only, task_read_only, caplog_loguru
+    ):
+        actor, actor_membership = member_is_owner_read_only
         TaskMembership.objects.filter(pk=actor_membership.id).update(role="new-role")
 
         with pytest.raises(RuntimeError):
-            TaskPolicy.can_update(actor, task, {"status"})
+            TaskPolicy.can_update(actor, task_read_only, {"status"})
 
         log_record = caplog_loguru.records[-1]
         assert_log(
@@ -149,10 +163,10 @@ class TestCanUpdate:
             "CRITICAL",
         )
 
-    def test_is_efficient(self, member_is_owner, task):
-        actor, _ = member_is_owner
+    def test_is_efficient(self, member_is_owner_read_only, task_read_only):
+        actor, _ = member_is_owner_read_only
 
         with utils.CaptureQueriesContext(connection) as queries:
-            TaskPolicy.can_update(actor, task, {"status"})
+            TaskPolicy.can_update(actor, task_read_only, {"status"})
 
         assert len(queries) <= 1

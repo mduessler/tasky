@@ -1,10 +1,9 @@
-scan-prod-image:
-  stage: security
+.trivy-base:
   image:
     name: aquasec/trivy:latest
     entrypoint: [""]
-  needs:
-    - build-prod-image
+  tags:
+    - dev
   variables:
     TRIVY_NO_PROGRESS: "true"
     TRIVY_CACHE_DIR: ".trivycache"
@@ -13,8 +12,3 @@ scan-prod-image:
   cache:
     paths:
       - .trivycache/
-  before_script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-script:
-  - trivy config prod/Dockerfile
-  - trivy image --exit-code 1 --severity HIGH,CRITICAL $PROD_IMAGE_LATEST

@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+function generate_env_dev_file() {
+	tee .env.dev <<EOF
+DJANGO_SETTINGS_MODULE=task_management_system.settings.development
+SECRET_KEY=django-insecure-$(openssl rand -hex 32)
+DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1] 0.0.0.0
+
+SQL_ENGINE=django.db.backends.postgresql
+SQL_DB=postgres-dev
+SQL_USER=postgres
+SQL_PASSWORD=postgres
+SQL_HOST=db-dev
+SQL_PORT=5432
+
+JWT_SECRET_KEY=$(openssl rand -hex 32)
+
+EMAIL_HOST=sandbox.smtp.mailtrap.io
+EMAIL_PORT=2525
+EMAIL_HOST_USER=<your-mailtrap-user>
+EMAIL_HOST_PASSWORD=<your-mailtrap-password>
+EOF
+
+}
+
+if [ "$1" == "dev" ]; then
+	if [ -f .env.dev ]; then
+		echo "INFO: .env.dev already exists."
+		exit 0
+	fi
+	echo "INFO: No .env.dev found. Generating one with predefined values."
+	generate_env_dev_file
+
+else
+	echo "WARNING: Read the section in the documentation."
+	exit 1
+fi

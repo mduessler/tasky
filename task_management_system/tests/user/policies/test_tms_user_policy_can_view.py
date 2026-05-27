@@ -8,12 +8,12 @@ class TestCanView:
     @pytest.mark.parametrize(
         "actor_fixture",
         [
-            "member_is_owner",
-            "member_is_admin",
-            "member_is_member",
-            "member_is_viewer",
-            "superuser_is_not_member",
-            "user_is_not_member",
+            "member_is_owner_read_only",
+            "member_is_admin_read_only",
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
+            "superuser_is_not_member_read_only",
+            "user_is_not_member_read_only",
         ],
     )
     def test_actor_is_user(self, actor_fixture, request, caplog_loguru):
@@ -28,16 +28,16 @@ class TestCanView:
     @pytest.mark.parametrize(
         "user_fixture",
         [
-            "member_is_owner",
-            "member_is_admin",
-            "member_is_member",
-            "member_is_viewer",
-            "user_is_not_member",
+            "member_is_owner_read_only",
+            "member_is_admin_read_only",
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
+            "user_is_not_member_read_only",
         ],
     )
-    def test_actor_is_superuser(self, superuser, user_fixture, request, caplog_loguru):
+    def test_actor_is_superuser(self, superuser_read_only, user_fixture, request, caplog_loguru):
         user, _ = request.getfixturevalue(user_fixture)
-        result = TmsUserPolicy.can_view(superuser, user)
+        result = TmsUserPolicy.can_view(superuser_read_only, user)
 
         assert result is True
 
@@ -51,11 +51,21 @@ class TestCanView:
 
     @pytest.mark.parametrize(
         "actor_fixture",
-        ["member_is_owner", "member_is_admin", "member_is_member", "member_is_viewer"],
+        [
+            "member_is_owner_read_only",
+            "member_is_admin_read_only",
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
+        ],
     )
     @pytest.mark.parametrize(
         "user_fixture",
-        ["member_is_owner", "member_is_admin", "member_is_member", "member_is_viewer"],
+        [
+            "member_is_owner_read_only",
+            "member_is_admin_read_only",
+            "member_is_member_read_only",
+            "member_is_viewer_read_only",
+        ],
     )
     def test_share_the_same_task(self, actor_fixture, user_fixture, request, caplog_loguru):
         if actor_fixture == user_fixture:
@@ -77,10 +87,12 @@ class TestCanView:
 
     @pytest.mark.parametrize(
         "actor_fixture",
-        ["member_is_owner", "member_is_member", "member_is_viewer"],
+        ["member_is_owner_read_only", "member_is_member_read_only", "member_is_viewer_read_only"],
     )
-    def test_not_allowed(self, actor_fixture, user_is_not_member, request, caplog_loguru):
-        actor, _ = user_is_not_member
+    def test_not_allowed(
+        self, actor_fixture, user_is_not_member_read_only, request, caplog_loguru
+    ):
+        actor, _ = user_is_not_member_read_only
         user, _ = request.getfixturevalue(actor_fixture)
         result = TmsUserPolicy.can_view(actor, user)
 

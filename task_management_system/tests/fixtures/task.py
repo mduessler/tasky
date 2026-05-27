@@ -35,3 +35,24 @@ def task_data():
 @pytest.fixture
 def task(db, task_data):
     return TaskFactory(**task_data)
+
+
+@pytest.fixture(scope="class")
+def tasks_read_only(django_db_setup, django_db_blocker):
+    with django_db_blocker.unblock():
+        TaskFactory.create_batch(10)
+
+
+@pytest.fixture(scope="class")
+def task_data_read_only():
+    return {
+        "title": "This is just a test task",
+        "description": "This task is just for testing purposes. Please keep that in mind.",
+        "status": "todo",
+    }
+
+
+@pytest.fixture(scope="class")
+def task_read_only(django_db_setup, django_db_blocker, task_data_read_only):
+    with django_db_blocker.unblock():
+        return TaskFactory(**task_data_read_only)

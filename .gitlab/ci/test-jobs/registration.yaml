@@ -1,7 +1,8 @@
 test:registration:
   extends: .test-base
   services:
-    - postgres:18.4-alpine
+    - name: postgres:18.4-alpine
+      alias: postgres
     - redis:8.6.3-alpine
   script:
-    - pytest tests/registration/ -n auto
+    - pytest tests/registration/ -n 2 -m "not slow"

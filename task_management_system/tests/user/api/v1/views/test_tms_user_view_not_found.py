@@ -20,11 +20,11 @@ class TestNotFound:
             ("get", "task-notes"),
         ],
     )
-    def test_detail(self, method, url_name, superuser, api_client):
+    def test_detail(self, method, url_name, superuser_read_only, api_client):
         data = {"username": "XoXoXo"} if method == "patch" else {}
         url = parse_url(BASENAME, url_name, 9999)
 
-        api_client.force_authenticate(user=superuser)
+        api_client.force_authenticate(user=superuser_read_only)
         response = getattr(api_client, method)(url, data=data)
 
         assert response.status_code == 404

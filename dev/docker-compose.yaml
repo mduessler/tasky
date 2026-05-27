@@ -10,7 +10,7 @@ services:
     volumes:
       - ../task_management_system:/home/tms/web
     env_file:
-      - ./.env.dev
+      - ../.env.dev
     depends_on:
       db-dev:
         condition: service_healthy
@@ -66,7 +66,7 @@ services:
       dockerfile: dev/Dockerfile
     command: celery -A task_management_system worker -l info
     env_file:
-      - ./.env.dev
+      - ../.env.dev
     depends_on:
       db-dev:
         condition: service_healthy
@@ -87,7 +87,7 @@ services:
       dockerfile: dev/Dockerfile
     command: celery -A task_management_system beat -l info
     env_file:
-      - ./.env.dev
+      - ../.env.dev
     depends_on:
       db-dev:
         condition: service_healthy

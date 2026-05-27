@@ -22,8 +22,8 @@ ENV TMS_HOME=/home/tms/web
 WORKDIR $TMS_HOME
 
 RUN apk add --no-cache \
-    curl \
-    netcat-openbsd
+    curl=8.19.0-r0 \
+    netcat-openbsd=1.234.1-r0
 
 COPY --from=build /app/requirements.txt ./
 
