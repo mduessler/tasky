@@ -14,7 +14,7 @@ developers to share and synchronize the same infrastructure state.
 ### Initialization
 
 To initialize the backend simply run from the root of the project the command
-`make terraform-init-bootstrap`. The initializing has to be done once. Only the
+`make bootstrap-create`. The initializing has to be done once. Only the
 admin user, called **tasky-admin**, is allowed to perform the operation. This
 command does multiple things:
 
