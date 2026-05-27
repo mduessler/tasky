@@ -57,7 +57,7 @@ class TestVerifyVerificationToken:
         log_record = caplog_loguru.records[-1]
         assert_log(
             log_record,
-            "Not found: User not found. Reaseon TmsUser matching query does not exist..",
+            "Not found: User not found. Reason TmsUser matching query does not exist.",
             "WARNING",
         )
 
