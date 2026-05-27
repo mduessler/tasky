@@ -216,8 +216,8 @@ Infrastructure targets are documented in
 
 ## Environment Variables
 
-The development stack is configured via a `.env` file in the project root.
-**Never commit `.env` to version control.** If no `.env` exists, `make up-dev`
+The development stack is configured via a `.env.dev` file in the project root.
+**Never commit `.env*` to version control.** If no `.env*` exists, `make up-dev`
 generates one from `docs/.env.example` with random secrets. The exceptions
 are `EMAIL_HOST_USER` and `EMAIL_HOST_PASSWORD` — these must be set manually
 if you want to test the email verification step of registration.
