@@ -109,10 +109,11 @@ and ships through the CI/CD pipeline in this repository.
 - [Architecture](docs/architecture.md) — Data model, authentication, permissions,
   registration flow
 - [Development](docs/development.md) — Setup, environment variables, testing, logging
-- [CI/CD](docs/ci-cd.md) — Documentation of the CI/CD.
-- [Infrastructure](docs/infrastructure.md) — Documentation how to setup the infrastructure.
-- [requests.http](docs/requests.http) — A list of requests, for testing dev environment.
-- [OpenAPI](docs/openapi.yaml) — OpenAPI documentation.
+- [CI/CD](docs/ci-cd.md) — Pipeline structure, job graph, image strategy, caching
+- [Infrastructure](docs/infrastructure.md) — Terraform/Packer/Ansible setup for
+  the self-hosted GitLab Runner on AWS
+- [requests.http](docs/requests.http) — Ready-to-run API requests for the dev environment
+- [OpenAPI](docs/openapi.yaml) — Generated OpenAPI 3 schema
 
 ## Repository Layout
 
