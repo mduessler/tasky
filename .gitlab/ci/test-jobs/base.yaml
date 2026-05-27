@@ -1,0 +1,32 @@
+.test-base:
+  stage: test
+  image: $DEV_IMAGE_LATEST
+  tags:
+    - dev
+  needs:
+    - lint
+    - openapi
+  variables:
+    DJANGO_SETTINGS_MODULE: task_management_system.settings.development
+    SECRET_KEY: $SECRET_KEY
+    JWT_SECRET_KEY: $JWT_SECRET_KEY
+    DJANGO_ALLOWED_HOSTS: localhost
+    SQL_ENGINE: django.db.backends.postgresql
+    SQL_DB: postgres
+    SQL_USER: postgres
+    SQL_PASSWORD: postgres
+    SQL_HOST: postgres
+    SQL_PORT: "5432"
+    POSTGRES_DB: postgres
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: postgres
+    EMAIL_HOST: sandbox.smtp.mailtrap.io
+    EMAIL_PORT: "2525"
+    EMAIL_HOST_USER: $email_host_user
+    EMAIL_HOST_PASSWORD: $email_host_password
+  services:
+    - name: postgres:18.4-alpine
+      alias: postgres
+  before_script:
+    - cd task_management_system
+    - until pg_isready -h postgres -U postgres; do sleep 1; done

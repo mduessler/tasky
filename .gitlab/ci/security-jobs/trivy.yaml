@@ -1,0 +1,14 @@
+.trivy-base:
+  image:
+    name: aquasec/trivy:latest
+    entrypoint: [""]
+  tags:
+    - dev
+  variables:
+    TRIVY_NO_PROGRESS: "true"
+    TRIVY_CACHE_DIR: ".trivycache"
+    TRIVY_USERNAME: $CI_REGISTRY_USER
+    TRIVY_PASSWORD: $CI_REGISTRY_PASSWORD
+  cache:
+    paths:
+      - .trivycache/

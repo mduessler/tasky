@@ -1,0 +1,57 @@
+packer {
+  required_plugins {
+    amazon = {
+      version = ">= 1.2.8"
+      source  = "github.com/hashicorp/amazon"
+    }
+  }
+}
+
+source "amazon-ebs" "ubuntu" {
+  ami_name = "gitlab-runner-${formatdate("YYYYMMDD-HHmmss", timestamp())}"
+  instance_type = "t3.micro"
+  region        = "eu-central-1"
+  source_ami_filter {
+    filters = {
+      name                = "ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*"
+      root-device-type    = "ebs"
+      virtualization-type = "hvm"
+    }
+    most_recent = true
+    owners      = ["099720109477"]
+  }
+  ssh_username = "ubuntu"
+}
+
+build {
+  name = "gitlab-runner"
+  sources = [
+    "source.amazon-ebs.ubuntu"
+  ]
+
+  provisioner "file" {
+    sources     = ["scripts/init-file-structure", "scripts/install-docker", "scripts/install-gitlab-runner", "scripts/cleanup", "scripts/prune-docker"]
+    destination = "/tmp/"
+  }
+
+
+  # Prepare server
+  provisioner "shell" {
+    inline = [
+      "chmod +x /tmp/init-file-structure /tmp/install-docker /tmp/install-gitlab-runner",
+      "sudo /tmp/init-file-structure",
+      "sudo /tmp/install-docker",
+      "sudo /tmp/install-gitlab-runner",
+    ]
+  }
+
+  # make cron job for prune-docker
+  provisioner "shell" {
+    inline = [
+      "sudo mv /tmp/prune-docker /usr/local/bin/docker-prune",
+      "sudo chmod +x /usr/local/bin/docker-prune",
+      "sudo echo '0 2 * * * root /usr/local/bin/docker-prune' | sudo tee /etc/cron.d/docker-prune"
+    ]
+  }
+
+}

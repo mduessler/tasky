@@ -1,0 +1,106 @@
+services:
+  tms-dev:
+    container_name: tms-dev
+    pull_policy: never
+    image: tms-dev:latest
+    build:
+      context: ..
+      dockerfile: dev/Dockerfile
+    command: [python, manage.py, runserver, "0.0.0.0:8000"]
+    volumes:
+      - ../task_management_system:/home/tms/web
+    env_file:
+      - ../.env.dev
+    depends_on:
+      db-dev:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/schema/"]
+      interval: 10s
+      retries: 5
+      timeout: 5s
+      start_period: 30s
+  db-dev:
+    container_name: tms-db-dev
+    image: postgres:18.4-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data-dev
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres-dev
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 5s
+      retries: 5
+      timeout: 3s
+  nginx:
+    container_name: tms-nginx-dev
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    ports:
+      - "8080:80"
+      - "8443:443"
+    depends_on:
+      tms-dev:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "-k", "https://localhost/api/schema/"]
+      interval: 10s
+      retries: 5
+      timeout: 5s
+      start_period: 30s
+  redis:
+    image: redis:8.6.3-alpine
+    container_name: tms-redis-dev
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      retries: 5
+      timeout: 3s
+  celery-worker:
+    container_name: tms-celery-worker-dev
+    build:
+      context: ..
+      dockerfile: dev/Dockerfile
+    command: celery -A task_management_system worker -l info
+    env_file:
+      - ../.env.dev
+    depends_on:
+      db-dev:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      tms-dev:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "celery", "-A", "task_management_system", "inspect", "ping"]
+      interval: 10s
+      retries: 5
+      timeout: 5s
+      start_period: 30s
+  celery-beat:
+    container_name: tms-celery-beat-dev
+    build:
+      context: ..
+      dockerfile: dev/Dockerfile
+    command: celery -A task_management_system beat -l info
+    env_file:
+      - ../.env.dev
+    depends_on:
+      db-dev:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      tms-dev:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "celery", "-A", "task_management_system", "inspect", "ping"]
+      interval: 10s
+      retries: 5
+      timeout: 5s
+      start_period: 30s
+volumes:
+  postgres_data:
+    name: tms-dev-db

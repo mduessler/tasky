@@ -1,0 +1,34 @@
+# Version control & CI
+.git/
+.gitlab/
+.gitlab-ci.yml
+
+# Dev tooling
+.pre-commit-config.yaml
+.pre-commit-cache/
+Makefile
+scripts/
+
+# Linter / type-checker caches
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+__pycache__/
+*.pyc
+
+# Documentation
+docs/
+README.md
+LICENSE
+
+# Environment files (may contain secrets)
+.env*
+
+# Runtime artefacts
+logs/
+
+# Directories not needed in the image
+dev/
+prod/
+infrastructure/
+.gitignore

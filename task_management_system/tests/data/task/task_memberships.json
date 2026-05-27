@@ -1,0 +1,382 @@
+[
+  {
+    "model": "task.taskmembership",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "task": 1,
+      "role": "owner",
+      "joined_at": "2026-01-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "task.taskmembership",
+    "pk": 2,
+    "fields": {
+      "user": 2,
+      "task": 1,
+      "role": "admin",
+      "joined_at": "2026-01-01T10:05:00Z"
+    }
+  },
+  {
+    "model": "task.taskmembership",
+    "pk": 3,
+    "fields": {
+      "user": 3,
+      "task": 1,
+      "role": "member",
+      "joined_at": "2026-01-01T10:10:00Z"
+    }
+  },
+  {
+    "model": "task.taskmembership",
+    "pk": 4,
+    "fields": {
+      "user": 4,
+      "task": 1,
+      "role": "viewer",
+      "joined_at": "2026-01-01T10:15:00Z"
+    }
+  },
+  {
+    "model": "task.taskmembership",
+    "pk": 5,
+    "fields": {
+      "user": 2,
+      "task": 2,
+      "role": "owner",
+      "joined_at": "2026-01-02T11:00:00Z"
+    }
+  },
+  {
+    "model": "task.taskmembership",
+    "pk": 6,
+    "fields": {
+      "user": 5,
+      "task": 2,
+      "role": "admin",
+      "joined_at": "2026-01-02T11:05:00Z"
+    }
+  },
+  {
+    "model": "task.taskmembership",
+    "pk": 7,
+    "fields": {
+      "user": 6,
+      "task": 2,
+      "role": "member",
+      "joined_at": "2026-01-02T11:10:00Z"
+    }
+  },
+  {
+    "model": "task.taskmembership",
+    "pk": 8,
+    "fields": {
+      "user": 7,
+      "task": 2,
+      "role": "viewer",
+      "joined_at": "2026-01-02T11:15:00Z"
+    }
+  },
+  {
+    "model": "task.taskmembership",
+    "pk": 9,
+    "fields": {
+      "user": 3,
+      "task": 3,
+      "role": "owner",
+      "joined_at": "2026-01-03T09:30:00Z"
+    }
+  },
+  {
+    "model": "task.taskmembership",
+    "pk": 10,
+    "fields": {
+      "user": 8,
+      "task": 3,
+      "role": "admin",
+      "joined_at": "2026-01-03T09:40:00Z"
+    }
+  },
+  {
+    "model": "task.taskmembership",
+    "pk": 11,
+    "fields": {
+      "user": 9,
+      "task": 3,
+      "role": "member",
+      "joined_at": "2026-01-03T09:50:00Z"
+    }
+  },
+  {
+    "model": "task.taskmembership",
+    "pk": 12,
+    "fields": {
+      "user": 4,
+      "task": 4,
+      "role": "owner",
+      "joined_at": "2026-01-04T08:00:00Z"
+    }
+  },
+  {
+    "model": "task.taskmembership",
+    "pk": 13,
+    "fields": {
+      "user": 10,
+      "task": 4,
+      "role": "admin",
+      "joined_at": "2026-01-04T08:10:00Z"
+    }
+  },
+  {
+    "model": "task.taskmembership",
+    "pk": 14,
+    "fields": {
+      "user": 11,
+      "task": 4,
+      "role": "member",
+      "joined_at": "2026-01-04T08:20:00Z"
+    }
+  },
+  {
+    "model": "task.taskmembership",
+    "pk": 15,
+    "fields": {
+      "user": 5,
+      "task": 5,
+      "role": "owner",
+      "joined_at": "2026-01-05T14:00:00Z"
+    }
+  },
+  {
+    "model": "task.taskmembership",
+    "pk": 16,
+    "fields": {
+      "user": 6,
+      "task": 5,
+      "role": "admin",
+      "joined_at": "2026-01-05T14:10:00Z"
+    }
+  },
+  {
+    "model": "task.taskmembership",
+    "pk": 17,
+    "fields": {
+      "user": 7,
+      "task": 5,
+      "role": "member",
+      "joined_at": "2026-01-05T14:20:00Z"
+    }
+  },
+  {
+    "model": "task.taskmembership",
+    "pk": 18,
+    "fields": {
+      "user": 6,
+      "task": 6,
+      "role": "owner",
+      "joined_at": "2026-01-06T12:00:00Z"
+    }
+  },
+  {
+    "model": "task.taskmembership",
+    "pk": 19,
+    "fields": {
+      "user": 1,
+      "task": 6,
+      "role": "admin",
+      "joined_at": "2026-01-06T12:10:00Z"
+    }
+  },
+  {
+    "model": "task.taskmembership",
+    "pk": 20,
+    "fields": {
+      "user": 8,
+      "task": 6,
+      "role": "member",
+      "joined_at": "2026-01-06T12:20:00Z"
+    }
+  },
+  {
+    "model": "task.taskmembership",
+    "pk": 21,
+    "fields": {
+      "user": 7,
+      "task": 7,
+      "role": "owner",
+      "joined_at": "2026-01-07T15:00:00Z"
+    }
+  },
+  {
+    "model": "task.taskmembership",
+    "pk": 22,
+    "fields": {
+      "user": 2,
+      "task": 7,
+      "role": "admin",
+      "joined_at": "2026-01-07T15:10:00Z"
+    }
+  },
+  {
+    "model": "task.taskmembership",
+    "pk": 23,
+    "fields": {
+      "user": 9,
+      "task": 7,
+      "role": "member",
+      "joined_at": "2026-01-07T15:20:00Z"
+    }
+  },
+  {
+    "model": "task.taskmembership",
+    "pk": 24,
+    "fields": {
+      "user": 8,
+      "task": 8,
+      "role": "owner",
+      "joined_at": "2026-01-08T16:00:00Z"
+    }
+  },
+  {
+    "model": "task.taskmembership",
+    "pk": 25,
+    "fields": {
+      "user": 3,
+      "task": 8,
+      "role": "admin",
+      "joined_at": "2026-01-08T16:10:00Z"
+    }
+  },
+  {
+    "model": "task.taskmembership",
+    "pk": 26,
+    "fields": {
+      "user": 10,
+      "task": 8,
+      "role": "member",
+      "joined_at": "2026-01-08T16:20:00Z"
+    }
+  },
+  {
+    "model": "task.taskmembership",
+    "pk": 27,
+    "fields": {
+      "user": 9,
+      "task": 9,
+      "role": "owner",
+      "joined_at": "2026-01-09T10:00:00Z"
+    }
+  },
+  {
+    "model": "task.taskmembership",
+    "pk": 28,
+    "fields": {
+      "user": 4,
+      "task": 9,
+      "role": "admin",
+      "joined_at": "2026-01-09T10:10:00Z"
+    }
+  },
+  {
+    "model": "task.taskmembership",
+    "pk": 29,
+    "fields": {
+      "user": 11,
+      "task": 9,
+      "role": "member",
+      "joined_at": "2026-01-09T10:20:00Z"
+    }
+  },
+  {
+    "model": "task.taskmembership",
+    "pk": 30,
+    "fields": {
+      "user": 10,
+      "task": 10,
+      "role": "owner",
+      "joined_at": "2026-01-10T11:00:00Z"
+    }
+  },
+  {
+    "model": "task.taskmembership",
+    "pk": 31,
+    "fields": {
+      "user": 5,
+      "task": 10,
+      "role": "admin",
+      "joined_at": "2026-01-10T11:10:00Z"
+    }
+  },
+  {
+    "model": "task.taskmembership",
+    "pk": 32,
+    "fields": {
+      "user": 12,
+      "task": 10,
+      "role": "member",
+      "joined_at": "2026-01-10T11:20:00Z"
+    }
+  },
+  {
+    "model": "task.taskmembership",
+    "pk": 33,
+    "fields": {
+      "user": 11,
+      "task": 11,
+      "role": "owner",
+      "joined_at": "2026-01-11T09:00:00Z"
+    }
+  },
+  {
+    "model": "task.taskmembership",
+    "pk": 34,
+    "fields": {
+      "user": 6,
+      "task": 11,
+      "role": "admin",
+      "joined_at": "2026-01-11T09:10:00Z"
+    }
+  },
+  {
+    "model": "task.taskmembership",
+    "pk": 35,
+    "fields": {
+      "user": 13,
+      "task": 11,
+      "role": "member",
+      "joined_at": "2026-01-11T09:20:00Z"
+    }
+  },
+  {
+    "model": "task.taskmembership",
+    "pk": 36,
+    "fields": {
+      "user": 12,
+      "task": 12,
+      "role": "owner",
+      "joined_at": "2026-01-12T13:00:00Z"
+    }
+  },
+  {
+    "model": "task.taskmembership",
+    "pk": 37,
+    "fields": {
+      "user": 7,
+      "task": 12,
+      "role": "admin",
+      "joined_at": "2026-01-12T13:10:00Z"
+    }
+  },
+  {
+    "model": "task.taskmembership",
+    "pk": 38,
+    "fields": {
+      "user": 14,
+      "task": 12,
+      "role": "member",
+      "joined_at": "2026-01-12T13:20:00Z"
+    }
+  }
+]

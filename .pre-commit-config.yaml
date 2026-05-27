@@ -1,0 +1,104 @@
+default_language_version:
+  python: python3.13
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-executables-have-shebangs
+      - id: check-illegal-windows-names
+      - id: check-json
+      - id: check-shebang-scripts-are-executable
+      - id: check-merge-conflict
+      - id: check-symlinks
+      - id: check-toml
+      - id: check-vcs-permalinks
+      - id: check-xml
+      - id: check-yaml
+      - id: detect-private-key
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+  - repo: https://github.com/markdownlint/markdownlint
+    rev: v0.12.0
+    hooks:
+      - id: markdownlint
+        args: ["--rules", "~MD029,~MD024", "--style", "relaxed"]
+  - repo: https://github.com/executablebooks/mdformat
+    rev: 1.0.0
+    hooks:
+      - id: mdformat
+        args: ["--number"]
+        additional_dependencies:
+          - mdformat-gfm
+  - repo: https://github.com/psf/black
+    rev: 26.3.1
+    hooks:
+      - id: black
+        exclude: ^.*/migrations/
+  - repo: https://github.com/pycqa/isort
+    rev: 6.0.1
+    hooks:
+      - id: isort
+        types: [python]
+        exclude: ^.*/migrations/
+  - repo: https://github.com/PyCQA/flake8
+    rev: 7.1.2
+    hooks:
+      - id: flake8
+        args: [--max-line-length=99]
+        types: [python]
+        exclude: ^.*/migrations/
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.15.0
+    hooks:
+      - id: mypy
+        types: [python]
+        args: [--strict, --ignore-missing-imports]
+        exclude: |
+          (?x)^(
+            task_management_system/tests/ |
+            ^.*/migrations/
+          )
+        additional_dependencies:
+          - django
+          - celery
+          - types-requests
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.8.3
+    hooks:
+      - id: bandit
+        args: [-r, -x, ./tests/]
+        types: [python]
+        exclude: |
+          (?x)^(
+            task_management_system/tests/ |
+            .env.dev
+          )
+  - repo: https://github.com/python-poetry/poetry
+    rev: 2.1.1
+    hooks:
+      - id: poetry-check
+      - id: poetry-lock
+  - repo: https://github.com/google/yamlfmt
+    rev: v0.16.0
+    hooks:
+      - id: yamlfmt
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.12.0
+    hooks:
+      - id: hadolint
+        args: ["dev/Dockerfile", "dev/Dockerfile.nginx", "--ignore", "DL3059", "--ignore", "SC2034", "--ignore", "DL3008", "--ignore", "SC2094", "--ignore", "SC1091", "--ignore", "DL3013"]
+        files: |
+          (?x)^(
+            Dockerfile |
+            Dockerfile.nginx |
+          )
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.11.0.1
+    hooks:
+      - id: shellcheck
+  - repo: https://github.com/scop/pre-commit-shfmt
+    rev: v3.13.1-1
+    hooks:
+      - id: shfmt
+        args: ["-w"]

@@ -1,0 +1,24 @@
+- name: Register gitlab-runner
+  ansible.builtin.shell:
+    cmd: |
+      gitlab-runner register \
+        --url "{{ gitlab_runner_url }}" \
+        --token "{{ runner_token }}" \
+        --executor "{{ gitlab_runner_executor }}" \
+        --docker-image "alpine:latest" \
+        --name "{{ runner_name }}" \
+        --docker-volumes "/cache" \
+        --docker-volumes "/var/run/docker.sock:/var/run/docker.sock" \
+        --non-interactive
+  no_log: false
+- name: Set concurrent jobs
+  ansible.builtin.lineinfile:
+    path: /etc/gitlab-runner/config.toml
+    regexp: '^concurrent'
+    line: 'concurrent = 1'
+  notify: Restart gitlab-runner
+- name: Verify gitlab-runner is running
+  ansible.builtin.systemd:
+    name: gitlab-runner
+    state: started
+    enabled: true

@@ -1,0 +1,13 @@
+pip-audit:
+  stage: security-dev
+  image: $DEV_IMAGE_LATEST
+  tags:
+    - dev
+  needs:
+    - test:registration
+    - test:task
+    - test:task_management_system
+    - test:tms_auth
+    - test:user
+  script:
+    - pip-audit
