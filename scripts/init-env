@@ -3,7 +3,7 @@
 set -euo pipefail
 
 function generate_env_dev_file() {
-    tee .env.dev <<EOF
+	tee .env.dev <<EOF
 DJANGO_SETTINGS_MODULE=task_management_system.settings.development
 SECRET_KEY=django-insecure-$(openssl rand -hex 32)
 DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1] 0.0.0.0
@@ -26,14 +26,14 @@ EOF
 }
 
 if [ "$1" == "dev" ]; then
-    if [ -f .env.dev ]; then
-        echo "INFO: .env.dev already exists."
-        exit 0
-    fi
-    echo "INFO: No .env.dev found. Generating one with predefined values."
-    generate_env_dev_file
+	if [ -f .env.dev ]; then
+		echo "INFO: .env.dev already exists."
+		exit 0
+	fi
+	echo "INFO: No .env.dev found. Generating one with predefined values."
+	generate_env_dev_file
 
 else
-    echo "WARNING: Read the section in the documentation."
-    exit 1
+	echo "WARNING: Read the section in the documentation."
+	exit 1
 fi

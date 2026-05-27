@@ -11,13 +11,13 @@ curl -L "https://packages.gitlab.com/install/repositories/runner/gitlab-runner/s
 
 echo "INFO: Installing gitlab-runner"
 sudo apt install -y \
-    gitlab-runner-helper-images="${gitlab_runner_version}" \
-    gitlab-runner="${gitlab_runner_version}"
+	gitlab-runner-helper-images="${gitlab_runner_version}" \
+	gitlab-runner="${gitlab_runner_version}"
 
 if gitlab-runner --version >/dev/null 2>&1; then
-    echo "SUCCESS: gitlab-runner ${gitlab_runner_version} installed successfully."
-    exit 0
+	echo "SUCCESS: gitlab-runner ${gitlab_runner_version} installed successfully."
+	exit 0
 else
-    echo "ERROR: gitlab-runner installation failed." >&2
-    exit 1
+	echo "ERROR: gitlab-runner installation failed." >&2
+	exit 1
 fi

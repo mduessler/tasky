@@ -163,7 +163,7 @@ gen-cert-dev:
 # Local Development components
 #
 # Install poetry
-#  
+#
 
 poetry:
 	pipx install poetry==$(poetry-version)
