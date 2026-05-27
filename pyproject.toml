@@ -2,7 +2,7 @@
 name = "TaskManager"
 version = "0.1.0"
 description = "A simple task management system."
-authors = [{ name = "Max Düssler", email = "max.duessler@posteo.net" }]
+authors = ["Max Düssler max.duessler@posteo.net"]
 
 [tool.poetry.dependencies]
 python = ">=3.13.0 <3.14"
