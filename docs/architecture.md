@@ -140,7 +140,7 @@ verification email, then activates the account via the token in that email.
 
 ### 1. Register
 
-The client sends credentials to `POST /api/register/`. The server creates
+The client sends credentials to `POST /api/auth/register/`. The server creates
 an inactive user (`is_active = False`) and generates an `EmailVerificationToken`
 — a 6-digit numeric code that expires after 15 minutes. The token is immutable:
 it cannot be updated after creation, only deleted. Sending the verification email
@@ -149,7 +149,7 @@ asynchronously after the transaction commits.
 
 ### 2. Activate
 
-The client sends the token to `POST /api/activate/`. The server verifies that
+The client sends the token to `POST /api/auth/activate/`. The server verifies that
 the token exists, belongs to the user, and has not expired. On success, the user
 is set to active (`is_active = True`) and the token is deleted.
 
