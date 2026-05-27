@@ -5,6 +5,13 @@ stages:
   - security-dev
   - build
   - security
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "dev"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"
+    - if: $CI_COMMIT_BRANCH == "dev"
+    - if: $CI_COMMIT_BRANCH == "main"
+    - when: never
 variables:
   DEV_IMAGE: $CI_REGISTRY_IMAGE/dev:$CI_COMMIT_SHORT_SHA
   DEV_IMAGE_LATEST: $CI_REGISTRY_IMAGE/dev:latest

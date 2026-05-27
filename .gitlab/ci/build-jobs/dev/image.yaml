@@ -5,9 +5,6 @@ build:dev-image:
     - dev
   services:
     - docker:29-dind
-  rules:
-    - if: $CI_COMMIT_BRANCH == "dev"
-    - if: $CI_COMMIT_BRANCH == "main"
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
   before_script:
