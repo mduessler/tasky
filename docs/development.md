@@ -340,7 +340,7 @@ and multiple threads.
 ### Directory Structure
 
 The logging implementation is centralized within the core of the application:
-`task_management_system/task_mangement_system/core/logging/`.
+`task_management_system/task_management_system/core/logging/`.
 
 - [**config.py**](../task_management_system/task_management_system/core/logging/config.py):
   Logger configuration, sink definitions, and interception.
