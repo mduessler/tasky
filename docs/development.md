@@ -90,16 +90,15 @@ seeded fixtures without manually creating users first.
 
 ### Default Users
 
-Four users are created. `admin` is a superuser; the remaining accounts
-represent typical non-privileged users and are pre-assigned to the seeded
-tasks with different roles.
+Fourteen users are created. One of them is a superuser. For testing purposes,
+using 2 users is sufficient. The login credentials for the 2 users are listed
+below. Otherwise, the [`request.http`](./requests.http) file contains a request
+for each API endpoint. These users only exists in the development environment.
 
-| Username | Password   | Role      |
-| -------- | ---------- | --------- |
-| admin    | <password> | superuser |
-| user1    | <password> | user      |
-| user2    | <password> | user      |
-| user3    | <password> | user      |
+| Email             | Password     | Role      |
+| ----------------- | ------------ | --------- |
+| max@example.com   | customXXXX1  | user      |
+| jonas@example.com | customXXXX14 | superuser |
 
 > These credentials exist only in the development environment. The seed
 > command does not run against production settings.
