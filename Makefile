@@ -101,7 +101,7 @@ unit-tests-full: up-dev
 	docker compose --file $(file-dev) exec $(service-dev) pytest timing
 	docker compose --file $(file-dev) stop
 
-# Test python modules on vulnerabilities
+# Test production images modules on vulnerabilities
 #
 security-tests:
 	# Build production images
