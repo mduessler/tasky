@@ -52,4 +52,7 @@ COPY  --chown=tasky:tasky ./task_management_system/ ./
 # Change to non root-user
 USER tasky
 
+HEALTHCHECK --interval=30s --timeout=3s --start-period=20s --retries=3 \
+    CMD curl -fsS http://localhost:8000/api/schema/ || exit 1
+
 ENTRYPOINT ["/home/tasky/web/entrypoint"]
