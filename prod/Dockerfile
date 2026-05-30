@@ -30,7 +30,7 @@ ENV TMS_HOME=/home/tms/web
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # Creating user
-RUN addgroup -S tms && adduser -S tms -G tms
+RUN addgroup -S tms && adduser -S tms -G tms --create-home
 
 WORKDIR $TMS_HOME
 
