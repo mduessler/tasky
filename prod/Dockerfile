@@ -44,7 +44,7 @@ COPY --from=build /app/requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application
-COPY ./task_management_system/ ./
+COPY  --chown=tasky:tasky ./task_management_system/ ./
 
 # Change to non root-user
 USER tasky
