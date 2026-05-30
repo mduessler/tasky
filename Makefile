@@ -19,6 +19,8 @@ packer-dir = ./infrastructure/packer/environment/dev/gitlab-runner/
 aws-user-admin=tasky-admin
 aws-user-dev=tasky-dev
 
+prod-image=tms-prod-nginx:test 
+
 
 .SILENT:
 .ONESHELL:
@@ -78,6 +80,15 @@ full-clean-dev: stop-dev
 	docker image rm $(service-dev) $(database-dev)
 	docker volume rm $(service-dev)-db
 
+#
+# Build production environment
+#
+
+# Build production main image
+#
+build:
+	docker build -f prod/Dockerfile -t $(prod-image) .
+
 
 #
 # Tests
@@ -103,9 +114,8 @@ unit-tests-full: up-dev
 
 # Test production images modules on vulnerabilities
 #
-security-tests:
+security-tests: build
 	# Build production images
-	docker build -f prod/Dockerfile -t tms-prod:test .
 	docker build -f prod/Dockerfile.nginx -t tms-prod-nginx:test ./prod/
 
 	# Test pip audit
@@ -122,7 +132,7 @@ security-tests:
 		aquasec/trivy image tms-prod-nginx:test
 
 	# clean up
-	docker image rm -f tms-prod:test tms-prod-nginx:test
+	docker image rm -f $(prod-image) tms-prod-nginx:test
 	docker volume rm trivy-cache
 
 # Test dev image with trivy
