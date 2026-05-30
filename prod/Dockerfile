@@ -29,14 +29,18 @@ ENV PYTHONUNBUFFERED=1
 ENV TASKY_HOME=/home/tasky/web
 
 # Creating user
-RUN addgroup -S tasky && adduser -S tasky -G tasky --create-home
-
-WORKDIR $TASKY_HOME
+RUN addgroup -S tasky && adduser -S tasky -G tasky
 
 # Install os dependencies
 RUN apk add --no-cache \
     curl=8.19.0-r0 \
     netcat-openbsd=1.234.1-r0
+
+
+# Create root directory of app and set owner
+RUN mkdir -p "$TASKY_HOME" && chown -R tasky:tasky /home/tasky/web
+WORKDIR $TASKY_HOME
+
 
 # Install python dependencies
 COPY --from=build /app/requirements.txt ./
