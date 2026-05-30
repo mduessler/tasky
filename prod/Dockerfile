@@ -18,7 +18,7 @@ RUN poetry export -f requirements.txt --without-hashes > requirements.txt
 
 # Final image fror tasky production image
 #
-FROM python:3.13-alpine AS prod
+FROM python:3.13-alpine AS final
 
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 ENV PYTHONDONTWRITEBYTECODE=1
