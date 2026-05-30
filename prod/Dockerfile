@@ -1,3 +1,5 @@
+# Build image fror tasky production image
+#
 FROM python:3.13-slim-bookworm AS build
 
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
@@ -14,6 +16,8 @@ RUN python -m pip install --no-cache-dir poetry==2.1.1 poetry-plugin-export==1.0
 COPY pyproject.toml poetry.lock ./
 RUN poetry export -f requirements.txt --without-hashes > requirements.txt
 
+# Final image fror tasky production image
+#
 FROM python:3.13-alpine AS prod
 
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
