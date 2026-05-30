@@ -20,26 +20,33 @@ RUN poetry export -f requirements.txt --without-hashes > requirements.txt
 #
 FROM python:3.13-alpine AS final
 
+# Set Environmentvariables
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
+# Set shell
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
+# Creating user
 RUN addgroup -S tms && adduser -S tms -G tms
 ENV TMS_HOME=/home/tms/web
 
 WORKDIR $TMS_HOME
 
+# Install os dependencies
 RUN apk add --no-cache \
     curl=8.19.0-r0 \
     netcat-openbsd=1.234.1-r0
 
+# Install python dependencies
 COPY --from=build /app/requirements.txt ./
-
 RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application
 COPY ./task_management_system/ ./
 
+# Change to non root-user
 USER tms
 
 ENTRYPOINT ["/home/tms/web/entrypoint"]
