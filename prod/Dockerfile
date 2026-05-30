@@ -28,9 +28,6 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV TASKY_HOME=/home/tasky/web
 
-# Set shell
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-
 # Creating user
 RUN addgroup -S tasky && adduser -S tasky -G tasky --create-home
 
