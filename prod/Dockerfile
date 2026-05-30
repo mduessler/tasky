@@ -10,7 +10,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 WORKDIR /app
 
-RUN python -m pip install --no-cache-dir poetry==2.1.1 poetry-plugin-export==1.0.3 \
+RUN python -m pip install --no-cache-dir poetry==2.1.1 poetry-plugin-export==1.10.0 \
     && poetry config virtualenvs.create false
 
 COPY pyproject.toml poetry.lock ./
