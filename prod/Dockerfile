@@ -33,9 +33,8 @@ RUN addgroup -S tasky && adduser -S tasky -G tasky
 
 # Install os dependencies
 RUN apk add --no-cache \
-    curl=8.19.0-r0 \
-    netcat-openbsd=1.234.1-r0
-
+    curl \
+    netcat-openbsd
 
 # Create root directory of app and set owner
 RUN mkdir -p "$TASKY_HOME" && chown -R tasky:tasky /home/tasky/web
