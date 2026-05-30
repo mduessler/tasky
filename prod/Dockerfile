@@ -36,4 +36,6 @@ COPY --from=build /app/requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 COPY ./task_management_system/ ./
 
+USER tms
+
 ENTRYPOINT ["/home/tms/web/entrypoint"]
