@@ -16,6 +16,7 @@ Including another URLconf
 """
 
 from django.contrib import admin
+from django.http import HttpRequest, HttpResponseBase
 from django.urls import include, path
 from drf_spectacular.views import (
     SpectacularAPIView,
@@ -23,8 +24,14 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
 )
 
+
+def healthz(_: HttpRequest) -> HttpResponseBase:
+    return HttpResponseBase("ok")
+
+
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("healthz/", healthz),
     path("api/", include("tms_auth.urls")),
     path("api/", include("task.urls")),
     path("api/", include("registration.urls")),
