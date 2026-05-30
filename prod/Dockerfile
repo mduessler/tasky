@@ -20,7 +20,7 @@ RUN poetry export -f requirements.txt > requirements.txt
 
 # Final image fror tasky production image
 #
-FROM python:3.13-alpine AS final
+FROM python:3.13-alpine@sha256:sha256:420cd0bf0f3998275875e02ecd5808168cf0843cbb4d3c536432f729247b2acc AS final
 
 # Set Environmentvariables
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
