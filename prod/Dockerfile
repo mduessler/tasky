@@ -24,15 +24,15 @@ FROM python:3.13-alpine AS final
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
-ENV TMS_HOME=/home/tms/web
+ENV TASKY_HOME=/home/tasky/web
 
 # Set shell
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # Creating user
-RUN addgroup -S tms && adduser -S tms -G tms --create-home
+RUN addgroup -S tasky && adduser -S tasky -G tasky --create-home
 
-WORKDIR $TMS_HOME
+WORKDIR $TASKY_HOME
 
 # Install os dependencies
 RUN apk add --no-cache \
@@ -47,6 +47,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY ./task_management_system/ ./
 
 # Change to non root-user
-USER tms
+USER tasky
 
-ENTRYPOINT ["/home/tms/web/entrypoint"]
+ENTRYPOINT ["/home/tasky/web/entrypoint"]
