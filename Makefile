@@ -96,7 +96,7 @@ build:
 # Full tests (without timing)
 #
 
-tests: unit-tests security-tests
+tests: unit-tests test-image security-tests
 
 # Unit tests without timing
 #
