@@ -37,6 +37,21 @@ function test_group_name() {
     echo "PASSED: Group is '${group}'."
 }
 
+function test_user_ownership() {
+    result=$(docker run --rm --entrypoint sh "${PROD_IMAGE}" -c 'stat -c "%U" .')
+    if [ "${result}" != "${user}" ]; then
+        echo "ERROR: User '${user}' is not the ower of the working directory." && exit 1
+    fi
+    echo "PASSED: User '${user}' has ownership."
+}
+
+function test_group_ownership() {
+    result=$(docker run --rm --entrypoint sh "${PROD_IMAGE}" -c 'stat -c "%G" .')
+    if [ "${result}" != "${group}" ]; then
+        echo "ERROR: Group '${group}' is not the ower of the working directory." && exit 1
+    fi
+    echo "PASSED: Group '${group}' has ownership."
+}
 
 function main() {
     if [[ -z "${PROD_IMAGE}" ]]; then
@@ -46,6 +61,8 @@ function main() {
     test_non_root_group
     test_user_name
     test_group_name
+    test_user_ownership
+    test_group_ownership
 }
 
 main
