@@ -1,0 +1,41 @@
+test:runtime-hardend:
+  stage: test-prod
+  needs:
+    - build:prod-image
+  variables:
+    ENV_FILE: .env.ci
+    APP_PORT: "8000"
+    DJANGO_SETTINGS_MODULE: task_management_system.settings.development
+    DJANGO_ALLOWED_HOSTS: localhost
+    SQL_ENGINE: django.db.backends.postgresql
+    SQL_DB: postgres
+    SQL_USER: postgres
+    SQL_PASSWORD: postgres
+    SQL_HOST: postgres
+    SQL_PORT: "5432"
+    POSTGRES_DB: postgres
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: postgres
+  before_script:
+    - |
+      cat > "$ENV_FILE" <<EOF
+      DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}
+      SECRET_KEY=${SECRET_KEY}
+      JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
+      SQL_ENGINE=${SQL_ENGINE}
+      SQL_DB=${SQL_DB}
+      SQL_USER=${SQL_USER}
+      SQL_PASSWORD=${SQL_PASSWORD}
+      SQL_HOST=${SQL_HOST}
+      SQL_PORT=${SQL_PORT}
+      EOF
+    - docker network create tasky-prod-net-test || true
+    - >
+      docker run -d --name postgres --network tasky-prod-net-test -e POSTGRES_DB="$POSTGRES_DB" -e POSTGRES_USER="$POSTGRES_USER" -e POSTGRES_PASSWORD="$POSTGRES_PASSWORD" postgres:18.4-alpine
+    - for i in $(seq 1 30); do docker exec postgres pg_isready -U "$POSTGRES_USER" >/dev/null 2>&1 && break; sleep 1; done
+  script:
+    - ./prod/tests/test-runtime-hardend
+  after_script:
+    - docker rm -f postgres hardened-boot-prod-test >/dev/null 2>&1 || true
+    - docker network rm tasky-prod-net-test >/dev/null 2>&1 || true
