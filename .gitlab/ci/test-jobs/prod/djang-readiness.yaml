@@ -1,0 +1,20 @@
+test:django-readiness:
+  stage: test-prod
+  needs:
+    - build:prod-image
+  variables:
+    ENV_FILE: .env.ci
+    DJANGO_SETTINGS_MODULE: task_management_system.settings.production
+    DJANGO_ALLOWED_HOSTS: localhost
+    SECRET_KEY: "ci-test-only-not-a-real-secret-padding-0123456789abcdef"
+    JWT_SECRET_KEY: "ci-test-only-jwt-not-a-real-secret-padding-0123456789"
+  before_script:
+    - |
+      cat > "$ENV_FILE" <<EOF
+      DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}
+      SECRET_KEY=${SECRET_KEY}
+      JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
+      EOF
+  script:
+    - ./prod/tests/test-django-readiness
