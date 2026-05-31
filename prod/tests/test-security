@@ -1,46 +1,46 @@
 #!/usr/bin/env bash
 
 function test_image_of_python_package_vulnerabilities() {
-    output=$(docker run --rm --entrypoint pip "${PROD_IMAGE}" freeze | poetry run pip-audit -r /dev/stdin)
-    result=$?
-    if [ "${result}" -eq 0 ]; then
-        echo "PASSED: No python vulnerabilities found with pip-audit." && return 0
-    fi
-    echo "ERROR: ${output}" && exit 1
+	output=$(docker run --rm --entrypoint pip "${PROD_IMAGE}" freeze | poetry run pip-audit -r /dev/stdin)
+	result=$?
+	if [ "${result}" -eq 0 ]; then
+		echo "PASSED: No python vulnerabilities found with pip-audit." && return 0
+	fi
+	echo "ERROR: ${output}" && exit 1
 }
 
 function test_image_with_trivy() {
-    output=$(docker run --rm \
-        -v "${DOCKER_SOCKET}":/var/run/docker.sock \
-        -v trivy-cache:/root/.cache/trivy \
-        aquasec/trivy image --quiet --exit-code 1 --severity CRITICAL,HIGH "${PROD_IMAGE}")
-    result=$?
-    if [ "${result}" -eq 0 ]; then
-        echo "PASSED: Trivy found no vulnerability in image." && return 0
-    fi
-    echo "ERROR: ${output}" && exit 1
+	output=$(docker run --rm \
+		-v "${DOCKER_SOCKET}":/var/run/docker.sock \
+		-v trivy-cache:/root/.cache/trivy \
+		aquasec/trivy image --quiet --exit-code 1 --severity CRITICAL,HIGH "${PROD_IMAGE}")
+	result=$?
+	if [ "${result}" -eq 0 ]; then
+		echo "PASSED: Trivy found no vulnerability in image." && return 0
+	fi
+	echo "ERROR: ${output}" && exit 1
 }
 
 function test_nginx_image_with_trivy() {
-    output=$(docker run --rm \
-        -v "${DOCKER_SOCKET}":/var/run/docker.sock \
-        -v trivy-cache:/root/.cache/trivy \
-        aquasec/trivy image --quiet --exit-code 1 --severity CRITICAL,HIGH "${PROD_NGINX_IMAGE}")
-    result=$?
-    if [ "${result}" -eq 0 ]; then
-        echo "PASSED: Trivy found no vulnerability in image." && return 0
-    fi
-    echo "ERROR: ${output}" && exit 1
+	output=$(docker run --rm \
+		-v "${DOCKER_SOCKET}":/var/run/docker.sock \
+		-v trivy-cache:/root/.cache/trivy \
+		aquasec/trivy image --quiet --exit-code 1 --severity CRITICAL,HIGH "${PROD_NGINX_IMAGE}")
+	result=$?
+	if [ "${result}" -eq 0 ]; then
+		echo "PASSED: Trivy found no vulnerability in image." && return 0
+	fi
+	echo "ERROR: ${output}" && exit 1
 }
 
 function test_image_dockle() {
-    if docker run --rm \
-        -v "${DOCKER_SOCKET}":/var/run/docker.sock \
-        "${DOCKLE_IMAGE}" \
-        --exit-code 1 --exit-level WARN "${PROD_IMAGE}"; then
-        echo "PASSED: dockle CIS/hygiene checks clean." && return 0
-    fi
-    echo "ERROR: dockle found image hygiene/CIS issues." >&2 && exit 1
+	if docker run --rm \
+		-v "${DOCKER_SOCKET}":/var/run/docker.sock \
+		"${DOCKLE_IMAGE}" \
+		--exit-code 1 --exit-level WARN "${PROD_IMAGE}"; then
+		echo "PASSED: dockle CIS/hygiene checks clean." && return 0
+	fi
+	echo "ERROR: dockle found image hygiene/CIS issues." >&2 && exit 1
 }
 
 test_image_of_python_package_vulnerabilities

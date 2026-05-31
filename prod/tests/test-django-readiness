@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 
 test_django_deploy_checks() {
-    if docker run --rm --env-file "${ENV_FILE}" --entrypoint python "${PROD_IMAGE}" \
-        manage.py check --deploy --fail-level WARNING >/dev/null 2>&1; then
-        echo "PASSED: Django deploy checklist clean." && return 0
-    fi
-    echo "ERROR: 'manage.py check --deploy' reported issues." >&2 && exit 1
+	if docker run --rm --env-file "${ENV_FILE}" --entrypoint python "${PROD_IMAGE}" \
+		manage.py check --deploy --fail-level WARNING >/dev/null 2>&1; then
+		echo "PASSED: Django deploy checklist clean." && return 0
+	fi
+	echo "ERROR: 'manage.py check --deploy' reported issues." >&2 && exit 1
 }
 
 test_django_runtime_settings() {
-    if docker run --rm --env-file "${ENV_FILE}" --entrypoint python "${PROD_IMAGE}" \
-        manage.py shell -c '
+	if docker run --rm --env-file "${ENV_FILE}" --entrypoint python "${PROD_IMAGE}" \
+		manage.py shell -c '
 from django.conf import settings
 import sys
 errs = []
@@ -29,14 +29,14 @@ if errs:
     sys.exit(1)
 print("settings ok: DEBUG off, SECRET_KEY set, proxy header + ALLOWED_HOSTS good")
 ' >/dev/null 2>&1; then
-        echo "PASSED: Production settings look correct."
-        return 0
-    fi
-    echo "ERROR: Production settings are misconfigured." >&2 && exit 1
+		echo "PASSED: Production settings look correct."
+		return 0
+	fi
+	echo "ERROR: Production settings are misconfigured." >&2 && exit 1
 }
 
 if ! [ -f "${ENV_FILE}" ]; then
-    echo "ERROR: ENV_FILE '${ENV_FILE}' not found." >&2 && exit 1
+	echo "ERROR: ENV_FILE '${ENV_FILE}' not found." >&2 && exit 1
 fi
 test_django_deploy_checks
 test_django_runtime_settings
