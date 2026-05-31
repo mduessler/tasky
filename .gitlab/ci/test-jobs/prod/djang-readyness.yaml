@@ -1,4 +1,4 @@
-test:django-readiness:
+test:django-readyness:
   stage: test-prod
   needs:
     - build:prod-image
