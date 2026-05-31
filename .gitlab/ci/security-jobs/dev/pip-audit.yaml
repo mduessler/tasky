@@ -5,7 +5,7 @@ pip-audit:
     - dev
   needs:
     - test:registration
-    - test:task
+    # - test:task
     - test:task_management_system
     - test:tms_auth
     - test:user
