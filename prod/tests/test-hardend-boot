@@ -24,8 +24,20 @@ test_hardened_boot() {
     echo "PASSED: Production image run with strict running arguments."
 }
 
+test_no_setuid_binaries() {
+    output=$(docker run --rm --user 0 --entrypoint sh "${PROD_IMAGE}" -c \
+        'find / -xdev -type f -perm /6000 2>/dev/null')
+    if [ -z "${output}" ]; then
+        echo "PASSED: No setuid/setgid binaries."
+        return 0
+    fi
+    echo "ERROR: setuid/setgid binaries present (privilege-escalation surface):" >&2
+    printf '%s\n' "${output}" >&2 && exit 1
+}
+
 if ! [ -f "${ENV_FILE}" ]; then
     echo "ERROR: ENV_FILE '${ENV_FILE}' not found." >&2 && exit 1
 fi
 
 test_hardened_boot
+test_no_setuid_binaries
