@@ -53,6 +53,18 @@ function test_group_ownership() {
     echo "PASSED: Group '${group}' has ownership."
 }
 
+function test_no_leaked_tool_from_stage_builder() {
+    deps=("poetry" "gcc" 'make')
+    for dep in "${deps[@]}"; do
+        docker run --rm --entrypoint sh "${PROD_IMAGE}" -c 'command -v ${tool}'
+        result=$?
+        if [ "${result}" -eq 127 ]; then
+            echo "ERROR: Command '${dep}' is leaked to main image. Exit code " && exit 1
+        fi
+    done
+    echo "PASSED: No tool is leaked."
+}
+
 function main() {
     if [[ -z "${PROD_IMAGE}" ]]; then
         echo "ERROR: PROD_IMAGE is not defined." && exit 1
@@ -63,6 +75,7 @@ function main() {
     test_group_name
     test_user_ownership
     test_group_ownership
+    test_no_leaked_tool_from_stage_builder
 }
 
 main
