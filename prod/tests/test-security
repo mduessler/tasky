@@ -1,13 +1,27 @@
 #!/usr/bin/env bash
 
 test_image_with_trivy() {
-    if docker run --rm \
+    output=$(docker run --rm \
         -v "${DOCKER_SOCKET}":/var/run/docker.sock \
         -v trivy-cache:/root/.cache/trivy \
-        aquasec/trivy image --exit-code 1 --severity CRITICAL,HIGH "${PROD_IMAGE}"; then
+        aquasec/trivy image --exit-code 1 --severity CRITICAL,HIGH "${PROD_IMAGE}")
+    result=$?
+    if [ "${result}" -eq 0 ]; then
         echo "PASSED: Trivy found no vulnerability in image." && return 0
     fi
-    echo "ERROR: trivy found vulnerabilities." >&2 && exit 1
+    echo "ERROR: ${output}" && exit 1
+}
+
+test_nginx_image_with_trivy() {
+    output=$(docker run --rm \
+        -v "${DOCKER_SOCKET}":/var/run/docker.sock \
+        -v trivy-cache:/root/.cache/trivy \
+        aquasec/trivy image --exit-code 1 --severity CRITICAL,HIGH "${PROD_NGINX_IMAGE}")
+    result=$?
+    if [ "${result}" -eq 0 ]; then
+        echo "PASSED: Trivy found no vulnerability in image." && return 0
+    fi
+    echo "ERROR: ${output}" && exit 1
 }
 
 test_image_dockle() {
@@ -21,4 +35,5 @@ test_image_dockle() {
 }
 
 test_image_with_trivy
+test_nginx_image_with_trivy
 # test_image_dockle
