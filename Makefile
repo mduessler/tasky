@@ -20,6 +20,7 @@ aws-user-admin=tasky-admin
 aws-user-dev=tasky-dev
 
 prod-image=tasky:test 
+nginx-image=tasky-nginx:test 
 dockle-image=goodwithtech/dockle:latest
 
 
@@ -125,25 +126,17 @@ test-image: build
 #
 security-tests: build
 	# Build production images
-	docker build -f prod/Dockerfile.nginx -t tms-prod-nginx:test ./prod/
+	docker build -f prod/Dockerfile.nginx -t $(nginx-image) ./prod/
 
 	export DOCKER_SOCKET=$(docker-socket)
 	export DOCKLE_IMAGE=$(dockle-image)
 	export PROD_IMAGE=$(prod-image)
+	export PROD_NGINX_IMAGE=$(nginx-image)
 
 	./prod/tests/test-security || exit 1
 
-	# Test pip audit
-	docker run --rm --entrypoint pip $(prod-image) freeze | poetry run pip-audit -r /dev/stdin
-
-	# Test production images with trivy
-	docker run --rm \
-		-v $(docker-socket):/var/run/docker.sock \
-		-v trivy-cache:/root/.cache/trivy \
-		aquasec/trivy image tms-prod-nginx:test
-
 	# clean up
-	docker image rm -f $(prod-image) tms-prod-nginx:test
+	docker image rm -f $(prod-image) $(nginx-image)
 	docker volume rm trivy-cache
 
 # Test dev image with trivy
