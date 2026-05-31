@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-test_trivy_image() {
+test_image_with_trivy() {
     if docker run --rm \
         -v "${DOCKER_SOCKET}":/var/run/docker.sock \
         -v trivy-cache:/root/.cache/trivy \
@@ -20,5 +20,5 @@ test_image_dockle() {
     echo "ERROR: dockle found image hygiene/CIS issues." >&2 && exit 1
 }
 
-test_trivy_image
+test_image_with_trivy
 # test_image_dockle
