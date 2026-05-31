@@ -1,0 +1,6 @@
+test:image:
+  stage: test-prod
+  needs:
+    - build:prod-image
+  script:
+    - ./prod/tests/test-main-image
