@@ -4,6 +4,7 @@ from os import environ
 
 from task_management_system.core.logging import TmsLogger
 from task_management_system.settings.base import *  # noqa F403
+from task_management_system.settings.base import BASE_DIR
 
 DEBUG = False
 SECRET_KEY = environ["SECRET_KEY"]
@@ -30,6 +31,6 @@ CSRF_COOKIE_SECURE = True
 SILENCED_SYSTEM_CHECKS = ["security.W004", "security.W008"]
 
 # We need this because of swagger ui
-STATIC_ROOT = BASE_DIR / "staticfiles"  # type: ignore[name-defined]
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 TmsLogger("INFO")
