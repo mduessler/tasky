@@ -4,7 +4,7 @@ stages:
   - test
   - security-dev
   - build
-  - tedt-prod
+  - test-prod
   - security
 workflow:
   rules:
