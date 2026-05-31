@@ -2,3 +2,29 @@
 
 set -euo pipefail
 
+function test_non_root_user() {
+    result=$(docker run --rm --entrypoint id "${PROD_IMAGE}" -u)
+    if [ "${result}" -eq 0 ]; then
+        echo "ERROR: UID is ${result}. This is the root user." && exit 1
+    fi
+    echo "PASSED: User is not root user."
+}
+
+function test_non_root_group() {
+    result=$(docker run --rm --entrypoint id "${PROD_IMAGE}" -g)
+    if [ "${result}" -eq 0 ]; then
+        echo "ERROR: GID is ${result}. This is the root group." && exit 1
+    fi
+    echo "PASSED: Group is not root group."
+}
+
+
+function main() {
+    if [[ -z "${PROD_IMAGE}" ]]; then
+        echo "ERROR: PROD_IMAGE is not defined." && exit 1
+    fi
+    test_non_root_user
+    test_non_root_group
+}
+
+main
