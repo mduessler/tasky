@@ -4,6 +4,7 @@ set -euo pipefail
 
 user="tasky"
 group="tasky"
+healtcheck_url="http://localhost:8000/healthz/"
 
 function test_non_root_user() {
     result=$(docker run --rm --entrypoint id "${PROD_IMAGE}" -u)
@@ -97,6 +98,14 @@ test_entrypoint() {
     fi
 }
 
+function test_healthcheck_configured() {
+    result=$(docker inspect --format '{{json .Config.Healthcheck}}' "${PROD_IMAGE}")
+    if ! [[ "${result}" == *"curl -fsS ${healtcheck_url}"* ]]; then
+        echo "ERROR: HEALTHCHECK command not found." && exit 1
+    fi
+    echo "PASSED: image has a HEALTHCHECK hitting ."
+}
+
 if [[ -z "${PROD_IMAGE}" ]]; then
     echo "ERROR: PROD_IMAGE is not defined." && exit 1
 fi
@@ -110,3 +119,4 @@ test_no_leaked_tool_from_stage_builder
 test_broken_pip_packages
 test_os_dependencies_are_installed
 test_entrypoint
+test_healthcheck_configured
