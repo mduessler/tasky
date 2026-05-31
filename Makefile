@@ -139,6 +139,15 @@ security-tests: build
 		-v trivy-cache:/root/.cache/trivy \
 		aquasec/trivy image tms-prod-nginx:test
 
+	# Test with dockerle
+	if docker run --rm \
+        -v $(docker-socket):/var/run/docker.sock \
+        "${DOCKLE_IMAGE}" \
+        --exit-code 1 --exit-level WARN $(docker-socket); then \
+        echo "PASSED: dockle CIS/hygiene checks clean." &&  return 0 \
+    fi \
+    echo "ERROR: dockle found image hygiene/CIS issues." >&2 && return 1
+
 	# clean up
 	docker image rm -f $(prod-image) tms-prod-nginx:test
 	docker volume rm trivy-cache
