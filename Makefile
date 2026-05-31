@@ -19,7 +19,7 @@ packer-dir = ./infrastructure/packer/environment/dev/gitlab-runner/
 aws-user-admin=tasky-admin
 aws-user-dev=tasky-dev
 
-prod-image=tms-prod-nginx:test 
+prod-image=tasky:latest 
 
 
 .SILENT:
@@ -111,6 +111,14 @@ unit-tests: up-dev
 unit-tests-full: up-dev
 	docker compose --file $(file-dev) exec $(service-dev) pytest timing
 	docker compose --file $(file-dev) stop
+
+# Test production image
+# 
+test-image: build
+	export PROD_IMAGE=$(prod-image)
+	./prod/tests/test-main-image
+
+	docker image rm -f $(prod-image)
 
 # Test production images modules on vulnerabilities
 #
