@@ -75,6 +75,18 @@ test_broken_pip_packages() {
     echo "PASSED: No broken requirements found."
 }
 
+function test_os_dependencies_are_installed() {
+    deps=("curl" "nc")
+    for dep in "${deps[@]}"; do
+        docker run --rm --entrypoint sh "${PROD_IMAGE}" -c 'command -v ${dep} > /dev/null'
+        result=$?
+        if [ "${result}" -ne 0 ]; then
+            echo "ERROR: Dependency returned exit code ${result}." && exit 1
+        fi
+    done
+    echo "PASSED: All dependencies found."
+}
+
 test_entrypoint() {
     if docker run --rm --entrypoint sh "${PROD_IMAGE}" -c \
         'test -x ./entrypoint && head -1 ./entrypoint | grep -qx "#!/bin/sh"'; then
@@ -97,6 +109,7 @@ function main() {
     test_group_ownership
     test_no_leaked_tool_from_stage_builder
     test_broken_pip_packages
+    test_os_dependencies_are_installed
     test_entrypoint
 }
 
