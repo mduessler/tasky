@@ -1,5 +1,14 @@
 #!/usr/bin/env bash
 
+function test_image_of_python_package_vulnerabilities() {
+    output=$(docker run --rm --entrypoint pip "${PROD_IMAGE}" freeze | poetry run pip-audit -r /dev/stdin)
+    result=$?
+    if [ "${result}" -eq 0 ]; then
+        echo "PASSED: No python vulnerabilities found with pip-audit." && return 0
+    fi
+    echo "ERROR: ${output}" && exit 1
+}
+
 function test_image_with_trivy() {
     output=$(docker run --rm \
         -v "${DOCKER_SOCKET}":/var/run/docker.sock \
@@ -34,6 +43,7 @@ function test_image_dockle() {
     echo "ERROR: dockle found image hygiene/CIS issues." >&2 && exit 1
 }
 
+test_image_of_python_package_vulnerabilities
 test_image_with_trivy
 test_nginx_image_with_trivy
 # test_image_dockle
