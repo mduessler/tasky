@@ -131,7 +131,7 @@ test-image: build
 		-e POSTGRES_PASSWORD="postgres" \
 		postgres:18.4-alpine  >/dev/null 2>&1
 
-	./prod/tests/test-hardend-boot
+	./prod/tests/test-runtime-hardend
 
 	docker image rm -f $(prod-image) >/dev/null 2>&1
 	docker rm -f tasky-prod-db-test >/dev/null 2>&1
