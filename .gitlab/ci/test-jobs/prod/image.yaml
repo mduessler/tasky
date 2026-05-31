@@ -1,5 +1,7 @@
 test:image:
   stage: test-prod
+  tags:
+    - dev
   needs:
     - build:prod-image
   script:
