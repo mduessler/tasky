@@ -2,6 +2,9 @@
 
 set -euo pipefail
 
+user="tasky"
+group="tasky"
+
 function test_non_root_user() {
     result=$(docker run --rm --entrypoint id "${PROD_IMAGE}" -u)
     if [ "${result}" -eq 0 ]; then
@@ -18,6 +21,22 @@ function test_non_root_group() {
     echo "PASSED: Group is not root group."
 }
 
+function test_user_name() {
+    result=$(docker run --rm --entrypoint id "${PROD_IMAGE}" -un)
+    if [ "${result}" != "${user}" ]; then
+        echo "ERROR: User is ${result}. This is not user '${user}'." && exit 1
+    fi
+    echo "PASSED: User is '${user}'."
+}
+
+function test_group_name() {
+    result=$(docker run --rm --entrypoint id "${PROD_IMAGE}" -gn)
+    if [ "${result}" != "${group}" ]; then
+        echo "ERROR: Group is ${result}. This is not group '${group}'." && exit 1
+    fi
+    echo "PASSED: Group is '${group}'."
+}
+
 
 function main() {
     if [[ -z "${PROD_IMAGE}" ]]; then
@@ -25,6 +44,8 @@ function main() {
     fi
     test_non_root_user
     test_non_root_group
+    test_user_name
+    test_group_name
 }
 
 main
