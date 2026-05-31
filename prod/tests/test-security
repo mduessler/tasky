@@ -1,5 +1,15 @@
 #!/usr/bin/env bash
 
+test_trivy_image() {
+    if docker run --rm \
+        -v "${DOCKER_SOCKET}":/var/run/docker.sock \
+        -v trivy-cache:/root/.cache/trivy \
+        aquasec/trivy image --exit-code 1 --severity CRITICAL,HIGH "${PROD_IMAGE}"; then
+        echo "PASSED: Trivy found no vulnerability in image." && return 0
+    fi
+    echo "ERROR: trivy found vulnerabilities." >&2 && exit 1
+}
+
 test_image_dockle() {
     if docker run --rm \
         -v "${DOCKER_SOCKET}":/var/run/docker.sock \
@@ -10,4 +20,5 @@ test_image_dockle() {
     echo "ERROR: dockle found image hygiene/CIS issues." >&2 && exit 1
 }
 
+test_trivy_image
 test_image_dockle

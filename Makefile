@@ -19,7 +19,7 @@ packer-dir = ./infrastructure/packer/environment/dev/gitlab-runner/
 aws-user-admin=tasky-admin
 aws-user-dev=tasky-dev
 
-prod-image=tasky:latest 
+prod-image=tasky:test 
 dockle-image=goodwithtech/dockle:latest
 
 
@@ -131,6 +131,8 @@ security-tests: build
 	export DOCKLE_IMAGE=$(dockle-image)
 	export PROD_IMAGE=$(prod-image)
 
+	./prod/tests/test-security || exit 1
+
 	# Test pip audit
 	docker run --rm --entrypoint pip $(prod-image) freeze | poetry run pip-audit -r /dev/stdin
 
@@ -138,13 +140,7 @@ security-tests: build
 	docker run --rm \
 		-v $(docker-socket):/var/run/docker.sock \
 		-v trivy-cache:/root/.cache/trivy \
-		aquasec/trivy image $(prod-image)
-	docker run --rm \
-		-v $(docker-socket):/var/run/docker.sock \
-		-v trivy-cache:/root/.cache/trivy \
 		aquasec/trivy image tms-prod-nginx:test
-
-	./prod/tests/test-security
 
 	# clean up
 	docker image rm -f $(prod-image) tms-prod-nginx:test
