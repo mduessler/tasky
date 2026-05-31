@@ -132,6 +132,7 @@ test-image: build
 		postgres:18.4-alpine  >/dev/null 2>&1
 
 	./prod/tests/test-runtime-hardend
+	./prod/tests/test-django-readiness
 
 	docker image rm -f $(prod-image) >/dev/null 2>&1
 	docker rm -f tasky-prod-db-test >/dev/null 2>&1

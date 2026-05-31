@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+test_django_deploy_checks() {
+    if docker run --rm --env-file "${ENV_FILE}" --entrypoint python "${PROD_IMAGE}" \
+        manage.py check --deploy --fail-level WARNING; then
+        echo "PASSED: Django deploy checklist clean."
+        return 0
+    fi
+    echo "ERROR: 'manage.py check --deploy' reported issues." >&2 && exit 1
+}
+
+test_django_deploy_checks
