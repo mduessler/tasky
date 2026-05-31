@@ -127,13 +127,13 @@ security-tests: build
 	docker build -f prod/Dockerfile.nginx -t tms-prod-nginx:test ./prod/
 
 	# Test pip audit
-	docker run --rm --entrypoint pip tms-prod:test freeze | poetry run pip-audit -r /dev/stdin
+	docker run --rm --entrypoint pip $(prod-image) freeze | poetry run pip-audit -r /dev/stdin
 
 	# Test production images with trivy
 	docker run --rm \
 		-v $(docker-socket):/var/run/docker.sock \
 		-v trivy-cache:/root/.cache/trivy \
-		aquasec/trivy image tms-prod:test
+		aquasec/trivy image $(prod-image)
 	docker run --rm \
 		-v $(docker-socket):/var/run/docker.sock \
 		-v trivy-cache:/root/.cache/trivy \
