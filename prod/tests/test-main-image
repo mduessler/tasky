@@ -65,6 +65,16 @@ function test_no_leaked_tool_from_stage_builder() {
     echo "PASSED: No tool is leaked."
 }
 
+test_broken_pip_packages() {
+    docker run --rm --entrypoint pip "${PROD_IMAGE}" check > /dev/null
+    result=$?
+    if [ "${result}" -ne 0 ]; then
+        echo "ERROR: A Python requirement is broken. Exit code ${result}" >&2
+        exit 1
+    fi
+    echo "PASSED: No broken requirements found."
+}
+
 function main() {
     if [[ -z "${PROD_IMAGE}" ]]; then
         echo "ERROR: PROD_IMAGE is not defined." && exit 1
@@ -76,6 +86,7 @@ function main() {
     test_user_ownership
     test_group_ownership
     test_no_leaked_tool_from_stage_builder
+    test_broken_pip_packages
 }
 
 main
