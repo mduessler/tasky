@@ -20,6 +20,7 @@ aws-user-admin=tasky-admin
 aws-user-dev=tasky-dev
 
 prod-image=tasky:latest 
+dockle-image=goodwithtech/dockle:latest
 
 
 .SILENT:
@@ -126,6 +127,10 @@ security-tests: build
 	# Build production images
 	docker build -f prod/Dockerfile.nginx -t tms-prod-nginx:test ./prod/
 
+	export DOCKER_SOCKET=$(docker-socket)
+	export DOCKLE_IMAGE=$(dockle-image)
+	export PROD_IMAGE=$(prod-image)
+
 	# Test pip audit
 	docker run --rm --entrypoint pip $(prod-image) freeze | poetry run pip-audit -r /dev/stdin
 
@@ -139,14 +144,7 @@ security-tests: build
 		-v trivy-cache:/root/.cache/trivy \
 		aquasec/trivy image tms-prod-nginx:test
 
-	# Test with dockerle
-	if docker run --rm \
-        -v $(docker-socket):/var/run/docker.sock \
-        "${DOCKLE_IMAGE}" \
-        --exit-code 1 --exit-level WARN $(docker-socket); then \
-        echo "PASSED: dockle CIS/hygiene checks clean." &&  return 0 \
-    fi \
-    echo "ERROR: dockle found image hygiene/CIS issues." >&2 && return 1
+	./prod/tests/test-security
 
 	# clean up
 	docker image rm -f $(prod-image) tms-prod-nginx:test

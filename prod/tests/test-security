@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+test_image_dockle() {
+    if docker run --rm \
+        -v "${DOCKER_SOCKET}":/var/run/docker.sock \
+        "${DOCKLE_IMAGE}" \
+        --exit-code 1 --exit-level WARN "${PROD_IMAGE}"; then
+        echo "PASSED: dockle CIS/hygiene checks clean." && return 0
+    fi
+    echo "ERROR: dockle found image hygiene/CIS issues." >&2 && exit 1
+}
+
+test_image_dockle
