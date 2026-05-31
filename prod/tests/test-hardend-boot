@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+test_hardened_boot() {
+    name="hardened-boot-prod-test"
+    docker run -d --name "${name}" \
+        --network tasky-prod-net-test \
+        --read-only --tmpfs /tmp --cap-drop=ALL --security-opt no-new-privileges \
+        --env-file "${ENV_FILE}" \
+        "${PROD_IMAGE}" >/dev/null 2>&1
+    for _ in $(seq 1 20); do
+        running=$(docker inspect -f "{{.State.Running}}" "${name}")
+        [ "${running}" == "true" ] && break
+        if docker exec "${name}" nc -z localhost "${APP_PORT}" >/dev/null 2>&1; then
+            break
+        fi
+        sleep 1
+    done
+
+    docker rm -f "${name}" >/dev/null 2>&1
+
+    if [ "${running}" != "true" ]; then
+        echo "ERROR: Docker container is not running." && exit 1
+    fi
+    echo "PASSED: Production image run with strict running arguments."
+}
+
+if ! [ -f "${ENV_FILE}" ]; then
+    echo "ERROR: ENV_FILE '${ENV_FILE}' not found." >&2 && exit 1
+fi
+
+test_hardened_boot

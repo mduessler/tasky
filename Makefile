@@ -1,5 +1,6 @@
 # Root-directory
 root-dir=$(shell pwd)
+env-file=.env.dev
 
 # dev
 service-dev=tms-dev
@@ -120,7 +121,21 @@ test-image: build
 	export PROD_IMAGE=$(prod-image)
 	./prod/tests/test-main-image
 
-	docker image rm -f $(prod-image)
+	export ENV_FILE=$(env-file)
+
+	docker network create tasky-prod-net-test >/dev/null 2>&1
+	docker run -d \
+		--name tasky-prod-db-test \
+		--network tasky-prod-net-test \
+		--env-file $(env-file) \
+		-e POSTGRES_PASSWORD="postgres" \
+		postgres:18.4-alpine  >/dev/null 2>&1
+
+	./prod/tests/test-hardend-boot
+
+	docker image rm -f $(prod-image) >/dev/null 2>&1
+	docker rm -f tasky-prod-db-test >/dev/null 2>&1
+	docker network rm tasky-prod-net-test >/dev/null 2>&1
 
 # Test production images modules on vulnerabilities
 #
