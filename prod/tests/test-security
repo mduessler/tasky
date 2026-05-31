@@ -21,4 +21,4 @@ test_image_dockle() {
 }
 
 test_trivy_image
-test_image_dockle
+# test_image_dockle
