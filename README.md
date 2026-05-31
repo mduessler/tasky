@@ -1,5 +1,7 @@
 # Tasky
 
+[![pipeline status](https://gitlab.com/mduessler-group/tasky/badges/dev/pipeline.svg)](https://gitlab.com/mduessler-group/tasky/-/commits/dev)
+
 A collaborative task management REST API built with Django REST Framework,
 designed as a full-stack engineering exercise that spans application code,
 self-managed CI/CD infrastructure, and Infrastructure-as-Code provisioning on
