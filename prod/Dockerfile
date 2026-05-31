@@ -27,6 +27,7 @@ ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV TASKY_HOME=/home/tasky/web
+ENV DJANGO_SETTINGS_MODULE=task_management_system.settings.production
 
 # Creating user
 RUN addgroup -S tasky && adduser -S tasky -G tasky
