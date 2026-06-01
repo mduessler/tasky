@@ -1,0 +1,49 @@
+#!/bin/sh
+
+set -eu
+
+test_django_deploy_checks() {
+	output=$(docker run --rm --env-file "${ENV_FILE}" --entrypoint python "${PROD_IMAGE}" \
+		manage.py check --deploy --fail-level WARNING)
+	result=$?
+	if [ ${result} -eq 0 ]; then
+		echo "PASSED: Django deploy checklist clean." && return 0
+	fi
+	echo "ERROR: 'manage.py check --deploy' reported issues." >&2
+	printf "%s", "${output}" && exit 1
+}
+
+test_django_runtime_settings() {
+	output=$(docker run --rm --env-file "${ENV_FILE}" --entrypoint python "${PROD_IMAGE}" \
+		manage.py shell -c '
+from django.conf import settings
+import sys
+errs = []
+if settings.DEBUG:
+    errs.append("DEBUG=True")
+sk = settings.SECRET_KEY or ""
+if not sk or sk.startswith("django-insecure"):
+    errs.append("SECRET_KEY empty or a dev default")
+if not getattr(settings, "SECURE_PROXY_SSL_HEADER", None):
+    errs.append("SECURE_PROXY_SSL_HEADER unset (needed behind nginx TLS)")
+ah = settings.ALLOWED_HOSTS
+if "*" not in ah and "localhost" not in ah:
+    errs.append("ALLOWED_HOSTS missing localhost (healthcheck will 400)")
+if errs:
+    sys.stderr.write("SETTINGS ERRORS: " + "; ".join(errs) + "\n")
+    sys.exit(1)
+print("settings ok: DEBUG off, SECRET_KEY set, proxy header + ALLOWED_HOSTS good")
+    ')
+	result=$?
+	if [ "${result}" -eq 0 ]; then
+		echo "PASSED: Production settings look correct."
+		return 0
+	fi
+	echo "ERROR: Production settings are misconfigured." >&2 && exit 1
+}
+
+if ! [ -f "${ENV_FILE}" ]; then
+	echo "ERROR: ENV_FILE '${ENV_FILE}' not found." >&2 && exit 1
+fi
+test_django_deploy_checks
+test_django_runtime_settings

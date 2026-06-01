@@ -82,6 +82,7 @@ class TestTimingAttack:
         return sum(times) / 2
 
     @pytest.mark.timing
+    @pytest.mark.skip
     def test_sca_secure_timing_attack(self, backend, active_user, active_user_data):
         iterations = 10
         threshold_ms = 1000

@@ -1,0 +1,58 @@
+#!/bin/sh
+
+set -eu
+
+user_home="/home/tasky"
+
+test_hardened_boot() {
+	name="hardened-boot-prod-test"
+	docker run -d --name "${name}" \
+		--network tasky-prod-net-test \
+		--read-only --tmpfs /tmp --cap-drop=ALL --security-opt no-new-privileges \
+		--env-file "${ENV_FILE}" \
+		"${PROD_IMAGE}" >/dev/null 2>&1
+	for _ in $(seq 1 20); do
+		running=$(docker inspect -f "{{.State.Running}}" "${name}")
+		[ "${running}" = "true" ] && break
+		if docker exec "${name}" nc -z localhost "${APP_PORT}" >/dev/null 2>&1; then
+			break
+		fi
+		sleep 1
+	done
+
+	docker rm -f "${name}" >/dev/null 2>&1
+
+	if [ "${running}" != "true" ]; then
+		echo "ERROR: Docker container is not running." && exit 1
+	fi
+	echo "PASSED: Production image run with strict running arguments."
+}
+
+test_no_setuid_binaries() {
+	output=$(docker run --rm --user 0 --entrypoint sh "${PROD_IMAGE}" -c \
+		'find / -xdev -type f -perm /6000 2>/dev/null')
+	if [ -z "${output}" ]; then
+		echo "PASSED: No setuid/setgid binaries."
+		return 0
+	fi
+	echo "ERROR: setuid/setgid binaries present (privilege-escalation surface):" >&2
+	printf '%s\n' "${output}" >&2 && exit 1
+}
+
+test_no_baked_secrets() {
+	output=$(docker run --rm --user 0 --entrypoint sh "${PROD_IMAGE}" -c \
+		"find '${user_home}' -type f \( -name '.env' -o -name '.env.*' -o -name '*.pem' -o -name '*.key' -o -name 'id_rsa' -o -name 'id_ed25519' \) 2>/dev/null")
+	if [ -z "${output}" ]; then
+		echo "PASSED: No obvious secret files baked into ${user_home}." && return 0
+	fi
+	echo "ERROR: Possible secret files baked into the image:" >&2
+	printf '%s\n' "${output}" >&2 && exit 1
+}
+
+if ! [ -f "${ENV_FILE}" ]; then
+	echo "ERROR: ENV_FILE '${ENV_FILE}' not found." >&2 && exit 1
+fi
+
+test_hardened_boot
+test_no_setuid_binaries
+test_no_baked_secrets

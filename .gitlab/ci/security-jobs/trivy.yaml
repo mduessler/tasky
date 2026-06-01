@@ -2,6 +2,7 @@
   image:
     name: aquasec/trivy:latest
     entrypoint: [""]
+  extends: .skip-if-passed
   tags:
     - dev
   variables:

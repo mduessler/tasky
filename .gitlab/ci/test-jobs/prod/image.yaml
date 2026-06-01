@@ -1,0 +1,4 @@
+test:image:
+  extends: .prod:test-base
+  script:
+    - ./prod/tests/test-main-image

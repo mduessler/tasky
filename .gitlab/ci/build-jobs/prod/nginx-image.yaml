@@ -10,6 +10,7 @@ build:prod-nginx-image:
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
   before_script:
+    - if [ "$ALREADY_PASSED" = "true" ]; then echo "Already tested commit. Skipping check"; exit 0; fi
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
     - |

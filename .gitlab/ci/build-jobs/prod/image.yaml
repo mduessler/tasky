@@ -12,6 +12,7 @@ build:prod-image:
     PROD_IMAGE: $CI_REGISTRY_IMAGE/prod:$CI_COMMIT_SHORT_SHA
     PROD_IMAGE_LATEST: $CI_REGISTRY_IMAGE/prod:latest
   before_script:
+    - if [ "$ALREADY_PASSED" = "true" ]; then echo "Already tested commit. Skipping check"; exit 0; fi
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
     - |

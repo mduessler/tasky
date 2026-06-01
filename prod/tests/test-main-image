@@ -1,0 +1,120 @@
+#!/bin/sh
+
+set -eu
+
+user="tasky"
+group="tasky"
+healtcheck_url="http://localhost:8000/healthz/"
+
+test_non_root_user() {
+	result=$(docker run --rm --entrypoint id "${PROD_IMAGE}" -u)
+	if [ "${result}" -eq 0 ]; then
+		echo "ERROR: UID is ${result}. This is the root user." && exit 1
+	fi
+	echo "PASSED: User is not root user."
+}
+
+test_non_root_group() {
+	result=$(docker run --rm --entrypoint id "${PROD_IMAGE}" -g)
+	if [ "${result}" -eq 0 ]; then
+		echo "ERROR: GID is ${result}. This is the root group." && exit 1
+	fi
+	echo "PASSED: Group is not root group."
+}
+
+test_user_name() {
+	result=$(docker run --rm --entrypoint id "${PROD_IMAGE}" -un)
+	if [ "${result}" != "${user}" ]; then
+		echo "ERROR: User is ${result}. This is not user '${user}'." && exit 1
+	fi
+	echo "PASSED: User is '${user}'."
+}
+
+test_group_name() {
+	result=$(docker run --rm --entrypoint id "${PROD_IMAGE}" -gn)
+	if [ "${result}" != "${group}" ]; then
+		echo "ERROR: Group is ${result}. This is not group '${group}'." && exit 1
+	fi
+	echo "PASSED: Group is '${group}'."
+}
+
+test_user_ownership() {
+	result=$(docker run --rm --entrypoint sh "${PROD_IMAGE}" -c 'stat -c "%U" .')
+	if [ "${result}" != "${user}" ]; then
+		echo "ERROR: User '${user}' is not the ower of the working directory." && exit 1
+	fi
+	echo "PASSED: User '${user}' has ownership."
+}
+
+test_group_ownership() {
+	result=$(docker run --rm --entrypoint sh "${PROD_IMAGE}" -c 'stat -c "%G" .')
+	if [ "${result}" != "${group}" ]; then
+		echo "ERROR: Group '${group}' is not the ower of the working directory." && exit 1
+	fi
+	echo "PASSED: Group '${group}' has ownership."
+}
+
+test_no_leaked_tool_from_stage_builder() {
+	for dep in poetry gcc make; do
+		docker run --rm --entrypoint sh "${PROD_IMAGE}" -c 'command -v ${tool}'
+		result=$?
+		if [ "${result}" -eq 127 ]; then
+			echo "ERROR: Command '${dep}' is leaked to main image. Exit code " && exit 1
+		fi
+	done
+	echo "PASSED: No tool is leaked."
+}
+
+test_broken_pip_packages() {
+	docker run --rm --entrypoint pip "${PROD_IMAGE}" check >/dev/null
+	result=$?
+	if [ "${result}" -ne 0 ]; then
+		echo "ERROR: A Python requirement is broken. Exit code ${result}" >&2 && exit 1
+	fi
+	echo "PASSED: No broken requirements found."
+}
+
+test_os_dependencies_are_installed() {
+	for dep in curl nc; do
+		docker run --rm --entrypoint sh "${PROD_IMAGE}" -c 'command -v ${dep} > /dev/null'
+		result=$?
+		if [ "${result}" -ne 0 ]; then
+			echo "ERROR: Dependency returned exit code ${result}." && exit 1
+		fi
+	done
+	echo "PASSED: All dependencies found."
+}
+
+test_entrypoint() {
+	if docker run --rm --entrypoint sh "${PROD_IMAGE}" -c \
+		'test -x ./entrypoint && head -1 ./entrypoint | grep -qx "#!/bin/sh"'; then
+		echo "PASSED: entrypoint is executable and starts with #!/bin/sh"
+	else
+		echo "ERROR: entrypoint isn't executable, or line 1 isn't exactly #!/bin/sh (wrong interpreter or CRLF)." >&2
+		exit 1
+	fi
+}
+
+test_healthcheck_configured() {
+	result=$(docker inspect --format '{{json .Config.Healthcheck}}' "${PROD_IMAGE}")
+	case "${result}" in
+	*"curl -fsS ${healtcheck_url}"*) ;;
+	*) echo "ERROR: HEALTHCHECK command not found." >&2 && exit 1 ;;
+	esac
+	echo "PASSED: image has a HEALTHCHECK hitting ${healtcheck_url}."
+}
+
+if [ -z "${PROD_IMAGE}" ]; then
+	echo "ERROR: PROD_IMAGE is not defined." && exit 1
+fi
+test_non_root_user
+test_non_root_group
+test_user_name
+test_group_name
+test_user_ownership
+test_group_ownership
+test_no_leaked_tool_from_stage_builder
+test_broken_pip_packages
+test_os_dependencies_are_installed
+test_entrypoint
+test_healthcheck_configured

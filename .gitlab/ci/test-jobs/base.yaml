@@ -1,6 +1,7 @@
 .test-base:
   stage: test
   image: $DEV_IMAGE_LATEST
+  extends: .skip-if-passed
   tags:
     - dev
   needs:

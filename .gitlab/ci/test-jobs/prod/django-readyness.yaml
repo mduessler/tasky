@@ -1,0 +1,32 @@
+test:django-readyness:
+  extends: .prod:test-base
+  variables:
+    ENV_FILE: .env.ci
+    DJANGO_SETTINGS_MODULE: task_management_system.settings.production
+    DJANGO_ALLOWED_HOSTS: localhost
+    SECRET_KEY: "ci-test-only-not-a-real-secret-padding-0123456789abcdeff15949523575005523abdea435fc80ae995b38d2a4afb"
+    JWT_SECRET_KEY: "ci-test-only-not-a-real-jwt-secret-padding-0123456789abcdeff15949523575005523abdea435fc80ae995b38d2a4afb"
+    SQL_ENGINE: django.db.backends.postgresql
+    SQL_DB: postgres
+    SQL_USER: postgres
+    SQL_PASSWORD: postgres
+    SQL_HOST: postgres
+    SQL_PORT: "5432"
+  before_script:
+    - |
+      cat > "$ENV_FILE" <<EOF
+      DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}
+      SECRET_KEY=${SECRET_KEY}
+      JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
+      SQL_ENGINE=${SQL_ENGINE}
+      SQL_DB=${SQL_DB}
+      SQL_USER=${SQL_USER}
+      SQL_PASSWORD=${SQL_PASSWORD}
+      SQL_HOST=${SQL_HOST}
+      SQL_PORT=${SQL_PORT}
+      EOF
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    - docker pull "$PROD_IMAGE"
+  script:
+    - ./prod/tests/test-django-readiness

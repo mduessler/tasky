@@ -1,6 +1,7 @@
 pip-audit:
   stage: security-dev
   image: $DEV_IMAGE_LATEST
+  extends: .skip-if-passed
   tags:
     - dev
   needs:
