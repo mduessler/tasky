@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -euo
+set -eu
 
 test_image_of_python_package_vulnerabilities() {
 	output=$(docker run --rm --entrypoint pip "${PROD_IMAGE}" freeze | poetry run pip-audit -r /dev/stdin)
