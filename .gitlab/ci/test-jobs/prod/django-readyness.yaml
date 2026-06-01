@@ -4,8 +4,8 @@ test:django-readyness:
     ENV_FILE: .env.ci
     DJANGO_SETTINGS_MODULE: task_management_system.settings.production
     DJANGO_ALLOWED_HOSTS: localhost
-    SECRET_KEY: "ci-test-only-not-a-real-secret-padding-0123456789abcdef"
-    JWT_SECRET_KEY: "ci-test-only-jwt-not-a-real-secret-padding-0123456789"
+    SECRET_KEY: "ci-test-only-not-a-real-secret-padding-0123456789abcdeff15949523575005523abdea435fc80ae995b38d2a4afb"
+    JWT_SECRET_KEY: "ci-test-only-not-a-real-jwt-secret-padding-0123456789abcdeff15949523575005523abdea435fc80ae995b38d2a4afb"
   before_script:
     - |
       cat > "$ENV_FILE" <<EOF
