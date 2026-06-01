@@ -1,7 +1,5 @@
 #!/bin/sh
 
-set -eu
-
 test_image_of_python_package_vulnerabilities() {
 	output=$(docker run --rm --entrypoint pip "${PROD_IMAGE}" freeze | poetry run pip-audit -r /dev/stdin)
 	result=$?
@@ -20,7 +18,8 @@ test_image_with_trivy() {
 	if [ "${result}" -eq 0 ]; then
 		echo "PASSED: Trivy found no vulnerability in image." && return 0
 	fi
-	echo "ERROR: ${output}" && exit 1
+	echo "ERROR: Found vulnerability in image."
+	printf "%s", "${output}" && exit 1
 }
 
 test_nginx_image_with_trivy() {
@@ -30,9 +29,10 @@ test_nginx_image_with_trivy() {
 		aquasec/trivy image --quiet --exit-code 1 --severity CRITICAL,HIGH "${PROD_NGINX_IMAGE}")
 	result=$?
 	if [ "${result}" -eq 0 ]; then
-		echo "PASSED: Trivy found no vulnerability in image." && return 0
+		echo "PASSED: Trivy found no vulnerability in nginx image." && return 0
 	fi
-	echo "ERROR: ${output}" && exit 1
+	echo "ERROR: Found vulnerability in nginx image."
+	printf "%s", "${output}" && exit 1
 }
 
 test_image_dockle() {
@@ -42,7 +42,7 @@ test_image_dockle() {
 		--exit-code 1 --exit-level WARN "${PROD_IMAGE}"; then
 		echo "PASSED: dockle CIS/hygiene checks clean." && return 0
 	fi
-	echo "ERROR: dockle found image hygiene/CIS issues." >&2 && exit 1
+	echo "ERROR: dockle found image hygiene/CIS issues." && exit 1
 }
 
 test_image_of_python_package_vulnerabilities
