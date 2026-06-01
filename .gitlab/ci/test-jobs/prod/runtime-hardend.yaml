@@ -1,9 +1,5 @@
 test:runtime-hardend:
-  stage: test-prod
-  tags:
-    - dev
-  needs:
-    - build:prod-image
+  extends: .prod:test-base
   variables:
     ENV_FILE: .env.ci
     APP_PORT: "8000"
@@ -37,6 +33,8 @@ test:runtime-hardend:
       docker run -d --name postgres --network tasky-prod-net-test -e POSTGRES_DB="$POSTGRES_DB" -e POSTGRES_USER="$POSTGRES_USER" -e POSTGRES_PASSWORD="$POSTGRES_PASSWORD" postgres:18.4-alpine
 
     - for i in $(seq 1 30); do docker exec postgres pg_isready -U "$POSTGRES_USER" >/dev/null 2>&1 && break; sleep 1; done
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    - docker pull "$PROD_IMAGE"
   script:
     - ./prod/tests/test-runtime-hardend
   after_script:

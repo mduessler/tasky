@@ -34,6 +34,7 @@ include:
   - local: .gitlab/ci/security-jobs/dev/pip-audit.yaml
   - local: .gitlab/ci/build-jobs/prod/image.yaml
   - local: .gitlab/ci/build-jobs/prod/nginx-image.yaml
+  - local: .gitlab/ci/test-jobs/prod/prod-base.yaml
   - local: .gitlab/ci/test-jobs/prod/image.yaml
   - local: .gitlab/ci/test-jobs/prod/runtime-hardend.yaml
   - local: .gitlab/ci/test-jobs/prod/django-readyness.yaml

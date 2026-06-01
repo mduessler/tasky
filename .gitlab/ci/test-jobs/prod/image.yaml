@@ -1,8 +1,4 @@
 test:image:
-  stage: test-prod
-  tags:
-    - dev
-  needs:
-    - build:prod-image
+  extends: .prod:test-base
   script:
     - ./prod/tests/test-main-image

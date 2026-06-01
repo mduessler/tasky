@@ -1,9 +1,5 @@
 test:django-readyness:
-  stage: test-prod
-  tags:
-    - dev
-  needs:
-    - build:prod-image
+  extends: .prod:test-base
   variables:
     ENV_FILE: .env.ci
     DJANGO_SETTINGS_MODULE: task_management_system.settings.production
@@ -18,5 +14,7 @@ test:django-readyness:
       JWT_SECRET_KEY=${JWT_SECRET_KEY}
       DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
       EOF
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    - docker pull "$PROD_IMAGE"
   script:
     - ./prod/tests/test-django-readiness
