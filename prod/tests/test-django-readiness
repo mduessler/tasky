@@ -1,4 +1,6 @@
-#!/usr/bin/env bash
+#!/bin/sh
+
+set -euo
 
 test_django_deploy_checks() {
 	if docker run --rm --env-file "${ENV_FILE}" --entrypoint python "${PROD_IMAGE}" \

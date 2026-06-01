@@ -1,6 +1,8 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
-function test_image_of_python_package_vulnerabilities() {
+set -euo
+
+test_image_of_python_package_vulnerabilities() {
 	output=$(docker run --rm --entrypoint pip "${PROD_IMAGE}" freeze | poetry run pip-audit -r /dev/stdin)
 	result=$?
 	if [ "${result}" -eq 0 ]; then
@@ -9,7 +11,7 @@ function test_image_of_python_package_vulnerabilities() {
 	echo "ERROR: ${output}" && exit 1
 }
 
-function test_image_with_trivy() {
+test_image_with_trivy() {
 	output=$(docker run --rm \
 		-v "${DOCKER_SOCKET}":/var/run/docker.sock \
 		-v trivy-cache:/root/.cache/trivy \
@@ -21,7 +23,7 @@ function test_image_with_trivy() {
 	echo "ERROR: ${output}" && exit 1
 }
 
-function test_nginx_image_with_trivy() {
+test_nginx_image_with_trivy() {
 	output=$(docker run --rm \
 		-v "${DOCKER_SOCKET}":/var/run/docker.sock \
 		-v trivy-cache:/root/.cache/trivy \
@@ -33,7 +35,7 @@ function test_nginx_image_with_trivy() {
 	echo "ERROR: ${output}" && exit 1
 }
 
-function test_image_dockle() {
+test_image_dockle() {
 	if docker run --rm \
 		-v "${DOCKER_SOCKET}":/var/run/docker.sock \
 		"${DOCKLE_IMAGE}" \

@@ -1,4 +1,6 @@
-#!/usr/bin/env bash
+#!/bin/sh
+
+set -euo
 
 user_home="/home/tasky"
 
@@ -11,7 +13,7 @@ test_hardened_boot() {
 		"${PROD_IMAGE}" >/dev/null 2>&1
 	for _ in $(seq 1 20); do
 		running=$(docker inspect -f "{{.State.Running}}" "${name}")
-		[ "${running}" == "true" ] && break
+		[ "${running}" = "true" ] && break
 		if docker exec "${name}" nc -z localhost "${APP_PORT}" >/dev/null 2>&1; then
 			break
 		fi
