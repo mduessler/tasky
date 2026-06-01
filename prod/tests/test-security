@@ -6,7 +6,8 @@ test_image_of_python_package_vulnerabilities() {
 	if [ "${result}" -eq 0 ]; then
 		echo "PASSED: No python vulnerabilities found with pip-audit." && return 0
 	fi
-	echo "ERROR: ${output}" && exit 1
+	echo "ERROR: Found python vulnerabilities with pip-audit."
+	printf "%s", "${output}" && exit 1
 }
 
 test_image_with_trivy() {
