@@ -151,7 +151,7 @@ security-tests: build
 	export PROD_IMAGE=$(prod-image)
 	export PROD_NGINX_IMAGE=$(nginx-image)
 
-	./prod/tests/test-security || exit 1
+	./prod/tests/test-security
 
 	# clean up
 	docker image rm -f $(prod-image) $(nginx-image)
