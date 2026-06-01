@@ -2,6 +2,7 @@
 root-dir=$(shell pwd)
 env-file=.env.dev
 
+
 # dev
 service-dev=tms-dev
 file-dev=dev/docker-compose.yaml
@@ -17,6 +18,7 @@ docs = ./docs/
 docker-socket = $(shell docker context inspect --format '{{.Endpoints.docker.Host}}' | sed 's|unix://||')
 
 packer-dir = ./infrastructure/packer/environment/dev/gitlab-runner/
+owner_id:=$(shell grep -m1 '^TF_VAR_owner_id=' $(env-file) | cut -d= -f2-)
 aws-user-admin=tasky-admin
 aws-user-dev=tasky-dev
 
@@ -234,9 +236,11 @@ create-runner-img:
 #
 
 install-gitlab-runner:
+	export TF_VAR_owner_id=$(owner_id)
 	export AWS_PROFILE=$(aws-user-dev)
 	./infrastructure/scripts/gitlab-runner install
 
 destroy-gitlab-runner:
+	export TF_VAR_owner_id=$(owner_id)
 	export AWS_PROFILE=$(aws-user-dev)
 	./infrastructure/scripts/gitlab-runner destroy
