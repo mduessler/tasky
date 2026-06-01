@@ -16,7 +16,7 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.http import HttpRequest, HttpResponseBase
+from django.http import HttpRequest, HttpResponse
 from django.urls import include, path
 from drf_spectacular.views import (
     SpectacularAPIView,
@@ -25,8 +25,8 @@ from drf_spectacular.views import (
 )
 
 
-def healthz(_: HttpRequest) -> HttpResponseBase:
-    return HttpResponseBase("ok")
+def healthz(_: HttpRequest) -> HttpResponse:
+    return HttpResponse("ok")
 
 
 urlpatterns = [
