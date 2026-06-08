@@ -1,6 +1,7 @@
 # Root-directory
 root-dir=$(shell pwd)
 env-file=.env.dev
+project-name=tasky
 
 
 # dev
@@ -84,6 +85,21 @@ full-clean-dev: stop-dev
 	docker compose --file $(file-dev) rm -f
 	docker image rm $(service-dev) $(database-dev)
 	docker volume rm $(service-dev)-db
+
+#
+# Kubernetes dev
+#
+
+# Create dev environment
+#
+create-dev-env:
+	k3d cluster create $(project-name)-dev
+
+# Delete dev environment
+#
+delete-dev-env:
+	k3d cluster delete $(project-name)-dev
+
 
 #
 # Build production environment
