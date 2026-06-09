@@ -26,6 +26,9 @@ infrastructure/ansible/**/collections/
 *.retry
 .vault_pass
 
+# kubernetes
+values.local.yaml
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
