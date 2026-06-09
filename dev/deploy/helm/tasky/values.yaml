@@ -46,3 +46,12 @@ redis:
     pullPolicy: IfNotPresent
   host: redis
   port: 6379
+celery_worker:
+  replicas: 1
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
