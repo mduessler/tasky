@@ -90,12 +90,12 @@ full-clean-dev: stop-dev
 # Kubernetes dev
 #
 
-# Create dev environment
+# Create dev cluster
 #
-create-dev-env:
-	k3d cluster create $(project-name)-dev
+create-cluster-dev:
+	k3d cluster create $(CLUSTER) -p "8080:80@loadbalancer" -p "8443:443@loadbalancer" || true
 
-# Delete dev environment
+# Delete dev cluster
 #
 delete-dev-env:
 	k3d cluster delete $(project-name)-dev
