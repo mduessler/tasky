@@ -7,7 +7,9 @@ api:
   replicas: 3
   port: 8000
 db:
-  sql_engine: django.db.backends.postgresql
-  sql_db: postgres-dev
-  sql_host: db-dev
-  sql_port: postgres
+  engine: django.db.backends.postgresql
+  name: postgres-dev
+  host: db-dev
+  port: postgres
+  password: postgres # Will be ignore, just here for ci
+  user: postgres # Will be ignore, just here for ci
