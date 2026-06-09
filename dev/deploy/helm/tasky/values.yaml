@@ -6,3 +6,4 @@ api:
     tag: latest
     pullPolicy: Never
   replicas: 3
+  port: 8000
