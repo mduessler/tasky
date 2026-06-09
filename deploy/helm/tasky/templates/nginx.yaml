@@ -18,7 +18,7 @@ spec:
       containers:
         - name: tasky-nginx
           image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}"
-          imagePullPolicy: {{ .Values.api.image.pullPolicy }}
+          imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
           ports:
             - containerPort: 80
             - containerPort: 443
