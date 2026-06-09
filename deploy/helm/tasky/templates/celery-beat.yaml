@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-celery-beat
+  namespace: {{ .Values.environment }}
+  labels:
+    {{- include "tasky.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-celery-beat
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-celery-beat
+    spec:
+      containers:
+        - name: celery-beat
+          image: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}"
+          imagePullPolicy: {{ .Values.api.image.pullPolicy }}
+          args: ["celery", "-A", "task_management_system", "beat", "-l", "info"]
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-config
+            - secretRef:
+                name: {{ .Release.Name }}-secrets
+          resources:
+            {{- toYaml .Values.celery_beat.resources | nindent 12 }}

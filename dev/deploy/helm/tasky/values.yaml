@@ -55,3 +55,12 @@ celery_worker:
     limits:
       cpu: 500m
       memory: 512Mi
+celery_beat:
+  replicas: 1
+  resources:
+    requests:
+      cpu: 25m
+      memory: 64Mi
+    limits:
+      cpu: 25m
+      memory: 256Mi
