@@ -95,6 +95,11 @@ seed-dev:
 	kubectl exec -n $(ns-dev) deploy/tasky-api -- python manage.py loaddata $(test-data)/task/task_memberships.json
 	kubectl exec -n $(ns-dev) deploy/tasky-api -- python manage.py loaddata $(test-data)/task/task_notes.json
 
+# Command to run the  application the first time.
+#
+first-run: gen-cert-dev up-dev clean_token seed-dev
+	kubectl get pods -n $(ns-dev)
+
 # Run dev cluster
 #
 up-dev: create-cluster-dev deploy-dev
