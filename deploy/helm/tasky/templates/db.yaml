@@ -33,7 +33,7 @@ spec:
       containers:
         - name: postgres
           image: "{{ .Values.db.image.repository }}:{{ .Values.db.image.tag }}"
-          imagePullPolicy: {{ .Values.api.image.pullPolicy }}
+          imagePullPolicy: {{ .Values.db.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.db.port }}
           env:
