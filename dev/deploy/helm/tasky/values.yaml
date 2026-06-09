@@ -6,3 +6,8 @@ api:
     pullPolicy: Never
   replicas: 3
   port: 8000
+db:
+  sql_engine: django.db.backends.postgresql
+  sql_db: postgres-dev
+  sql_host: db-dev
+  sql_port: postgres
