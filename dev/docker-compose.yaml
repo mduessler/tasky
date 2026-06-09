@@ -15,7 +15,7 @@ services:
       db-dev:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/api/schema/"]
+      test: ["CMD", "curl", "-f", "http://localhost:8000/healthz/"]
       interval: 10s
       retries: 5
       timeout: 5s
