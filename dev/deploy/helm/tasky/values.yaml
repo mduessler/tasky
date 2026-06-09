@@ -24,6 +24,10 @@ api:
   email_host_user: <your-mailtrap-user>
   email_host_password: <your-mailtrap-password>
 db:
+  image:
+    respository: postgres
+    tag: 18.4-alpine
+    pullPolicy: IfNotPresent
   engine: django.db.backends.postgresql
   name: postgres
   host: postgres
