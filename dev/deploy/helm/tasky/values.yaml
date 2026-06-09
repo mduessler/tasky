@@ -34,3 +34,8 @@ db:
   port: 5432
   password: postgres # Will be ignore, just here for ci
   user: postgres # Will be ignore, just here for ci
+nginx:
+  image:
+    respository: tasky-nginx
+    tag: latest
+    pullPolicy: Never
