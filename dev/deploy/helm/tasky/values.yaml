@@ -12,6 +12,7 @@ api:
   jwt_secret_key: 4842c13ffa0fea63d8464589404c2f1838abf6534ecbd59e2c5eedc76d5f4f18
   email_host: sandbox.smtp.mailtrap.io
   email_port: 2525
+  # Will be ignore, just here for ci (not needed only if you want to check email in dev)
   email_host_user: <your-mailtrap-user>
   email_host_password: <your-mailtrap-password>
 db:
