@@ -39,3 +39,10 @@ nginx:
     respository: tasky-nginx
     tag: latest
     pullPolicy: Never
+redis:
+  image:
+    repository: redis
+    tag: 8.6.3-alpine
+    pullPolicy: IfNotPresent
+  host: redis
+  port: 6379
