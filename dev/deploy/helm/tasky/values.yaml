@@ -44,7 +44,7 @@ redis:
     repository: redis
     tag: 8.6.3-alpine
     pullPolicy: IfNotPresent
-  host: redis
+  host: redis # Service name; must match the broker host Django uses
   port: 6379
 celery_worker:
   replicas: 1
