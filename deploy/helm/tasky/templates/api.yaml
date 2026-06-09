@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Release.Name }}-api
-  namespace: {{ .Values.environment.name }}
+  namespace: {{ .Values.environment }}
   labels:
      {{- include "tasky.labels" . | nindent 4 }}
 spec:

@@ -1,5 +1,4 @@
-environment:
-  name: dev
+environment: dev
 api:
   image:
     respository: tasky
