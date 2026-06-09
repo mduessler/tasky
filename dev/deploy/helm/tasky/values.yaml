@@ -24,10 +24,6 @@ api:
   email_host_user: <your-mailtrap-user>
   email_host_password: <your-mailtrap-password>
 db:
-  image:
-    repository: postgres
-    tag: 18.4-alpine
-    pullPolicy: IfNotPresent
   engine: django.db.backends.postgresql
   name: postgres
   host: postgres
@@ -39,28 +35,3 @@ nginx:
     repository: tasky-nginx
     tag: latest
     pullPolicy: Never
-redis:
-  image:
-    repository: redis
-    tag: 8.6.3-alpine
-    pullPolicy: IfNotPresent
-  host: redis # Service name; must match the broker host Django uses
-  port: 6379
-celery_worker:
-  replicas: 1
-  resources:
-    requests:
-      cpu: 50m
-      memory: 128Mi
-    limits:
-      cpu: 500m
-      memory: 512Mi
-celery_beat:
-  replicas: 1
-  resources:
-    requests:
-      cpu: 25m
-      memory: 64Mi
-    limits:
-      cpu: 25m
-      memory: 256Mi
