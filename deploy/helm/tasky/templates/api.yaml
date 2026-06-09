@@ -26,3 +26,21 @@ spec:
             name: {{ .Release.Name }}-config
         - secretRef:
           name: {{ .Release.Name }}-secrets
+      readinessProbe:
+        httpGet:
+          path: /healthz/
+          port: 8000
+        periodSeconds: 10
+        timeoutSeconds: 5
+        failureThreshold: 5
+        initialDelaySeconds: 30
+      livenessProbe:
+        httpGet:
+          path: /healthz/
+          port: 8000
+        periodSeconds: 10
+        timeoutSeconds: 5
+        failureThreshold: 5
+        initialDelaySeconds: 30
+      resources:
+        {{- toYaml .Values.api.resources | nindent 12 }}
