@@ -1,7 +1,7 @@
 environment: dev
 api:
   image:
-    respository: tasky
+    repository: tasky
     tag: latest
     pullPolicy: Never
   replicas: 3
@@ -25,7 +25,7 @@ api:
   email_host_password: <your-mailtrap-password>
 db:
   image:
-    respository: postgres
+    repository: postgres
     tag: 18.4-alpine
     pullPolicy: IfNotPresent
   engine: django.db.backends.postgresql
@@ -36,7 +36,7 @@ db:
   user: postgres # Will be ignore, just here for ci
 nginx:
   image:
-    respository: tasky-nginx
+    repository: tasky-nginx
     tag: latest
     pullPolicy: Never
 redis:
