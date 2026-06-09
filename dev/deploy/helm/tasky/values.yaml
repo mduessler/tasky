@@ -1,2 +1,8 @@
+environment:
+  name: dev
 api:
+  image:
+    respository: tasky
+    tag: latest
+    pullPolicy: Never
   replicas: 3
