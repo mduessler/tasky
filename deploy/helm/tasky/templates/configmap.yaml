@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+  namespace: {{ .Values.environment }}
+  labels:
+    {{- include "tasky.labels" . | nindent 4 }}
+data:
+  DJANGO_SETTINGS_MODULE: {{ .Values.api.django_settings_module | quote }}
+  DJANGO_ALLOWED_HOSTS: {{ .Values.api.django_allowed_hosts | quote }}
+  EMAIL_HOST: {{ .Values.api.email_host | quote }}
+  EMAIL_PORT: {{ .Values.api.email_port | quote }}
+  SQL_ENGINE: {{ .Values.db.engine | quote }}
+  SQL_DB: {{ .Values.db.name | quote }}
+  SQL_HOST: {{ .Values.db.host | quote }}
+  SQL_PORT: {{ .Values.db.port | quote }}
