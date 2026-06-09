@@ -4,20 +4,39 @@ env-file=.env.dev
 project-name=tasky
 
 
-# dev
-service-dev=tms-dev
-file-dev=dev/docker-compose.yaml
-database-dev=postgres
+
+# Base
+#
+chart = deploy/helm/tasky
 apps=user tms_auth task registration
+docs = ./docs/
+
+# Dev environment
+#
+
 poetry-version=2.2.1
 
+# Cluster
+cluster-dev = tasky-dev
+api-image-dev = tasky:latest
+nginx-image-dev = tasky-nginx:latest
+helm-values-dev   = -f dev/deploy/helm/tasky/values.yaml -f dev/deploy/helm/tasky/values.local.yaml
+ns-dev = $(shell grep '^environment:' dev/deploy/helm/tasky/values.yaml | awk '{print $$2}')
+test-data=/home/tms/web/tests/data
+
+# docker compose
+service-dev=tasky-dev
+file-dev=dev/docker-compose.yaml
+
+# Certs
 cert-path-dev=dev/certs
 cert-subj=/CN=localhost
 
-test-data=/home/tms/web/tests/data
-docs = ./docs/
+# Get docker socket
 docker-socket = $(shell docker context inspect --format '{{.Endpoints.docker.Host}}' | sed 's|unix://||')
 
+# Infrastructure environment
+#
 packer-dir = ./infrastructure/packer/environment/dev/gitlab-runner/
 owner_id:=$(shell grep -m1 '^TF_VAR_owner_id=' $(env-file) | cut -d= -f2-)
 aws-user-admin=tasky-admin
@@ -27,78 +46,63 @@ prod-image=tasky:test
 nginx-image=tasky-nginx:test
 dockle-image=goodwithtech/dockle:latest
 
-
 .SILENT:
 .ONESHELL:
 
 #
 # Commands to run dev environment
 #
-up-dev:
-	./scripts/init-env "dev"
-	docker compose --file $(file-dev) up -d
-	echo "Checking connection to database..."
-	while ! docker compose --file $(file-dev) exec $(service-dev) python manage.py check --database default; do
-		sleep 1
-	done
-	echo "$(service-dev) is healthy."
-	docker compose --file $(file-dev) exec $(service-dev) python manage.py clean_tokens
-
-run-dev: up-dev
-	docker compose --file $(file-dev) logs -f
-
-makemigrations: up-dev
-	docker compose --file $(file-dev) exec $(service-dev) python manage.py makemigrations --no-input $(apps)
-	docker compose --file $(file-dev) down
-
-seed-dev:
-	echo "Checking connection to database..."
-	if ! docker compose --file $(file-dev) exec $(service-dev) python manage.py check --database default; then
-		echo "No running test service found."
-		exit 1
-	fi
-
-	docker compose --file $(file-dev) exec $(service-dev) python manage.py import_user
-	docker compose --file $(file-dev) exec $(service-dev) python manage.py loaddata $(test-data)/task/tasks.json
-	docker compose --file $(file-dev) exec $(service-dev) python manage.py loaddata $(test-data)/task/task_memberships.json
-	docker compose --file $(file-dev) exec $(service-dev) python manage.py loaddata $(test-data)/task/task_notes.json
-
-
-# Command to run the  application the first time.
-#
-
-first-run: gen-cert-dev up-dev seed-dev run-dev
-
-#
-# Destroy and clean dev relicts
-#
-down-dev:
-	docker compose --file $(file-dev) down
-stop-dev:
-	docker compose --file $(file-dev) stop
-
-clean-dev: stop-dev
-	docker compose --file $(file-dev) rm -f $(service-dev)
-	docker image rm $(service-dev)
-
-full-clean-dev: stop-dev
-	docker compose --file $(file-dev) rm -f
-	docker image rm $(service-dev) $(database-dev)
-	docker volume rm $(service-dev)-db
-
-#
-# Kubernetes dev
-#
 
 # Create dev cluster
 #
 create-cluster-dev:
-	k3d cluster create $(CLUSTER) -p "8080:80@loadbalancer" -p "8443:443@loadbalancer" || true
+	k3d cluster create $(cluster-dev) -p "8080:80@loadbalancer" -p "8443:443@loadbalancer" || true
+
+# Build images for dev cluster
+#
+build-images-dev:
+	docker build -f dev/Dockerfile -t $(api-image-dev) .
+	docker build -f dev/Dockerfile.nginx -t $(nginx-image-dev) dev
+	k3d image import $(api-image-dev) $(nginx-image-dev) -c $(cluster-dev)
+
+# Deploy / upgrade the chart
+#
+deploy-dev: build-images-dev
+	helm upgrade --install tasky $(chart) \
+		-n $(ns-dev) --create-namespace \
+		-f dev/deploy/helm/tasky/values.yaml \
+		-f dev/deploy/helm/tasky/values.local.yaml
+	kubectl rollout restart deployment -n $(ns-dev)
+	echo "Waiting for api to become ready..."
+	kubectl rollout status deployment/tasky-api -n $(ns-dev) --timeout=180s
+
+# Make migrations
+#
+makemigrations: up-dev
+	docker compose --file $(file-dev) exec $(service-dev) python manage.py makemigrations --no-input $(apps)
+	docker compose --file $(file-dev) down
+
+# Clean tokens
+#
+clean-tokens-dev:
+	kubectl exec -n $(ns-dev) deploy/tasky-api -- python manage.py clean_tokens
+
+# Seed database dev
+#
+seed-dev:
+	kubectl exec -n $(ns-dev) deploy/tasky-api -- python manage.py import_user
+	kubectl exec -n $(ns-dev) deploy/tasky-api -- python manage.py loaddata $(test-data)/task/tasks.json
+	kubectl exec -n $(ns-dev) deploy/tasky-api -- python manage.py loaddata $(test-data)/task/task_memberships.json
+	kubectl exec -n $(ns-dev) deploy/tasky-api -- python manage.py loaddata $(test-data)/task/task_notes.json
+
+# Run dev cluster
+#
+up-dev: create-cluster-dev deploy-dev
 
 # Delete dev cluster
 #
-delete-dev-env:
-	k3d cluster delete $(project-name)-dev
+delete-cluster-dev:
+	k3d cluster delete $(cluster-dev)
 
 
 #
