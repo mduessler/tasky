@@ -98,7 +98,7 @@ seed-dev:
 
 # Command to run the  application the first time.
 #
-first-run: gen-cert-dev up-dev clean_token seed-dev
+first-run: gen-cert-dev up-dev clean-tokens-dev seed-dev
 	kubectl get pods -n $(ns-dev)
 
 # Run dev cluster
