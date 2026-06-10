@@ -56,14 +56,14 @@ dockle-image=goodwithtech/dockle:latest
 # Create dev cluster
 #
 create-cluster-dev:
-	k3d cluster create $(cluster-dev) -p "8080:80@loadbalancer" -p "8443:443@loadbalancer" || true
+	kind create cluster --name $(cluster-dev) || true
 
 # Build images for dev cluster
 #
 build-images-dev:
 	docker build -f dev/Dockerfile -t $(api-image-dev) .
 	docker build -f dev/Dockerfile.nginx -t $(nginx-image-dev) dev
-	k3d image import $(api-image-dev) $(nginx-image-dev) -c $(cluster-dev)
+	kind load docker-image $(api-image-dev) $(nginx-image-dev) --name $(cluster-dev)
 
 # Deploy / upgrade the chart
 #
@@ -78,7 +78,8 @@ deploy-dev: build-images-dev
 
 # Make migrations
 #
-makemigrations: up-dev
+makemigrations:
+	docker compose --file $(file-dev) up -d
 	docker compose --file $(file-dev) exec $(service-dev) python manage.py makemigrations --no-input $(apps)
 	docker compose --file $(file-dev) down
 
@@ -107,7 +108,7 @@ up-dev: create-cluster-dev deploy-dev
 # Delete dev cluster
 #
 delete-cluster-dev:
-	k3d cluster delete $(cluster-dev)
+	kind delete cluster --name $(cluster-dev)
 
 
 #
