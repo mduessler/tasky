@@ -55,7 +55,8 @@ dockle-image=goodwithtech/dockle:latest
 
 # Create dev cluster
 create-cluster-dev:
-	kind get clusters | grep -q "^$(cluster-dev)$$" || kind create cluster --name $(cluster-dev)
+	kind get clusters | grep -q "^$(cluster-dev)$$" \
+		|| kind create cluster --name $(cluster-dev) --config dev/kind-config.yaml
 
 # Build images for dev cluster
 build-images-dev:
