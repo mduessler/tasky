@@ -64,7 +64,7 @@ services:
     build:
       context: ..
       dockerfile: dev/Dockerfile
-    command: celery -A task_management_system worker -l info
+    command: celery -A task_management_system worker -l info  --concurrency=2
     env_file:
       - ../.env.dev
     depends_on:
