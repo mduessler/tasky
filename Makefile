@@ -56,7 +56,7 @@ dockle-image=goodwithtech/dockle:latest
 # Create dev cluster
 #
 create-cluster-dev:
-	kind create cluster --name $(cluster-dev) || true
+	kind get clusters | grep -q "^$(cluster-dev)$$" || kind create cluster --name $(cluster-dev)
 
 # Build images for dev cluster
 #
