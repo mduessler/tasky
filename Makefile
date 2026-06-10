@@ -134,6 +134,11 @@ unit-tests-full:
 	docker compose --file $(file-dev) stop
 	docker compose --file $(file-dev) down
 
+# Command do delete all dev docker compose images
+clean-dev:
+	docker compose --file $(file-dev) down --rmi all
+
+
 # Test production image
 test-image: build
 	export PROD_IMAGE=$(prod-image)
