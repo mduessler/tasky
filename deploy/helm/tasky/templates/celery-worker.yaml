@@ -19,7 +19,8 @@ spec:
         - name: celery-worker
           image: "{{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}"
           imagePullPolicy: {{ .Values.api.image.pullPolicy }}
-          args: ["celery", "-A", "task_management_system", "worker", "-l", "info"]
+          command: ["celery"]
+          args: ["-A", "task_management_system", "worker", "-l", "info"  ,"--concurrency=2"]
           envFrom:
             - configMapRef:
                 name: {{ .Release.Name }}-config
