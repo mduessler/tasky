@@ -16,7 +16,7 @@ api:
   # Env Vars
   django_settings_module: task_management_system.settings.development
   django_secret_key: ci-test-only-not-a-real-secret-padding-0123456789abcdeff15949523575005523abdea435fc80ae995b38d2a4afb
-  django_allowed_hosts: localhost 127.0.0.1 [::1] 0.0.0.0
+  django_allowed_hosts: localhost tasky-api 127.0.0.1 [::1] 0.0.0.0
   jwt_secret_key: 4842c13ffa0fea63d8464589404c2f1838abf6534ecbd59e2c5eedc76d5f4f18
   email_host: sandbox.smtp.mailtrap.io
   email_port: 2525
