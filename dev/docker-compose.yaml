@@ -1,6 +1,6 @@
 services:
-  tasky-api:
-    container_name: tasky-api
+  tasky-api-dev:
+    container_name: tasky-api-dev
     pull_policy: never
     image: tasky-api:latest
     build:
@@ -43,7 +43,7 @@ services:
       - "8080:80"
       - "8443:443"
     depends_on:
-      tasky-api:
+      tasky-api-dev:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "-k", "https://localhost/api/schema/"]
@@ -72,7 +72,7 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-      tasky-api:
+      tasky-api-dev:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "celery", "-A", "task_management_system", "inspect", "ping"]
@@ -93,7 +93,7 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-      tasky-api:
+      tasky-api-dev:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "celery", "-A", "task_management_system", "inspect", "ping"]
