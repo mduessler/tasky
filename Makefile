@@ -54,19 +54,16 @@ dockle-image=goodwithtech/dockle:latest
 #
 
 # Create dev cluster
-#
 create-cluster-dev:
 	kind get clusters | grep -q "^$(cluster-dev)$$" || kind create cluster --name $(cluster-dev)
 
 # Build images for dev cluster
-#
 build-images-dev:
 	docker build -f dev/Dockerfile -t $(api-image-dev) .
 	docker build -f dev/Dockerfile.nginx -t $(nginx-image-dev) dev
 	kind load docker-image $(api-image-dev) $(nginx-image-dev) --name $(cluster-dev)
 
 # Deploy / upgrade the chart
-#
 deploy-dev: build-images-dev
 	helm upgrade --install tasky $(chart) \
 		-n $(ns-dev) --create-namespace \
@@ -77,19 +74,16 @@ deploy-dev: build-images-dev
 	kubectl rollout status deployment/tasky-api -n $(ns-dev) --timeout=180s
 
 # Make migrations
-#
 makemigrations:
 	docker compose --file $(file-dev) up -d
 	docker compose --file $(file-dev) exec $(service-dev) python manage.py makemigrations --no-input $(apps)
 	docker compose --file $(file-dev) down
 
 # Clean tokens
-#
 clean-tokens-dev:
 	kubectl exec -n $(ns-dev) deploy/tasky-api -- python manage.py clean_tokens
 
 # Seed database dev
-#
 seed-dev:
 	kubectl exec -n $(ns-dev) deploy/tasky-api -- python manage.py import_user
 	kubectl exec -n $(ns-dev) deploy/tasky-api -- python manage.py loaddata $(test-data)/task/tasks.json
@@ -97,16 +91,13 @@ seed-dev:
 	kubectl exec -n $(ns-dev) deploy/tasky-api -- python manage.py loaddata $(test-data)/task/task_notes.json
 
 # Command to run the  application the first time.
-#
 first-run: gen-cert-dev up-dev clean-tokens-dev seed-dev
 	kubectl get pods -n $(ns-dev)
 
 # Run dev cluster
-#
 up-dev: create-cluster-dev deploy-dev
 
 # Delete dev cluster
-#
 delete-cluster-dev:
 	kind delete cluster --name $(cluster-dev)
 	docker image rm $(api-image-dev) $(nginx-image-dev)
@@ -125,14 +116,11 @@ build:
 #
 # Tests
 #
-# Full tests (without timing)
-#
 
+# Full tests (without timing)
 tests: unit-tests test-image security-tests
 
 # Unit tests without timing
-#
-
 unit-tests:
 	docker compose --file $(file-dev) up -d
 	docker compose --file $(file-dev) exec $(service-dev) pytest -m "not timing"
@@ -140,8 +128,6 @@ unit-tests:
 	docker compose --file $(file-dev) down
 
 # Unit test with timing
-#
-
 unit-tests-full:
 	docker compose --file $(file-dev) up -d
 	docker compose --file $(file-dev) exec $(service-dev) pytest timing
@@ -149,7 +135,6 @@ unit-tests-full:
 	docker compose --file $(file-dev) down
 
 # Test production image
-#
 test-image: build
 	export PROD_IMAGE=$(prod-image)
 	./prod/tests/test-main-image
@@ -172,7 +157,6 @@ test-image: build
 	docker network rm tasky-prod-net-test >/dev/null 2>&1
 
 # Test production images modules on vulnerabilities
-#
 security-tests: build
 	# Build production images
 	docker build -f prod/Dockerfile.nginx -t $(nginx-image) ./prod/
@@ -189,7 +173,6 @@ security-tests: build
 	docker volume rm trivy-cache
 
 # Test dev image with trivy
-#
 security-scan-dev:
 	docker build -f dev/Dockerfile.ci -t tms:ci .
 
@@ -205,15 +188,12 @@ security-scan-dev:
 #
 # Generate file objects
 #
-# Generate OpenAPI specification
-#
 
+# Generate OpenAPI specification
 openapi:
 	poetry run python task_management_system/manage.py spectacular --file $(docs)/openapi.yaml
 
 # Generate Certificats for Lets Encrypt
-#
-
 gen-cert-dev:
 	mkdir -p $(cert-path-dev)
 	openssl req -x509 -nodes -days 365 \
@@ -225,15 +205,12 @@ gen-cert-dev:
 #
 # Local Development components
 #
-# Install poetry
-#
 
+# Install poetry
 poetry:
 	pipx install poetry==$(poetry-version)
 
 # Install pre-commit
-#
-
 pre-commit:
 	poetry install
 	poetry run pre-commit install
@@ -242,9 +219,8 @@ pre-commit:
 #
 # Infrastructure commands
 #
-# Create backend
-#
 
+# Create backend
 bootstrap-create:
 	export AWS_PROFILE=$(aws-user-admin)
 	./infrastructure/scripts/bootstrap create
@@ -254,8 +230,6 @@ bootstrap-destroy:
 
 
 # Create AMI gitlab-runner image
-#
-
 create-runner-img:
 	cd $(packer-dir)
 	export AWS_PROFILE=$(aws-user-admin)
@@ -264,13 +238,12 @@ create-runner-img:
 
 
 # Commands to install or destroy a gitlab-runner
-#
-
 install-gitlab-runner:
 	export TF_VAR_owner_id=$(owner_id)
 	export AWS_PROFILE=$(aws-user-dev)
 	./infrastructure/scripts/gitlab-runner install
 
+# Commands to destroy gitlab-runner
 destroy-gitlab-runner:
 	export TF_VAR_owner_id=$(owner_id)
 	export AWS_PROFILE=$(aws-user-dev)
