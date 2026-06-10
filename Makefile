@@ -109,6 +109,7 @@ up-dev: create-cluster-dev deploy-dev
 #
 delete-cluster-dev:
 	kind delete cluster --name $(cluster-dev)
+	docker image rm $(api-image-dev) $(nginx-image-dev)
 
 
 #
