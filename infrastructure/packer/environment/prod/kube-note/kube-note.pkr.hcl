@@ -30,11 +30,14 @@ build {
   ]
 
   provisioner "file" {
-    sources     = []
+    sources     = ["scripts/install-dependencies"]
     destination = "/tmp/"
   }
 
   provisioner "shell" {
-    inline = []
+    inline = [
+      "chmod +x /tmp/install-dependencies",
+      "sudo /tmp/install-dependencies"
+    ]
   }
 }
