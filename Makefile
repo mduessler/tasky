@@ -25,7 +25,7 @@ ns-dev = $(shell grep '^environment:' dev/deploy/helm/tasky/values.yaml | awk '{
 test-data=/home/tms/web/tests/data
 
 # docker compose
-service-dev=tasky-dev
+service-dev=tasky-api-dev
 file-dev=dev/docker-compose.yaml
 
 # Certs
@@ -133,16 +133,20 @@ tests: unit-tests test-image security-tests
 # Unit tests without timing
 #
 
-unit-tests: up-dev
+unit-tests:
+	docker compose --file $(file-dev) up -d
 	docker compose --file $(file-dev) exec $(service-dev) pytest -m "not timing"
 	docker compose --file $(file-dev) stop
+	docker compose --file $(file-dev) down
 
 # Unit test with timing
 #
 
-unit-tests-full: up-dev
+unit-tests-full:
+	docker compose --file $(file-dev) up -d
 	docker compose --file $(file-dev) exec $(service-dev) pytest timing
 	docker compose --file $(file-dev) stop
+	docker compose --file $(file-dev) down
 
 # Test production image
 #
