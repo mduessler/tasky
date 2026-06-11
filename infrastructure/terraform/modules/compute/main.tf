@@ -28,6 +28,6 @@ resource "aws_instance" "this" {
   }
 
   tags = {
-    Name = "instance-${var.namespace}-${var.identifier}"
+    Name = "instance-${var.namespace}-${var.name}"
   }
 }

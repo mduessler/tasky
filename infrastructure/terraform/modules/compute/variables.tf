@@ -1,7 +1,6 @@
 variable "ami_owners" {
   description = "Owner how owns the ami"
   type        = list(string)
-  default     = ["self"]
 }
 
 variable "ami_filter_values" {
@@ -32,12 +31,11 @@ variable "permission_profile" {
 variable "http_hops" {
   description = "Number of hops allowed"
   type        = int
-  default     = 2
 }
 
 variable "root_volume_size" {
+  description = "Storage size for the volume."
   type    = number
-  default = 20
 }
 
 variable "namespace" {
@@ -45,7 +43,7 @@ variable "namespace" {
   type        = string
 }
 
-variable "identifier" {
-  description = "Unique identifier of the resource."
+variable "name" {
+  description = "Unique name of the resource."
   type        = string
 }
