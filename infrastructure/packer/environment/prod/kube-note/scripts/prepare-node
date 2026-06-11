@@ -16,7 +16,7 @@ EOF
 
 sysctl --system
 
-if sysctl net.ipv4.ip_forward -ne 1; then
+if [ "$(sysctl net.ipv4.ip_forward)" -ne 1 ]; then
 	echo "ERROR: IPv4 forwarding is disabled."
 	exit 1
 fi
