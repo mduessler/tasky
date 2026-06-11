@@ -14,3 +14,9 @@ variable "workers" {
   type    = set(string)
   default = ["01", "02"]
 }
+
+variable "aws_region" {
+  description = "AWS Region where all resources will be deployed."
+  type        = string
+  default     = "eu-central-1"
+}

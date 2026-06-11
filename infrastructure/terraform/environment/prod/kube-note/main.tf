@@ -27,3 +27,8 @@ module "worker" {
   namespace          = var.environment
   name               = each.value
 }
+
+module "network" {
+  source             = "../../../modules/network"
+  aws_region  = var.aws_region
+}
