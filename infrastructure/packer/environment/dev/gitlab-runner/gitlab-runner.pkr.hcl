@@ -30,7 +30,7 @@ build {
   ]
 
   provisioner "file" {
-    sources     = ["scripts/init-file-structure", "scripts/install-docker", "scripts/install-gitlab-runner", "scripts/cleanup", "scripts/prune-docker"]
+    sources     = ["../../../scripts/init-file-structure", "scripts/install-docker", "scripts/install-gitlab-runner", "scripts/cleanup", "scripts/prune-docker"]
     destination = "/tmp/"
   }
 
