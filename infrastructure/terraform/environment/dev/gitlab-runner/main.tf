@@ -1,7 +1,26 @@
 module "network" {
-  source      = "./modules/network"
+  source             = "../../../modules/network"
   aws_region  = var.aws_region
-  runner_name = var.runner_name
+}
+
+resource "aws_security_group" "runner" {
+  name        = "runner-sg-${var.runner_name}"
+  description = "Security Group for GitLab Runner - outbound only"
+  vpc_id      = network.vpc.id
+
+  egress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
 
 module "security" {
@@ -16,8 +35,8 @@ module "compute" {
   ami_owners         = ["self"]
   ami_filter_values  = ["gitlab-runner-*"]
   instance_type      = var.instance_type
-  subnet_id          = module.network.private_subnet_id
-  security_groups    = [module.network.security_group_id]
+  subnet_id          = module.network.private_subnet
+  security_groups    = [aws_security_group.runner.id]
   permission_profile = module.security.instance_profile_name
   http_hops          = 2
   root_volume_size   = 20
