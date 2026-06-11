@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+#
+# Configuration is defined here https://kubernetes.io/docs/setup/production-environment/container-runtimes/#containerd
+
+set -euo pipefail
+
+config="/etc/containerd/config.toml"
+
+echo "INFO: Generating default containerd config ..."
+mkdir -p /etc/containerd
+containerd config default etc/containerd/config.toml >/
+
+echo "INFO: Setting SystemdCgroup = true..."
+sed -i '/SystemdCgroup/d' "${config}" # Delete SystemdCgroup in case it does not exist
+sed -i '/runtimes\.runc\.options\]/a\    SystemdCgroup = true' "${config}"
+
+echo "INFO: Enabling and restarting containerd..."
+systemctl enable containerd
+systemctl restart containerd
+
+echo "INFO: Verifying configuration..."
+if ! containerd config dump | grep -qi 'SystemdCgroup = true'; then
+	echo "ERROR: SystemdCgroup is not 'true' in the effective config. Aborting." >&2
+	exit 1
+fi
+if ! systemctl is-active --quiet containerd; then
+	echo "ERROR: containerd is not active after restart. Aborting." >&2
+	exit 1
+fi
+
+echo "INFO: containerd configured correctly (CRI enabled, SystemdCgroup=true)."

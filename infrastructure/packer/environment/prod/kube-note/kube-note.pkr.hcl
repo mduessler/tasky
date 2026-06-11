@@ -30,14 +30,15 @@ build {
   ]
 
   provisioner "file" {
-    sources     = ["scripts/install-dependencies"]
+    sources     = ["scripts/install-dependencies", "scripts/configure-containerd"]
     destination = "/tmp/"
   }
 
   provisioner "shell" {
     inline = [
-      "chmod +x /tmp/install-dependencies",
-      "sudo /tmp/install-dependencies"
+      "chmod +x /tmp/install-dependencies /tmp/configure-containerd",
+      "sudo /tmp/install-dependencies",
+      "sudo /tmp/configure-containerd",
     ]
   }
 }
