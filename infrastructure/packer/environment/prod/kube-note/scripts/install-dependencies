@@ -46,5 +46,7 @@ apt install -y \
 	kubeadm="${kubeadm_version}" \
 	kubectl="${kubectl_version}"
 
+apt-mark hold kubelet kubeadm kubectl
+
 echo "INFO: Enable kubelet"
 systemctl enable --now kubelet
