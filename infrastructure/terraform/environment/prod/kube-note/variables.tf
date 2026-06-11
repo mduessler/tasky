@@ -9,3 +9,8 @@ variable "instance_type" {
   type        = string
   default     = "t3.mikro"
 }
+
+variable "workers" {
+  type    = set(string)
+  default = ["01", "02"]
+}
