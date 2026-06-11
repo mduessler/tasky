@@ -30,13 +30,14 @@ build {
   ]
 
   provisioner "file" {
-    sources     = ["scripts/install-dependencies", "scripts/configure-containerd", "scripts/prepare-node"]
+    sources     = ["../../../scripts/init-file-structure", "scripts/install-dependencies", "scripts/configure-containerd", "scripts/prepare-node"]
     destination = "/tmp/"
   }
 
   provisioner "shell" {
     inline = [
-      "chmod +x /tmp/install-dependencies /tmp/configure-containerd /tmp/prepare-node",
+      "chmod +x /tmp/init-file-structure /tmp/install-dependencies /tmp/configure-containerd /tmp/prepare-node",
+      "sudo /tmp/init-file-structure",
       "sudo /tmp/install-dependencies",
       "sudo /tmp/configure-containerd",
       "sudo /tmp/prepare-node",
