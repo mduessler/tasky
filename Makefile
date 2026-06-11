@@ -37,10 +37,16 @@ docker-socket = $(shell docker context inspect --format '{{.Endpoints.docker.Hos
 
 # Infrastructure environment
 #
-packer-dir = ./infrastructure/packer/environment/dev/gitlab-runner/
-owner_id:=$(shell grep -m1 '^TF_VAR_owner_id=' $(env-file) | cut -d= -f2-)
+packer-root = ./infrastructure/packer
 aws-user-admin=tasky-admin
 aws-user-dev=tasky-dev
+
+# Development
+packer-runner-dir=$(packer-root)/environment/dev/gitlab-runner/
+owner_id:=$(shell grep -m1 '^TF_VAR_owner_id=' $(env-file) | cut -d= -f2-)
+
+# Production
+packer-node-dir=$(packer-root)/environment/prod/kube-note/
 
 prod-image=tasky:test
 nginx-image=tasky-nginx:test
@@ -234,10 +240,12 @@ bootstrap-create:
 bootstrap-destroy:
 	./infrastructure/scripts/bootstrap destroy
 
+# Development infrastructure
+#
 
 # Create AMI gitlab-runner image
 create-runner-img:
-	cd $(packer-dir)
+	cd $(packer-runner-dir)
 	export AWS_PROFILE=$(aws-user-admin)
 	packer init .
 	packer build gitlab-runner.pkr.hcl
@@ -254,3 +262,11 @@ destroy-gitlab-runner:
 	export TF_VAR_owner_id=$(owner_id)
 	export AWS_PROFILE=$(aws-user-dev)
 	./infrastructure/scripts/gitlab-runner destroy
+
+# Production backend
+#
+create-node-img:
+	cd $(packer-node-dir)
+	export AWS_PROFILE=$(aws-user-admin)
+	packer init .
+	packer build kube-note.pkr.hcl
