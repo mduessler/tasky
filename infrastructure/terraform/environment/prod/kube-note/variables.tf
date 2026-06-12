@@ -20,3 +20,8 @@ variable "aws_region" {
   type        = string
   default     = "eu-central-1"
 }
+
+variable "clustername" {
+  description = "Name of the cluster"
+  type        = string
+}
