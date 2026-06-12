@@ -85,7 +85,7 @@ module "controller" {
   instance_type      = var.instance_type
   subnet_id          = module.network.private_subnet_id
   security_groups    = [aws_security_group.controller]
-  permission_profile = module.security.instance_profile_name
+  iam_instance_profile = module.security.instance_profile_name
   http_hops          = 2
   root_volume_size   = 20
   namespace          = var.environment
@@ -101,7 +101,7 @@ module "worker" {
   instance_type      = var.instance_type
   subnet_id          = module.network.private_subnet_id
   security_groups    = [aws_security_group.worker]
-  permission_profile = module.security.instance_profile_name
+  iam_instance_profile = module.security.instance_profile_name
   http_hops          = 2
   root_volume_size   = 50
   namespace          = var.environment

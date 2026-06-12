@@ -37,7 +37,7 @@ module "compute" {
   instance_type      = var.instance_type
   subnet_id          = module.network.private_subnet
   security_groups    = [aws_security_group.runner.id]
-  permission_profile = module.security.instance_profile_name
+  iam_instance_profile = module.security.iam_instance_profil
   http_hops          = 2
   root_volume_size   = 20
   namespace          = var.environment

@@ -23,7 +23,7 @@ variable "security_groups" {
   type        = list(string)
 }
 
-variable "permission_profile" {
+variable "iam_instance_profile" {
   description = "Name of the permission profile."
   type        = string
 }
