@@ -78,32 +78,36 @@ resource "aws_security_group" "worker" {
   }
 }
 
+module "iam" {
+  source = "./modules/iam"
+}
+
 module "controller" {
-  source             = "../../../modules/compute"
-  ami_owners         = ["self"]
-  ami_filter_values  = ["kube-node-*"]
-  instance_type      = var.instance_type
-  subnet_id          = module.network.private_subnet_id
-  security_groups    = [aws_security_group.controller]
-  iam_instance_profile = module.security.instance_profile_name
-  http_hops          = 2
-  root_volume_size   = 20
-  namespace          = var.environment
-  name               = "kube-controller"
+  source               = "../../../modules/compute"
+  ami_owners           = ["self"]
+  ami_filter_values    = ["kube-node-*"]
+  instance_type        = var.instance_type
+  subnet_id            = module.network.private_subnet_id
+  security_groups      = [aws_security_group.controller]
+  iam_instance_profile = module.iam.controller_profile_name
+  http_hops            = 2
+  root_volume_size     = 20
+  namespace            = var.environment
+  name                 = "kube-controller"
 }
 
 module "worker" {
   for_each = var.workers
 
-  source             = "../../../modules/compute"
-  ami_owners         = ["self"]
-  ami_filter_values  = ["kube-node-*"]
-  instance_type      = var.instance_type
-  subnet_id          = module.network.private_subnet_id
-  security_groups    = [aws_security_group.worker]
-  iam_instance_profile = module.security.instance_profile_name
-  http_hops          = 2
-  root_volume_size   = 50
-  namespace          = var.environment
-  name               = each.value
+  source               = "../../../modules/compute"
+  ami_owners           = ["self"]
+  ami_filter_values    = ["kube-node-*"]
+  instance_type        = var.instance_type
+  subnet_id            = module.network.private_subnet_id
+  security_groups      = [aws_security_group.worker]
+  iam_instance_profile = module.iam.worker_profile_name
+  http_hops            = 2
+  root_volume_size     = 50
+  namespace            = var.environment
+  name                 = each.value
 }
