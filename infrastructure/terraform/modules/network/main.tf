@@ -57,7 +57,7 @@ resource "aws_eip" "this" {
 resource "aws_nat_gateway" "this" {
   allocation_id = aws_eip.this.id
   subnet_id     = aws_subnet.public.id
-  depends_on    = [aws_internet_gateway.main]
+  depends_on    = [aws_internet_gateway.this]
 }
 
 resource "aws_vpc_endpoint" "s3" {
