@@ -92,8 +92,9 @@ module "controller" {
   iam_instance_profile = module.iam.controller_profile_name
   http_hops            = 2
   root_volume_size     = 20
-  namespace            = var.environment
-  name                 = "kube-controller"
+  tags = {
+    Name = "kube-controller"
+  }
 }
 
 module "worker" {
@@ -108,6 +109,7 @@ module "worker" {
   iam_instance_profile = module.iam.worker_profile_name
   http_hops            = 2
   root_volume_size     = 50
-  namespace            = var.environment
-  name                 = each.value
+  tags = {
+    Name = "kube-worker-${each.value}"
+  }
 }
