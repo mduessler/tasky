@@ -27,7 +27,5 @@ resource "aws_instance" "this" {
     volume_size = var.root_volume_size
   }
 
-  tags = {
-    Name = "instance-${var.namespace}-${var.name}"
-  }
+  tags = var.tags
 }

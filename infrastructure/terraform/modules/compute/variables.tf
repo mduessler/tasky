@@ -35,15 +35,10 @@ variable "http_hops" {
 
 variable "root_volume_size" {
   description = "Storage size for the volume."
-  type    = number
+  type        = number
 }
 
-variable "namespace" {
-  description = "Namespace of the resource."
-  type        = string
-}
-
-variable "name" {
-  description = "Unique name of the resource."
-  type        = string
+variable "tags" {
+  description = "Map of tags to adapt to the instance"
+  type        = map(string)
 }

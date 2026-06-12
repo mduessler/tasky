@@ -1,6 +1,6 @@
 module "network" {
-  source             = "../../../modules/network"
-  aws_region  = var.aws_region
+  source     = "../../../modules/network"
+  aws_region = var.aws_region
 }
 
 resource "aws_security_group" "runner" {
@@ -31,17 +31,18 @@ module "security" {
 }
 
 module "compute" {
-  source             = "../../../modules/compute"
-  ami_owners         = ["self"]
-  ami_filter_values  = ["gitlab-runner-*"]
-  instance_type      = var.instance_type
-  subnet_id          = module.network.private_subnet
-  security_groups    = [aws_security_group.runner.id]
+  source               = "../../../modules/compute"
+  ami_owners           = ["self"]
+  ami_filter_values    = ["gitlab-runner-*"]
+  instance_type        = var.instance_type
+  subnet_id            = module.network.private_subnet
+  security_groups      = [aws_security_group.runner.id]
   iam_instance_profile = module.security.iam_instance_profil
-  http_hops          = 2
-  root_volume_size   = 20
-  namespace          = var.environment
-  name               = var.runner_name
+  http_hops            = 2
+  root_volume_size     = 20
+  tags = {
+    Name = "instance-${var.environment}-${var.runner_name}"
+  }
 }
 
 module "ssm_transfer_bucket" {
