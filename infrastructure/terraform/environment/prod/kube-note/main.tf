@@ -29,6 +29,54 @@ module "worker" {
 }
 
 module "network" {
-  source             = "../../../modules/network"
-  aws_region  = var.aws_region
+  source     = "../../../modules/network"
+  aws_region = var.aws_region
+}
+
+resource "aws_security_group" "controller" {
+  name        = "kube-controller-sg"
+  description = "Security Group for the controller of the kubernetes"
+  vpc_id      = module.network.vpc.id
+
+  ingress {
+    from_port   = 6443
+    to_port     = 6443
+    protocol    = "tcp"
+    cidr_blocks = [module.network.vpc_cidr]
+  }
+
+  ingress {
+    from_port   = 2379
+    to_port     = 2380
+    protocol    = "tcp"
+    cidr_blocks = [module.network.vpc_cidr]
+  }
+
+  ingress {
+    from_port   = 10250
+    to_port     = 10250
+    protocol    = "tcp"
+    cidr_blocks = [module.network.vpc_cidr]
+  }
+
+  ingress {
+    from_port   = 10257
+    to_port     = 10257
+    protocol    = "tcp"
+    cidr_blocks = [module.network.vpc_cidr]
+  }
+
+  ingress {
+    from_port   = 10259
+    to_port     = 10259
+    protocol    = "tcp"
+    cidr_blocks = [module.network.vpc_cidr]
+  }
+
+  egress { # In a real secure environment, define the outgoing connections better.
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
