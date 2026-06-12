@@ -13,6 +13,7 @@ resource "aws_subnet" "private" {
   cidr_block              = "10.0.1.0/24"
   availability_zone       = "${var.aws_region}a"
   map_public_ip_on_launch = false
+  tags                    = var.public_tags
 }
 
 resource "aws_route_table" "private" {
@@ -34,6 +35,7 @@ resource "aws_subnet" "public" {
   cidr_block              = "10.0.0.0/24"
   availability_zone       = "${var.aws_region}a"
   map_public_ip_on_launch = true
+  tags                    = var.private_tags
 }
 
 resource "aws_route_table" "public" {

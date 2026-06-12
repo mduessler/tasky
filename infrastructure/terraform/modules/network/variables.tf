@@ -8,3 +8,15 @@ variable "aws_region" {
   description = "AWS Region where all resources will be deployed."
   type        = string
 }
+
+variable "private_tags" {
+  description = "Tags of the private subnet"
+  type        = map(string)
+  default     = {}
+}
+
+variable "public_tags" {
+  description = "Tags of the public_tags subnet"
+  type        = map(string)
+  default     = {}
+}
