@@ -124,3 +124,12 @@ module "worker" {
     "kubernetes.io/cluster/${var.cluster_name}" = "owned"
   }
 }
+
+resource "aws_ebs_volume" "postgres" {
+  availability_zone = module.worker["01"].availability_zone
+  size              = 10
+  type              = "gp3"
+  tags = {
+    Name = "postgres-data"
+  }
+}
