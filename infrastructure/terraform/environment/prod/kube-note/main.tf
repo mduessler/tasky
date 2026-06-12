@@ -80,3 +80,30 @@ resource "aws_security_group" "controller" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
+resource "aws_security_group" "worker" {
+  name        = "kube-worker-sg"
+  description = "Security Group for the workers of the kubernetes"
+  vpc_id      = module.network.vpc_id
+
+  ingress {
+    from_port   = 10250
+    to_port     = 10250
+    protocol    = "tcp"
+    cidr_blocks = [module.network.vpc_cidr]
+  }
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
