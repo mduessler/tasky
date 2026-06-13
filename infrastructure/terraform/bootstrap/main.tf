@@ -7,11 +7,6 @@ module "state_bucket_dev" {
   }
 }
 
-module "security_dev" {
-  source    = "../modules/s3_security"
-  bucket_id = module.state_bucket_dev.id
-}
-
 data "aws_iam_policy_document" "state_bucket_dev" {
   statement {
     sid     = "DenyNonTLS"
