@@ -32,7 +32,7 @@ data "aws_iam_policy_document" "tf_state" {
 resource "aws_s3_bucket_policy" "state" {
   bucket     = module.tf_state.id
   policy     = data.aws_iam_policy_document.tf_state.json
-  depends_on = [module.security]
+  depends_on = [module.tf_state]
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "state" {
