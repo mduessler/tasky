@@ -1,3 +1,4 @@
 output "vpc_ids" {
-  value = { for az, net in module.network : az => net.vpc_id }
+  description = "List of all created vpcs for the development"
+  value       = { for az, net in module.network : az => net.vpc_id }
 }
