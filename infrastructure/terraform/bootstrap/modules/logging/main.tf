@@ -10,11 +10,6 @@ module "log_bucket" {
 
 }
 
-module "security" {
-  source = "../../../modules/s3_security"
-  bucket_id = module.log_bucket.id
-}
-
 resource "aws_s3_bucket_ownership_controls" "logs" {
   bucket = module.log_bucket.id
 
@@ -79,7 +74,7 @@ data "aws_iam_policy_document" "log_bucket" {
 resource "aws_s3_bucket_policy" "logs" {
   bucket     = module.log_bucket.id
   policy     = data.aws_iam_policy_document.log_bucket.json
-  depends_on = [module.security]
+  depends_on = [module.log_bucket]
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "logs" {
