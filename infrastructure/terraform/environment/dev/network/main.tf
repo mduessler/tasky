@@ -1,4 +1,4 @@
-module "network" {
+module "vpcs" {
   for_each = toset(var.availability_zones)
 
   source     = "../../../modules/network"
