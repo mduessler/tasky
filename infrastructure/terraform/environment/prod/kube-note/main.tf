@@ -2,11 +2,11 @@ module "network" {
   source     = "../../../modules/network"
   aws_region = var.aws_region
   private_tags = {
-    "kubernetes.io/cluster/${var.cluster_name}" = "owned"
+    "kubernetes.io/cluster/${var.clustername}" = "owned"
     "kubernetes.io/role/internal-elb"           = "1"
   }
   public_tags = {
-    "kubernetes.io/cluster/${var.cluster_name}" = "owned"
+    "kubernetes.io/cluster/${var.clustername}" = "owned"
     "kubernetes.io/role/elb"                    = "1"
   }
 }
@@ -102,7 +102,7 @@ module "controller" {
   root_volume_size     = 20
   tags = {
     Name                                        = "kube-controller"
-    "kubernetes.io/cluster/${var.cluster_name}" = "owned"
+    "kubernetes.io/cluster/${var.clustername}" = "owned"
 
   }
 }
@@ -121,7 +121,7 @@ module "worker" {
   root_volume_size     = 50
   tags = {
     Name                                        = "kube-worker-${each.value}"
-    "kubernetes.io/cluster/${var.cluster_name}" = "owned"
+    "kubernetes.io/cluster/${var.clustername}" = "owned"
   }
 }
 
