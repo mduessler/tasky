@@ -14,10 +14,6 @@ logs/
 crash.log
 crash.*.log
 
-# Sensitive var files — commit *.tfvars.example instead
-*.tfvars
-!*.tfvars.example
-
 # Lock files — DO commit these (they pin provider versions)
 !.terraform.lock.hcl
 
