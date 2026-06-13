@@ -1,5 +1,5 @@
 module "tf_state" {
-  source         = "../../modules/s3_bucket"
+  source         = "../../../modules/s3_bucket"
   name           = "tasky-tf-state-${var.owner_id}-${var.environment}"
   version_status = "Enabled"
   tags = {
@@ -55,7 +55,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "state" {
 }
 
 module "logging" {
-  source     = "./modules/logging"
+  source     = "../modules/logging"
   target_id  = module.tf_state.id
   target_arn = module.tf_state.arn
   owner_id   = var.owner_id
