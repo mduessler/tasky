@@ -2,9 +2,10 @@ data "aws_caller_identity" "current" {}
 
 module "log_bucket" {
   source = "../../../modules/s3_bucket"
-  name   = "tasky-terraform-state-logs-${var.owner_id}-dev"
+  name   = "tasky-tf-state-logs-${var.owner_id}-${var.environment}"
   tags = {
-    Component = "terraform-state-access-logs"
+    Component   = "tf-state"
+    Environment = var.environment
   }
 
 }
