@@ -96,7 +96,7 @@ module "controller" {
   ami_filter_values    = ["kube-node-*"]
   instance_type        = var.instance_type
   subnet_id            = module.network.private_subnet
-  security_groups      = [aws_security_group.controller]
+  security_groups      = [aws_security_group.controller.id]
   iam_instance_profile = module.iam.controller_profile_name
   http_hops            = 2
   root_volume_size     = 20
@@ -115,7 +115,7 @@ module "worker" {
   ami_filter_values    = ["kube-node-*"]
   instance_type        = var.instance_type
   subnet_id            = module.network.private_subnet
-  security_groups      = [aws_security_group.worker]
+  security_groups      = [aws_security_group.worker.id]
   iam_instance_profile = module.iam.worker_profile_name
   http_hops            = 2
   root_volume_size     = 50
