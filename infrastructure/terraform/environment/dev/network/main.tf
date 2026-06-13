@@ -1,0 +1,6 @@
+module "network" {
+  for_each = toset(var.availability_zones)
+
+  source     = "../../../modules/network"
+  availability_zone = each.value
+}
