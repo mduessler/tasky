@@ -160,6 +160,6 @@ resource "aws_lb_listener" "nginx" {
 resource "aws_lb_target_group_attachment" "nginx" {
   for_each         = var.workers
   target_group_arn = aws_lb_target_group.nginx.arn
-  target_id        = module.worker[each.key].compute
+  target_id        = module.worker[each.key].id
   port             = 30443
 }
