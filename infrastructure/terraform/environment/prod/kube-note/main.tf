@@ -14,7 +14,7 @@ module "network" {
 resource "aws_security_group" "controller" {
   name        = "kube-controller-sg"
   description = "Security Group for the controller of the kubernetes"
-  vpc_id      = module.network.vpc.id
+  vpc_id      = module.network.vpc
 
   ingress {
     from_port   = 6443
@@ -62,7 +62,7 @@ resource "aws_security_group" "controller" {
 resource "aws_security_group" "worker" {
   name        = "kube-worker-sg"
   description = "Security Group for the workers of the kubernetes"
-  vpc_id      = module.network.vpc_id
+  vpc_id      = module.network.vpc
 
   ingress {
     from_port   = 10250
@@ -95,7 +95,7 @@ module "controller" {
   ami_owners           = ["self"]
   ami_filter_values    = ["kube-node-*"]
   instance_type        = var.instance_type
-  subnet_id            = module.network.private_subnet_id
+  subnet_id            = module.network.private_subnet
   security_groups      = [aws_security_group.controller]
   iam_instance_profile = module.iam.controller_profile_name
   http_hops            = 2
@@ -114,7 +114,7 @@ module "worker" {
   ami_owners           = ["self"]
   ami_filter_values    = ["kube-node-*"]
   instance_type        = var.instance_type
-  subnet_id            = module.network.private_subnet_id
+  subnet_id            = module.network.private_subnet
   security_groups      = [aws_security_group.worker]
   iam_instance_profile = module.iam.worker_profile_name
   http_hops            = 2
