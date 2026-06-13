@@ -30,7 +30,8 @@ variable "iam_instance_profile" {
 
 variable "http_hops" {
   description = "Number of hops allowed"
-  type        = int
+  type        = number
+  default     = 1
 }
 
 variable "root_volume_size" {
