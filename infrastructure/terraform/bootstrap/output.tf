@@ -1,7 +1,7 @@
-output "s3_bucket_name_dev" {
-  value = module.state_bucket_dev.id
+output "tf_state_dev" {
+  value = module.tf_state_dev.id
 }
 
-output "dynamodb_table_name_dev" {
-  value = module.terraform_locks_dev.table_name
+output "tf_state_prod" {
+  value = module.tf_state_prod.id
 }
