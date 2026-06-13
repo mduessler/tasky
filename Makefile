@@ -250,6 +250,22 @@ create-runner-img:
 	packer init .
 	packer build gitlab-runner.pkr.hcl
 
+# Create development network
+create-network-dev:
+	export TF_VAR_owner_id=$(owner_id)
+	export AWS_PROFILE=$(aws-user-dev)
+	./infrastructure/scripts/network install dev
+
+# Update development network
+update-network-dev:
+	export AWS_PROFILE=$(aws-user-dev)
+	./infrastructure/scripts/network install dev
+
+# Destroy development network
+destroy-network-dev:
+	export AWS_PROFILE=$(aws-user-dev)
+	./infrastructure/scripts/network install dev
+
 
 # Commands to install or destroy a gitlab-runner
 install-gitlab-runner:
