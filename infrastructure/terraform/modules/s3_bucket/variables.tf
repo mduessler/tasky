@@ -14,3 +14,15 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "sse_algorithm" {
+  description = "Algorithm to encrypt the s3 bucket"
+  type        = string
+  default     = "AES256"
+}
+
+variable "block_public_access" {
+  description = "Define the block of the public access"
+  type        = bool
+  default     = true
+}
