@@ -55,19 +55,17 @@ metadata:
   labels:
     {{- include "tasky.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.nginx.service.type }}
+  type: NodePort
   selector:
     app: {{ .Release.Name }}-nginx
   ports:
-    {{- if eq .Values.nginx.service.type "NodePort" }}
+    {{- if eq .Values.environment "dev" }}
     - name: http
       port: 80
       targetPort: 80
-      nodePort: {{ .Values.nginx.service.httpNodePort }}
+      nodePort: 30080
     {{- end }}
     - name: https
       port: 443
       targetPort: 443
-      {{- if eq .Values.nginx.service.type "NodePort" }}
-      nodePort: {{ .Values.nginx.service.httpsNodePort }}
-      {{- end }}
+      nodePort: 30443
