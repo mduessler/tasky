@@ -72,10 +72,10 @@ resource "aws_security_group" "worker" {
   }
 
   ingress {
-    from_port   = 443
-    to_port     = 443
+    from_port   = 30443
+    to_port     = 30443
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [module.network.vpc_cidr]
   }
 
   egress {
@@ -132,4 +132,34 @@ resource "aws_ebs_volume" "postgres" {
   tags = {
     Name = "postgres-data"
   }
+}
+
+resource "aws_lb" "nginx" {
+  name               = "nginx-nlb"
+  load_balancer_type = "network"
+  subnets            = [module.network.public_subnet]
+}
+
+resource "aws_lb_target_group" "nginx" {
+  name     = "nginx-tg"
+  port     = 30443
+  protocol = "TCP"
+  vpc_id   = module.network.vpc_id
+}
+
+resource "aws_lb_listener" "nginx" {
+  load_balancer_arn = aws_lb.nginx.arn
+  port              = 443
+  protocol          = "TCP"
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.nginx.arn
+  }
+}
+
+resource "aws_lb_target_group_attachment" "nginx" {
+  for_each         = var.workers
+  target_group_arn = aws_lb_target_group.nginx.arn
+  target_id        = module.worker[each.key].instance_id
+  port             = 30443
 }
