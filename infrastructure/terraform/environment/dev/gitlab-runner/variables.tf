@@ -1,7 +1,11 @@
 variable "aws_region" {
-  description = "AWS Region where all resources will be deployed."
+  description = "AWS Region where the backend is deployed."
   type        = string
-  default     = "eu-central-1"
+}
+
+variable "availability_zone" {
+  description = "Zone in which VPC the runner should be deployed"
+  type        = string
 }
 
 variable "environment" {
@@ -12,7 +16,6 @@ variable "environment" {
 variable "instance_type" {
   description = "EC2 instance type."
   type        = string
-  default     = "t3.small"
 }
 
 variable "runner_name" {
