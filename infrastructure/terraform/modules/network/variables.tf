@@ -5,7 +5,7 @@ variable "vpc_cidr" {
 }
 
 variable "aws_region" {
-  description = "AWS Region where all resources will be deployed."
+  description = "AWS Region where the network will be deployed."
   type        = string
 }
 
