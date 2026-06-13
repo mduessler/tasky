@@ -1,6 +1,6 @@
 module "network" {
   source     = "../../../modules/network"
-  aws_region = var.aws_region
+  availability_zone = var.aws_region
 }
 
 resource "aws_security_group" "runner" {

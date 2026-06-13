@@ -11,7 +11,7 @@ resource "aws_internet_gateway" "this" {
 resource "aws_subnet" "private" {
   vpc_id                  = aws_vpc.this.id
   cidr_block              = "10.0.1.0/24"
-  availability_zone       = "${var.aws_region}a"
+  availability_zone       = var.availability_zone
   map_public_ip_on_launch = false
   tags                    = var.private_tags
 }
@@ -33,7 +33,7 @@ resource "aws_route_table_association" "private" {
 resource "aws_subnet" "public" {
   vpc_id                  = aws_vpc.this.id
   cidr_block              = "10.0.0.0/24"
-  availability_zone       = "${var.aws_region}a"
+  availability_zone       = var.availability_zone
   map_public_ip_on_launch = true
   tags                    = var.public_tags
 }

@@ -4,7 +4,7 @@ variable "vpc_cidr" {
   default     = "10.0.0.0/16"
 }
 
-variable "aws_region" {
+variable "availability_zone" {
   description = "AWS Region where the network will be deployed."
   type        = string
 }

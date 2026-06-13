@@ -1,6 +1,6 @@
 module "network" {
   source     = "../../../modules/network"
-  aws_region = var.aws_region
+  availability_zone = var.aws_region
   private_tags = {
     "kubernetes.io/cluster/${var.clustername}" = "owned"
     "kubernetes.io/role/internal-elb"           = "1"
