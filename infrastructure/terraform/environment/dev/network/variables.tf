@@ -6,5 +6,9 @@ variable "availability_zones" {
 variable "environment" {
   description = "Deployment name of the environment."
   type        = string
-  default     = dev
+}
+
+variable "aws_region" {
+  description = "Deployment name of the environment."
+  type        = string
 }
