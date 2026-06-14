@@ -1,8 +1,4 @@
-output "ssm_bucket_name" {
-  value = module.ssm_transfer_bucket.id
-}
-
-output "ssm_session_command" {
-  description = "Instruction how to connect via SSM."
-  value       = "aws ssm start-session --target ${module.compute.id} --region <Region in which the VPC> --profile tasky-dev"
+output "id" {
+  description = "Id of the ssm-transfer bucket."
+  value       = module.s3.id
 }
