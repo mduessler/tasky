@@ -70,12 +70,12 @@
         "s3:GetObjectVersion",
         "s3:ListMultipartUploadParts"
       ],
-      "Resource": "arn:aws:s3:::tasky-tf-state-${account_id}-dev/runner/eu-central-1a/01/terraform.tfstate"
+      "Resource": "arn:aws:s3:::tasky-tf-state-${account_id}-dev/runner/*/terraform.tfstate"
     },
     {
       "Effect": "Allow",
       "Action": ["s3:ListMultipartUploadParts", "s3:DeleteObject"],
-      "Resource": "arn:aws:s3:::tasky-tf-state-${account_id}-dev/runner/eu-central-1a/01/terraform.tfstate.tflock"
+      "Resource": "arn:aws:s3:::tasky-tf-state-${account_id}-dev/runner/*/terraform.tfstate.tflock"
     }
   ]
 }

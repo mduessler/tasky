@@ -30,7 +30,7 @@
     {
       "Effect": "Allow",
       "Action": ["ec2:AllocateAddress"],
-      "Resource": "arn:aws:ec2:eu-central-1:${account_id}:elastic-ip/*"
+      "Resource": "arn:aws:ec2:${region}:${account_id}:elastic-ip/*"
     },
     {
       "Effect": "Allow",
@@ -40,40 +40,40 @@
         "ec2:DescribeVpcAttribute",
         "ec2:DeleteVpc"
       ],
-      "Resource": "arn:aws:ec2:eu-central-1:${account_id}:vpc/*"
+      "Resource": "arn:aws:ec2:${region}:${account_id}:vpc/*"
     },
     {
       "Effect": "Allow",
       "Action": ["ec2:CreateInternetGateway", "ec2:DeleteInternetGateway"],
-      "Resource": "arn:aws:ec2:eu-central-1:${account_id}:internet-gateway/*"
+      "Resource": "arn:aws:ec2:${region}:${account_id}:internet-gateway/*"
     },
     {
       "Effect": "Allow",
       "Action": ["ec2:CreateSubnet"],
       "Resource": [
-        "arn:aws:ec2:eu-central-1:${account_id}:subnet/*",
-        "arn:aws:ec2:eu-central-1:${account_id}:vpc/*"
+        "arn:aws:ec2:${region}:${account_id}:subnet/*",
+        "arn:aws:ec2:${region}:${account_id}:vpc/*"
       ]
     },
     {
       "Effect": "Allow",
       "Action": ["ec2:AttachInternetGateway", "ec2:DetachInternetGateway"],
       "Resource": [
-        "arn:aws:ec2:eu-central-1:${account_id}:internet-gateway/*",
-        "arn:aws:ec2:eu-central-1:${account_id}:vpc/*"
+        "arn:aws:ec2:${region}:${account_id}:internet-gateway/*",
+        "arn:aws:ec2:${region}:${account_id}:vpc/*"
       ]
     },
     {
       "Effect": "Allow",
       "Action": ["ec2:ModifySubnetAttribute", "ec2:DeleteSubnet"],
-      "Resource": "arn:aws:ec2:eu-central-1:${account_id}:subnet/*"
+      "Resource": "arn:aws:ec2:${region}:${account_id}:subnet/*"
     },
     {
       "Effect": "Allow",
       "Action": ["ec2:CreateRouteTable"],
       "Resource": [
-        "arn:aws:ec2:eu-central-1:${account_id}:route-table/*",
-        "arn:aws:ec2:eu-central-1:${account_id}:vpc/*"
+        "arn:aws:ec2:${region}:${account_id}:route-table/*",
+        "arn:aws:ec2:${region}:${account_id}:vpc/*"
       ]
     },
     {
@@ -83,19 +83,19 @@
         "ec2:AssociateRouteTable",
         "ec2:DeleteRouteTable"
       ],
-      "Resource": "arn:aws:ec2:eu-central-1:${account_id}:route-table/*"
+      "Resource": "arn:aws:ec2:${region}:${account_id}:route-table/*"
     },
     {
       "Effect": "Allow",
       "Action": ["ec2:CreateNatGateway", "ec2:DeleteNatGateway"],
-      "Resource": "arn:aws:ec2:eu-central-1:${account_id}:natgateway/*"
+      "Resource": "arn:aws:ec2:${region}:${account_id}:natgateway/*"
     },
     {
       "Effect": "Allow",
       "Action": ["ec2:CreateVpcEndpoint"],
       "Resource": [
-        "arn:aws:ec2:eu-central-1:${account_id}:vpc-endpoint/*",
-        "arn:aws:ec2:eu-central-1:${account_id}:vpc/*"
+        "arn:aws:ec2:${region}:${account_id}:vpc-endpoint/*",
+        "arn:aws:ec2:${region}:${account_id}:vpc/*"
       ]
     },
     {
@@ -106,7 +106,7 @@
         "ec2:ModifyInstanceAttribute",
         "ec2:TerminateInstances"
       ],
-      "Resource": "arn:aws:ec2:eu-central-1:${account_id}:instance/*"
+      "Resource": "arn:aws:ec2:${region}:${account_id}:instance/*"
     },
     {
       "Effect": "Allow",
@@ -116,39 +116,39 @@
         "ec2:AuthorizeSecurityGroupEgress",
         "ec2:DeleteSecurityGroup"
       ],
-      "Resource": "arn:aws:ec2:eu-central-1:${account_id}:security-group/*"
+      "Resource": "arn:aws:ec2:${region}:${account_id}:security-group/*"
     },
     {
       "Effect": "Allow",
       "Action": ["ec2:RunInstances"],
       "Resource": [
-        "arn:aws:ec2:eu-central-1:${account_id}:instance/*",
-        "arn:aws:ec2:eu-central-1:${account_id}:network-interface/*",
-        "arn:aws:ec2:eu-central-1:${account_id}:security-group/*",
-        "arn:aws:ec2:eu-central-1:${account_id}:subnet/*",
-        "arn:aws:ec2:eu-central-1:${account_id}:volume/*",
-        "arn:aws:ec2:eu-central-1::image/*"
+        "arn:aws:ec2:${region}:${account_id}:instance/*",
+        "arn:aws:ec2:${region}:${account_id}:network-interface/*",
+        "arn:aws:ec2:${region}:${account_id}:security-group/*",
+        "arn:aws:ec2:${region}:${account_id}:subnet/*",
+        "arn:aws:ec2:${region}:${account_id}:volume/*",
+        "arn:aws:ec2:${region}::image/*"
       ]
     },
     {
       "Effect": "Allow",
       "Action": ["ec2:DisassociateRouteTable"],
       "Resource": [
-        "arn:aws:ec2:eu-central-1:${account_id}:route-table/*",
-        "arn:aws:ec2:eu-central-1:${account_id}:subnet/*"
+        "arn:aws:ec2:${region}:${account_id}:route-table/*",
+        "arn:aws:ec2:${region}:${account_id}:subnet/*"
       ]
     },
     {
       "Effect": "Allow",
       "Action": ["ec2:DeleteVpcEndpoints"],
-      "Resource": "arn:aws:ec2:eu-central-1:${account_id}:vpc-endpoint/*"
+      "Resource": "arn:aws:ec2:${region}:${account_id}:vpc-endpoint/*"
     },
     {
       "Effect": "Allow",
       "Action": ["ec2:DisassociateAddress"],
       "Resource": [
-        "arn:aws:ec2:eu-central-1:${account_id}:elastic-ip/*",
-        "arn:aws:ec2:eu-central-1:${account_id}:network-interface/*"
+        "arn:aws:ec2:${region}:${account_id}:elastic-ip/*",
+        "arn:aws:ec2:${region}:${account_id}:network-interface/*"
       ]
     }
   ]
