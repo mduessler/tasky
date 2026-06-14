@@ -25,7 +25,7 @@ function change_dir() {
 	cd "$SCRIPT_DIR/../terraform/environment/${1}/ssm-transfer" || exit 2
 }
 
-function install() {
+function terraform_init() {
 	if [[ -z "${TF_VAR_owner_id}" || -z "${AWS_PROFILE}" ]]; then
 		if [[ -z "${TF_VAR_owner_id}" ]]; then
 			echo "ERROR: TF_VAR_owner_id is not set"
@@ -40,26 +40,15 @@ function install() {
 	terraform init \
 		-backend-config="bucket=tasky-tf-state-${TF_VAR_owner_id}-$1" \
 		-backend-config="key=ssm-transfer/terraform.tfstate"
-	terraform apply -var-file=../default.tfvars
 }
 
-function update() {
-	if [[ -z "${AWS_PROFILE}" ]]; then
-		echo "ERROR: AWS_PROFILE is not set"
-		help && exit 1
-	fi
-
-	change_dir "$1"
+function install_or_update() {
+	terraform_init "$1"
 	terraform apply -var-file=../default.tfvars
 }
 
 function destroy() {
-	if [[ -z "${AWS_PROFILE}" ]]; then
-		echo "ERROR: AWS_PROFILE is not set"
-		help && exit 1
-	fi
-
-	change_dir "$1"
+	terraform_init "$1"
 	terraform destroy -var-file=../default.tfvars
 }
 
@@ -71,10 +60,8 @@ elif [[ "$1" == "help" || "$2" == "help" ]]; then
 elif [[ "$2" != "dev" && "$2" != "prod" ]]; then
 	echo "ERROR: Unsupported environment."
 	help && exit 1
-elif [[ "$1" == "install" ]]; then
-	install "$2"
-elif [[ "$1" == "update" ]]; then
-	update "$2"
+elif [[ "$1" == "install" || "$1" == "update" ]]; then
+	install_or_update "$2"
 elif [[ "$1" == "destroy" ]]; then
 	destroy "$2"
 else
