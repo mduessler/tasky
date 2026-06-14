@@ -20,11 +20,6 @@ Environment:
 EOF
 }
 
-function change_dir() {
-	SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-	cd "$SCRIPT_DIR/../terraform/environment/${1}/ssm-transfer" || exit 2
-}
-
 function terraform_init() {
 	if [[ -z "${TF_VAR_owner_id:-}" || -z "${AWS_PROFILE:-}" ]]; then
 		if [[ -z "${TF_VAR_owner_id:-}" ]]; then
@@ -35,7 +30,8 @@ function terraform_init() {
 		help && exit 1
 	fi
 
-	change_dir "$1"
+	SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+	cd "$SCRIPT_DIR/../terraform/environment/${1}/ssm-transfer" || exit 2
 
 	terraform init \
 		-backend-config="bucket=tasky-tf-state-${TF_VAR_owner_id}-$1" \
