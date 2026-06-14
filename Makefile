@@ -39,8 +39,7 @@ docker-socket = $(shell docker context inspect --format '{{.Endpoints.docker.Hos
 #
 packer-root = ./infrastructure/packer
 aws-user-admin=tasky-admin
-# aws-user-dev=tasky-dev
-aws-user-dev=tasky-admin
+aws-user-dev=tasky-dev
 
 # Development
 packer-runner-dir=$(packer-root)/environment/dev/gitlab-runner/
@@ -262,13 +261,13 @@ create-network-dev:
 update-network-dev:
 	export TF_VAR_owner_id=$(owner_id)
 	export AWS_PROFILE=$(aws-user-dev)
-	./infrastructure/scripts/network install dev
+	./infrastructure/scripts/network update dev
 
 # Destroy development network
 destroy-network-dev:
 	export TF_VAR_owner_id=$(owner_id)
 	export AWS_PROFILE=$(aws-user-dev)
-	./infrastructure/scripts/network install dev
+	./infrastructure/scripts/network destroy dev
 
 # Create development ssm-transfer-bucket
 create-ssm-transfer-bucket-dev:
@@ -280,13 +279,13 @@ create-ssm-transfer-bucket-dev:
 update-ssm-transfer-bucket-dev:
 	export TF_VAR_owner_id=$(owner_id)
 	export AWS_PROFILE=$(aws-user-dev)
-	./infrastructure/scripts/ssm-transfer install dev
+	./infrastructure/scripts/ssm-transfer update dev
 
 # Destroy development ssm-transfer-bucket
 destroy-ssm-transfer-bucket-dev:
 	export TF_VAR_owner_id=$(owner_id)
 	export AWS_PROFILE=$(aws-user-dev)
-	./infrastructure/scripts/ssm-transfer install dev
+	./infrastructure/scripts/ssm-transfer destroy dev
 
 
 # Commands to install or destroy a gitlab-runner
