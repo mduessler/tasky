@@ -17,6 +17,8 @@ module "tf_state_prod" {
 module "tasky_dev_user" {
   source      = "./modules/iam-user"
 
+  aws_region = var.aws_region
+  owner_id = var.owner_id
   user_name   = var.user_dev
   policies = "./policies/tasky-dev"
 }
