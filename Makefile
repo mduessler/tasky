@@ -274,19 +274,19 @@ destroy-network-dev:
 create-ssm-transfer-bucket-dev:
 	export TF_VAR_owner_id=$(owner_id)
 	export AWS_PROFILE=$(aws-user-dev)
-	./infrastructure/scripts/network install dev
+	./infrastructure/scripts/ssm-transfer install dev
 
 # Update development ssm-transfer-bucket
 update-ssm-transfer-bucket-dev:
 	export TF_VAR_owner_id=$(owner_id)
 	export AWS_PROFILE=$(aws-user-dev)
-	./infrastructure/scripts/network install dev
+	./infrastructure/scripts/ssm-transfer install dev
 
 # Destroy development ssm-transfer-bucket
 destroy-ssm-transfer-bucket-dev:
 	export TF_VAR_owner_id=$(owner_id)
 	export AWS_PROFILE=$(aws-user-dev)
-	./infrastructure/scripts/network install dev
+	./infrastructure/scripts/ssm-transfer install dev
 
 
 # Commands to install or destroy a gitlab-runner
