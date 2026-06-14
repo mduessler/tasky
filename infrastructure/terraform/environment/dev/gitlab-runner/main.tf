@@ -1,12 +1,16 @@
-module "network" {
-  source     = "../../../modules/network"
-  availability_zone = var.aws_region
+data "terraform_remote_state" "network" {
+  backend = "s3"
+  config = {
+    bucket = "tasky-tf-state-${var.owner_id}-${var.environment}"
+    key    = "network/terraform.tfstate"
+    region = var.aws_region
+  }
 }
 
 resource "aws_security_group" "runner" {
-  name        = "runner-sg-${var.runner_name}"
+  name        = "runner-sg-${var.runner_name}-${var.environment}"
   description = "Security Group for GitLab Runner - outbound only"
-  vpc_id      = network.vpc.id
+  vpc_id      = data.terraform_remote_state.network.outputs.ids[var.availability_zone]
 
   egress {
     from_port   = 80
@@ -35,9 +39,9 @@ module "compute" {
   ami_owners           = ["self"]
   ami_filter_values    = ["gitlab-runner-*"]
   instance_type        = var.instance_type
-  subnet_id            = module.network.private_subnet
+  subnet_id            = data.terraform_remote_state.network.outputs.private_subnets[var.availability_zone]
   security_groups      = [aws_security_group.runner.id]
-  iam_instance_profile = module.security.iam_instance_profil
+  iam_instance_profile = module.security.iam_instance_profile
   http_hops            = 2
   root_volume_size     = 20
   tags = {
@@ -51,11 +55,6 @@ module "ssm_transfer_bucket" {
   tags = {
     Component = "ansible-ssm-transfer"
   }
-}
-
-module "ssm_bucket_security" {
-  source    = "../../../modules/s3_security"
-  bucket_id = module.ssm_transfer_bucket.id
 }
 
 data "aws_iam_policy_document" "ssm_bucket" {
@@ -82,7 +81,7 @@ data "aws_iam_policy_document" "ssm_bucket" {
 resource "aws_s3_bucket_policy" "ssm_bucket" {
   bucket     = module.ssm_transfer_bucket.id
   policy     = data.aws_iam_policy_document.ssm_bucket.json
-  depends_on = [module.ssm_bucket_security]
+  depends_on = [module.ssm_transfer_bucket]
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "ssm_bucket" {
