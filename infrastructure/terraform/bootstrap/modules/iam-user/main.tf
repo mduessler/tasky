@@ -8,6 +8,7 @@ resource "aws_iam_policy" "this" {
   policy = templatefile("${var.policies}/${each.value}", {
     account_id = var.owner_id
     region     = var.aws_region
+    aws-user   = var.user_name
   })
 }
 
