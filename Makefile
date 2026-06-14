@@ -39,7 +39,8 @@ docker-socket = $(shell docker context inspect --format '{{.Endpoints.docker.Hos
 #
 packer-root = ./infrastructure/packer
 aws-user-admin=tasky-admin
-aws-user-dev=tasky-dev
+# aws-user-dev=tasky-dev
+aws-user-dev=tasky-admin
 
 # Development
 packer-runner-dir=$(packer-root)/environment/dev/gitlab-runner/
@@ -263,6 +264,24 @@ update-network-dev:
 
 # Destroy development network
 destroy-network-dev:
+	export AWS_PROFILE=$(aws-user-dev)
+	./infrastructure/scripts/network install dev
+
+# Create development ssm-transfer-bucket
+create-ssm-transfer-bucket-dev:
+	export TF_VAR_owner_id=$(owner_id)
+	export AWS_PROFILE=$(aws-user-dev)
+	./infrastructure/scripts/network install dev
+
+# Update development  ssm-transfer-bucket
+update-ssm-transfer-bucket-dev:
+	export TF_VAR_owner_id=$(owner_id)
+	export AWS_PROFILE=$(aws-user-dev)
+	./infrastructure/scripts/network install dev
+
+# Destroy development  ssm-transfer-bucket
+destroy-ssm-transfer-bucket-dev:
+	export TF_VAR_owner_id=$(owner_id)
 	export AWS_PROFILE=$(aws-user-dev)
 	./infrastructure/scripts/network install dev
 
