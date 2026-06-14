@@ -15,12 +15,7 @@ Commands:
 EOF
 }
 
-function set_script_dir() {
-	SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-	cd "$SCRIPT_DIR/../terraform/environment/dev/gitlab-runner" || exit 2
-}
-
-function install() {
+function prepare_operations() {
 	if [[ -z "${TF_VAR_owner_id:-}" || -z "${AWS_PROFILE:-}" ]]; then
 		if [[ -z "${TF_VAR_owner_id:-}" ]]; then
 			echo "ERROR: TF_VAR_owner_id is not set"
@@ -30,7 +25,12 @@ function install() {
 		help && exit 1
 	fi
 
-	set_script_dir
+	SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+	cd "$SCRIPT_DIR/../terraform/environment/dev/gitlab-runner" || exit 2
+}
+
+function install() {
+	prepare_operations
 
 	read -rp "Runner name: " runner_name
 	export TF_VAR_runner_name=${runner_name}
@@ -60,16 +60,7 @@ function install() {
 }
 
 function update() {
-	if [[ -z "${TF_VAR_owner_id:-}" || -z "${AWS_PROFILE:-}" ]]; then
-		if [[ -z "${TF_VAR_owner_id:-}" ]]; then
-			echo "ERROR: TF_VAR_owner_id is not set"
-		else
-			echo "ERROR: AWS_PROFILE is not set"
-		fi
-		help && exit 1
-	fi
-
-	set_script_dir
+	prepare_operations
 
 	read -rp "Runner name: " runner_name
 	export TF_VAR_runner_name=${runner_name}
@@ -96,16 +87,7 @@ function update() {
 }
 
 function destroy() {
-	if [[ -z "${TF_VAR_owner_id:-}" || -z "${AWS_PROFILE:-}" ]]; then
-		if [[ -z "${TF_VAR_owner_id:-}" ]]; then
-			echo "ERROR: TF_VAR_owner_id is not set"
-		else
-			echo "ERROR: AWS_PROFILE is not set"
-		fi
-		help && exit 1
-	fi
-
-	set_script_dir
+	prepare_operations
 
 	read -rp "Runner name: " runner_name
 	export TF_VAR_runner_name=${runner_name}
