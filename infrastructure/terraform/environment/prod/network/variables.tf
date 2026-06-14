@@ -12,3 +12,8 @@ variable "aws_region" {
   description = "Deployment name of the environment."
   type        = string
 }
+
+variable "clustername" {
+  description = "Name of the cluster"
+  type        = string
+}
