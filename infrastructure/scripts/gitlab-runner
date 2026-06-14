@@ -73,17 +73,6 @@ function update() {
 		-backend-config="key=runner/${availability_zone}/${runner_name}/terraform.tfstate"
 
 	terraform apply -var-file=../default.tfvars -var-file=terraform.tfvars || exit 3
-
-	cd "$SCRIPT_DIR/../ansible/environment/dev/gitlab-runner" || exit 4
-
-	ansible-galaxy collection install -r requirements.yaml -p ./collections
-
-	ANSIBLE_CONFIG=./ansible.cfg ansible-playbook playbook.yaml \
-		-i inventory/aws_ec2.yaml \
-		-l "runner_dev_${runner_name}" \
-		-e runner_name="${runner_name}" \
-		-e availability_zone="${availability_zone}" \
-		-e owner_id="${TF_VAR_owner_id}"
 }
 
 function destroy() {
