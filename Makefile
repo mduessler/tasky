@@ -235,6 +235,7 @@ pre-commit:
 
 # Create backend
 bootstrap-create:
+	export TF_VAR_owner_id=$(owner_id)
 	export AWS_PROFILE=$(aws-user-admin)
 	./infrastructure/scripts/bootstrap create
 
