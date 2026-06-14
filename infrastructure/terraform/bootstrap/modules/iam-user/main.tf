@@ -5,7 +5,10 @@ resource "aws_iam_user" "this" {
 resource "aws_iam_policy" "this" {
   for_each = fileset(var.policies, "*.json")
   name     = var.user_name
-  policy   = file("${var.policies}/${each.value}")
+  policy = templatefile("${var.policies}/${each.value}", {
+    account_id = var.owner_id
+    region     = var.aws_region
+  })
 }
 
 # Jede Policy an den Nutzer haengen
