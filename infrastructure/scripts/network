@@ -44,13 +44,11 @@ function change_dir() {
 
 function install_or_update() {
 	terraform_init "$1"
-
 	terraform apply -var-file=../default.tfvars
 }
 
 function destroy() {
 	terraform_init "$1"
-
 	terraform destroy -var-file=../default.tfvars
 }
 
