@@ -33,7 +33,7 @@ function install() {
 	read -rp "Runner token: " runner_token
 
 	terraform init -reconfigure \
-		-backend-config="bucket=tasky-terraform-state-${TF_VAR_owner_id}-dev" \
+		-backend-config="bucket=tasky-tf-state-${TF_VAR_owner_id}-dev" \
 		-backend-config="key=runner/dev/${runner_name}/terraform.tfstate"
 
 	if aws s3api head-bucket --bucket "ansible-ssm-${TF_VAR_owner_id}-dev" &>/dev/null; then
@@ -49,7 +49,7 @@ function install() {
 			"runner-role-dev-${runner_name}/arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore" || true
 	fi
 
-	terraform apply || exit 3
+	terraform apply -var-file=../default.tfvars -var-file=terraform.tfvars || exit 3
 
 	cd "$SCRIPT_DIR/../ansible/environment/dev/gitlab-runner" || exit 4
 
@@ -86,7 +86,9 @@ function destroy() {
 	terraform state rm aws_s3_bucket_policy.ssm_bucket || true
 	terraform state rm aws_s3_bucket_lifecycle_configuration.ssm_bucket || true
 
-	terraform destroy --auto-approve || exit 3
+	terraform destroy --auto-approve \
+		-var-file=../default.tfvars -var-file=terraform.tfvars ||
+		exit 3
 }
 
 if [[ "$1" == "help" ]]; then
