@@ -275,13 +275,13 @@ create-ssm-transfer-bucket-dev:
 	export AWS_PROFILE=$(aws-user-dev)
 	./infrastructure/scripts/network install dev
 
-# Update development  ssm-transfer-bucket
+# Update development ssm-transfer-bucket
 update-ssm-transfer-bucket-dev:
 	export TF_VAR_owner_id=$(owner_id)
 	export AWS_PROFILE=$(aws-user-dev)
 	./infrastructure/scripts/network install dev
 
-# Destroy development  ssm-transfer-bucket
+# Destroy development ssm-transfer-bucket
 destroy-ssm-transfer-bucket-dev:
 	export TF_VAR_owner_id=$(owner_id)
 	export AWS_PROFILE=$(aws-user-dev)
