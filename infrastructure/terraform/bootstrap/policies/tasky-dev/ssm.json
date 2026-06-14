@@ -9,27 +9,27 @@
     {
       "Effect": "Allow",
       "Action": ["ssm:TerminateSession"],
-      "Resource": "arn:aws:ssm:eu-central-1:161313036750:session/tasky-admin-3ynrzat9qr7nuk4esxd8aajx6a"
+      "Resource": "arn:aws:ssm:eu-central-1:${account_id}:session/tasky-admin-3ynrzat9qr7nuk4esxd8aajx6a"
     },
     {
       "Effect": "Allow",
       "Action": ["ssm:TerminateSession"],
-      "Resource": "arn:aws:ssm:eu-central-1:161313036750:session/tasky-admin-f82x5kbozg8s7pb8xt4oqyenye"
+      "Resource": "arn:aws:ssm:eu-central-1:${account_id}:session/tasky-admin-f82x5kbozg8s7pb8xt4oqyenye"
     },
     {
       "Effect": "Allow",
       "Action": ["ssm:TerminateSession"],
-      "Resource": "arn:aws:ssm:eu-central-1:161313036750:session/tasky-admin-9c6ntp6ae4gzbs2enxo6nfzkvi"
+      "Resource": "arn:aws:ssm:eu-central-1:${account_id}:session/tasky-admin-9c6ntp6ae4gzbs2enxo6nfzkvi"
     },
     {
       "Effect": "Allow",
       "Action": ["ssm:TerminateSession"],
-      "Resource": "arn:aws:ssm:eu-central-1:161313036750:session/tasky-admin-padgveg6oflzt6e6plxpkzxz7e"
+      "Resource": "arn:aws:ssm:eu-central-1:${account_id}:session/tasky-admin-padgveg6oflzt6e6plxpkzxz7e"
     },
     {
       "Effect": "Allow",
       "Action": ["ssm:TerminateSession"],
-      "Resource": "arn:aws:ssm:eu-central-1:161313036750:session/tasky-admin-auvd3pyql7qfbbnk8vpfvevk6q"
+      "Resource": "arn:aws:ssm:eu-central-1:${account_id}:session/tasky-admin-auvd3pyql7qfbbnk8vpfvevk6q"
     }
   ]
 }

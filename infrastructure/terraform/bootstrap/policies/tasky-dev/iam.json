@@ -21,7 +21,7 @@
         "iam:ListInstanceProfilesForRole",
         "iam:DeleteRole"
       ],
-      "Resource": "arn:aws:iam::161313036750:role/*"
+      "Resource": "arn:aws:iam::${account_id}:role/*"
     },
     {
       "Effect": "Allow",
@@ -32,7 +32,7 @@
         "iam:RemoveRoleFromInstanceProfile",
         "iam:DeleteInstanceProfile"
       ],
-      "Resource": "arn:aws:iam::161313036750:instance-profile/*"
+      "Resource": "arn:aws:iam::${account_id}:instance-profile/*"
     }
   ]
 }
