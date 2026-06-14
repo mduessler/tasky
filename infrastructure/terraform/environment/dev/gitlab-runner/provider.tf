@@ -15,15 +15,19 @@ terraform {
   }
 }
 
+locals {
+  tags = {
+    Project     = "tasky"
+    Role        = "gitlab-runner"
+    Environment = "dev"
+    ManagedBy   = "terraform"
+  }
+}
+
 provider "aws" {
   region = var.aws_region
 
   default_tags {
-    tags = {
-      Project     = "tasky"
-      Role        = "gitlab-runner"
-      Environment = "dev"
-      ManagedBy   = "terraform"
-    }
+    tags = local.tags
   }
 }
