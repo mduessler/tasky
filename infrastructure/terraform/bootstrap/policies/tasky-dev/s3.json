@@ -1,0 +1,81 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["s3:ListBucket"],
+      "Resource": "arn:aws:s3:::tasky-tf-state-161313036750-dev"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:GetObjectVersion",
+        "s3:ListMultipartUploadParts"
+      ],
+      "Resource": "arn:aws:s3:::tasky-tf-state-161313036750-dev/network/terraform.tfstate"
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["s3:ListMultipartUploadParts", "s3:DeleteObject"],
+      "Resource": "arn:aws:s3:::tasky-tf-state-161313036750-dev/network/terraform.tfstate.tflock"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:GetObjectVersion",
+        "s3:ListMultipartUploadParts"
+      ],
+      "Resource": "arn:aws:s3:::tasky-tf-state-161313036750-dev/ssm-transfer/terraform.tfstate"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:CreateBucket",
+        "s3:ListBucket",
+        "s3:GetBucketTagging",
+        "s3:PutBucketTagging",
+        "s3:GetBucketPolicy",
+        "s3:GetBucketAcl",
+        "s3:GetBucketCORS",
+        "s3:GetBucketWebsite",
+        "s3:GetBucketVersioning",
+        "s3:GetAccelerateConfiguration",
+        "s3:GetBucketRequestPayment",
+        "s3:GetBucketLogging",
+        "s3:GetLifecycleConfiguration",
+        "s3:GetReplicationConfiguration",
+        "s3:GetEncryptionConfiguration",
+        "s3:GetBucketObjectLockConfiguration",
+        "s3:PutEncryptionConfiguration",
+        "s3:PutBucketPublicAccessBlock",
+        "s3:PutLifecycleConfiguration",
+        "s3:GetBucketPublicAccessBlock",
+        "s3:PutBucketPolicy",
+        "s3:DeleteBucketPolicy",
+        "s3:DeleteBucket"
+      ],
+      "Resource": "arn:aws:s3:::ssm-transfer-161313036750-dev"
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["s3:ListMultipartUploadParts", "s3:DeleteObject"],
+      "Resource": "arn:aws:s3:::tasky-tf-state-161313036750-dev/ssm-transfer/terraform.tfstate.tflock"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:GetObjectVersion",
+        "s3:ListMultipartUploadParts"
+      ],
+      "Resource": "arn:aws:s3:::tasky-tf-state-161313036750-dev/runner/eu-central-1a/01/terraform.tfstate"
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["s3:ListMultipartUploadParts", "s3:DeleteObject"],
+      "Resource": "arn:aws:s3:::tasky-tf-state-161313036750-dev/runner/eu-central-1a/01/terraform.tfstate.tflock"
+    }
+  ]
+}

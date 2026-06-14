@@ -13,3 +13,10 @@ module "tf_state_prod" {
   environment = "prod"
   owner_id    = var.owner_id
 }
+
+module "tasky_dev_user" {
+  source      = "./modules/iam-user"
+
+  user_name   = var.user_dev
+  policies = "./policies/tasky-dev"
+}

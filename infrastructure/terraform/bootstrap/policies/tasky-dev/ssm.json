@@ -1,0 +1,35 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["ssm:StartSession"],
+      "Resource": "i-0440afee488ade10c"
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["ssm:TerminateSession"],
+      "Resource": "arn:aws:ssm:eu-central-1:161313036750:session/tasky-admin-3ynrzat9qr7nuk4esxd8aajx6a"
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["ssm:TerminateSession"],
+      "Resource": "arn:aws:ssm:eu-central-1:161313036750:session/tasky-admin-f82x5kbozg8s7pb8xt4oqyenye"
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["ssm:TerminateSession"],
+      "Resource": "arn:aws:ssm:eu-central-1:161313036750:session/tasky-admin-9c6ntp6ae4gzbs2enxo6nfzkvi"
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["ssm:TerminateSession"],
+      "Resource": "arn:aws:ssm:eu-central-1:161313036750:session/tasky-admin-padgveg6oflzt6e6plxpkzxz7e"
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["ssm:TerminateSession"],
+      "Resource": "arn:aws:ssm:eu-central-1:161313036750:session/tasky-admin-auvd3pyql7qfbbnk8vpfvevk6q"
+    }
+  ]
+}
