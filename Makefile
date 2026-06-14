@@ -238,7 +238,7 @@ create-backend:
 	export AWS_PROFILE=$(aws-user-admin)
 	./infrastructure/scripts/bootstrap create
 
-bootstrap-destroy:
+destroy-backend:
 	./infrastructure/scripts/bootstrap destroy
 
 # Development infrastructure
