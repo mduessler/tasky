@@ -259,11 +259,13 @@ create-network-dev:
 
 # Update development network
 update-network-dev:
+	export TF_VAR_owner_id=$(owner_id)
 	export AWS_PROFILE=$(aws-user-dev)
 	./infrastructure/scripts/network install dev
 
 # Destroy development network
 destroy-network-dev:
+	export TF_VAR_owner_id=$(owner_id)
 	export AWS_PROFILE=$(aws-user-dev)
 	./infrastructure/scripts/network install dev
 
