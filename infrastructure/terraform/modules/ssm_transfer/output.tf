@@ -4,5 +4,5 @@ output "ssm_bucket_name" {
 
 output "ssm_session_command" {
   description = "Instruction how to connect via SSM."
-  value       = "aws ssm start-session --target ${module.compute.id} --region ${var.aws_region} --profile tasky-dev"
+  value       = "aws ssm start-session --target ${module.compute.id} --region <Region in which the VPC> --profile tasky-dev"
 }
