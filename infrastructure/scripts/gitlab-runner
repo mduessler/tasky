@@ -21,8 +21,8 @@ function set_script_dir() {
 }
 
 function install() {
-	if [[ -z "${TF_VAR_owner_id}" || -z "${AWS_PROFILE}" ]]; then
-		if [[ -z "${TF_VAR_owner_id}" ]]; then
+	if [[ -z "${TF_VAR_owner_id:-}" || -z "${AWS_PROFILE:-}" ]]; then
+		if [[ -z "${TF_VAR_owner_id:-}" ]]; then
 			echo "ERROR: TF_VAR_owner_id is not set"
 		else
 			echo "ERROR: AWS_PROFILE is not set"
@@ -60,8 +60,8 @@ function install() {
 }
 
 function update() {
-	if [[ -z "${TF_VAR_owner_id}" || -z "${AWS_PROFILE}" ]]; then
-		if [[ -z "${TF_VAR_owner_id}" ]]; then
+	if [[ -z "${TF_VAR_owner_id:-}" || -z "${AWS_PROFILE:-}" ]]; then
+		if [[ -z "${TF_VAR_owner_id:-}" ]]; then
 			echo "ERROR: TF_VAR_owner_id is not set"
 		else
 			echo "ERROR: AWS_PROFILE is not set"
@@ -96,8 +96,8 @@ function update() {
 }
 
 function destroy() {
-	if [[ -z "${TF_VAR_owner_id}" || -z "${AWS_PROFILE}" ]]; then
-		if [[ -z "${TF_VAR_owner_id}" ]]; then
+	if [[ -z "${TF_VAR_owner_id:-}" || -z "${AWS_PROFILE:-}" ]]; then
+		if [[ -z "${TF_VAR_owner_id:-}" ]]; then
 			echo "ERROR: TF_VAR_owner_id is not set"
 		else
 			echo "ERROR: AWS_PROFILE is not set"
