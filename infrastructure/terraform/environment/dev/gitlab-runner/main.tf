@@ -7,6 +7,15 @@ data "terraform_remote_state" "network" {
   }
 }
 
+data "terraform_remote_state" "ssm_transfer_bucket" {
+  backend = "s3"
+  config = {
+    bucket = "tasky-tf-state-${var.owner_id}-${var.environment}"
+    key    = "ssm-transfer/terraform.tfstate"
+    region = var.aws_region
+  }
+}
+
 resource "aws_security_group" "runner" {
   name        = "runner-sg-${var.runner_name}-${var.environment}"
   description = "Security Group for GitLab Runner - outbound only"
@@ -31,7 +40,7 @@ module "security" {
   source         = "./modules/security"
   environment    = var.environment
   runner_name    = var.runner_name
-  ssm_bucket_arn = module.ssm_transfer_bucket.arn
+  ssm_bucket_arn = data.terraform_remote_state.network.outputs.id
 }
 
 module "compute" {
