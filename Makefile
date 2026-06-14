@@ -294,6 +294,12 @@ install-gitlab-runner:
 	export AWS_PROFILE=$(aws-user-dev)
 	./infrastructure/scripts/gitlab-runner install
 
+# Commands to install or destroy a gitlab-runner
+update-gitlab-runner:
+	export TF_VAR_owner_id=$(owner_id)
+	export AWS_PROFILE=$(aws-user-dev)
+	./infrastructure/scripts/gitlab-runner update
+
 # Commands to destroy gitlab-runner
 destroy-gitlab-runner:
 	export TF_VAR_owner_id=$(owner_id)
