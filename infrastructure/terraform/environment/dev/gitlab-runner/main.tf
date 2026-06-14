@@ -40,7 +40,7 @@ module "security" {
   source         = "./modules/security"
   environment    = var.environment
   runner_name    = var.runner_name
-  ssm_bucket_arn = data.terraform_remote_state.network.outputs.id
+  ssm_bucket_arn = data.terraform_remote_state.ssm_transfer_bucket.outputs.arn
 }
 
 module "compute" {
@@ -55,5 +55,6 @@ module "compute" {
   root_volume_size     = 20
   tags = {
     Name = "instance-${var.environment}-${var.runner_name}"
+    RunnerName = var.runner_name
   }
 }

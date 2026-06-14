@@ -1,5 +1,6 @@
-output "id" {
-  value = module.ssm_transfer.id
+output "arn" {
+  description = "Arn of the created ssm-transfer bucket"
+  value = module.ssm_transfer.arn
 }
 
 output "command" {
