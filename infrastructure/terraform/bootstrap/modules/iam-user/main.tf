@@ -4,7 +4,7 @@ resource "aws_iam_user" "this" {
 
 resource "aws_iam_policy" "this" {
   for_each = fileset(var.policies, "*.json")
-  name     = var.user_name
+  name     = "permission-${trimsuffix(each.value, ".json")}"
   policy = templatefile("${var.policies}/${each.value}", {
     account_id = var.owner_id
     region     = var.aws_region
