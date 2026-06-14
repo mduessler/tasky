@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+function help() {
+	cat <<EOF
+Usage:
+  $(basename "$0") <command> <environment>
+
+Commands:
+  help          Shows this help message
+  install       Install ssm-transfer bucket
+  update        Update ssm-transfer bucket
+  destroy       Destroy ssm-transfer bucket
+
+Environment:
+  dev           Development environment
+  prod          Production environment
+
+EOF
+}
+
+function change_dir() {
+	SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+	cd "$SCRIPT_DIR/../terraform/environment/${1}/ssm-transfer" || exit 2
+}
+
+function install() {
+	if [[ -z "${TF_VAR_owner_id}" || -z "${AWS_PROFILE}" ]]; then
+		if [[ -z "${TF_VAR_owner_id}" ]]; then
+			echo "ERROR: TF_VAR_owner_id is not set"
+		else
+			echo "ERROR: AWS_PROFILE is not set"
+		fi
+		help && exit 1
+	fi
+
+	change_dir "$1"
+
+	terraform init \
+		-backend-config="bucket=tasky-tf-state-${TF_VAR_owner_id}-$1" \
+		-backend-config="key=ssm-transfer/terraform.tfstate"
+	terraform apply -var-file=../default.tfvars
+}
+
+function update() {
+	if [[ -z "${AWS_PROFILE}" ]]; then
+		echo "ERROR: AWS_PROFILE is not set"
+		help && exit 1
+	fi
+
+	change_dir "$1"
+	terraform apply -var-file=../default.tfvars
+}
+
+function destroy() {
+	if [[ -z "${AWS_PROFILE}" ]]; then
+		echo "ERROR: AWS_PROFILE is not set"
+		help && exit 1
+	fi
+
+	change_dir "$1"
+	terraform destroy -var-file=../default.tfvars
+}
+
+if [[ $# -ne 2 ]]; then
+	echo "ERROR: exactly 2 argumnets needed."
+	help && exit 1
+elif [[ "$1" == "help" || "$2" == "help" ]]; then
+	help
+elif [[ "$2" != "dev" && "$2" != "prod" ]]; then
+	echo "ERROR: Unsupported environment."
+	help && exit 1
+elif [[ "$1" == "install" ]]; then
+	install "$2"
+elif [[ "$1" == "update" ]]; then
+	update "$2"
+elif [[ "$1" == "destroy" ]]; then
+	destroy "$2"
+else
+	echo "ERROR: Unkown command."
+	help && exit 1
+fi
+exit 0
