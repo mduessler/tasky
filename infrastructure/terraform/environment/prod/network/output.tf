@@ -5,7 +5,7 @@ output "ids" {
 
 output "private_subnets" {
   description = "Set of all created private subnet ids for the production"
-  value       = { for az, vpc in module.vpcs : az => vpc.private_subnet }
+  value       = { for _, vpc in module.vpcs : vpc.id => vpc.private_subnet }
 }
 
 output "controller_sg" {
