@@ -28,7 +28,7 @@ module "controller" {
   }
 }
 
-module "worker" {
+module "workers" {
   for_each = var.workers
 
   source               = "../../../modules/compute"
