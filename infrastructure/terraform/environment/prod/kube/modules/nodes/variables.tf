@@ -1,10 +1,15 @@
-variable "vpc_id" {
-  description = "VPC ID."
-  type        = number
-}
-
 variable "environment" {
   description = "Deployment environment."
+  type        = string
+}
+
+variable "owner_id" {
+  description = "ID of the account owner."
+  type        = string
+}
+
+variable "aws_region" {
+  description = "AWS Region where all resources will be deployed."
   type        = string
 }
 
@@ -13,14 +18,9 @@ variable "instance_type" {
   type        = string
 }
 
-variable "availability_zone" {
-  description = "Availability zone in which to create the nodes"
-  type        = string
-}
-
-variable "controller" {
-  description = "The name of the controller node"
-  type        = string
+variable "vpc_id" {
+  description = "VPC ID."
+  type        = number
 }
 
 variable "workers" {
