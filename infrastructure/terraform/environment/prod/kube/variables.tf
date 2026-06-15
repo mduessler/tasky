@@ -30,3 +30,27 @@ variable "clustername" {
   description = "Name of the cluster"
   type        = string
 }
+
+variable "owner_id" {
+  description = "ID of the account owner."
+  type        = string
+}
+
+variable "workers_by_availability_zone" {
+  description = "Mapping of zone to the names of the workers"
+  type = map(object({
+    instance_type = string
+    nodes         = list(string)
+  }))
+
+  default = {
+    "eu-central-1a" = {
+      instance_type = "node-group-a"
+      nodes         = ["node-a1", "node-a2"]
+    }
+    "eu-central-1b" = {
+      name  = "node-group-b"
+      nodes = ["node-b1"]
+    }
+  }
+}

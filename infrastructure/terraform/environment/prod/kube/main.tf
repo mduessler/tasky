@@ -7,45 +7,19 @@ data "terraform_remote_state" "network" {
   }
 }
 
-module "iam" {
-  source = "./modules/iam"
-}
 
-module "controller" {
-  for_each             = data.terraform_remote_state.network.output.ids
+module "kubes" {
+  for_each = var.workers_by_availability_zone
 
-  source               = "../../../modules/compute"
-  ami_owners           = ["self"]
-  ami_filter_values    = ["kube-node-*"]
-  instance_type        = var.instance_type
-  subnet_id            = data.terraform_remote_state.network.output.private_subnets[each.value]
-  security_groups      = [data.terraform_remote_state.network.output.controller_sgs[each.value]]
-  iam_instance_profile = module.iam.controller_profile_name
-  http_hops            = 2
-  root_volume_size     = 20
-  tags = {
-    Name                                       = "kube-controller"
-    "kubernetes.io/cluster/${var.clustername}" = "owned"
+  source = "./modules/nodes"
 
-  }
-}
-
-module "worker" {
-  for_each = var.workers
-
-  source               = "../../../modules/compute"
-  ami_owners           = ["self"]
-  ami_filter_values    = ["kube-node-*"]
-  instance_type        = var.instance_type
-  subnet_id            = module.network.private_subnet
-  security_groups      = [aws_security_group.worker.id]
-  iam_instance_profile = module.iam.worker_profile_name
-  http_hops            = 2
-  root_volume_size     = 50
-  tags = {
-    Name                                       = "kube-worker-${each.value}"
-    "kubernetes.io/cluster/${var.clustername}" = "owned"
-  }
+  environment   = var.environment
+  owner_id      = var.owner_id
+  aws_region    = var.aws_region
+  instance_type = each.value.instance_type
+  vpc_id        = data.terraform_remote_state.network.outputs.ids[each.key]
+  workers       = each.value.nodes
+  clustername   = var.clustername
 }
 
 resource "aws_ebs_volume" "postgres" {
