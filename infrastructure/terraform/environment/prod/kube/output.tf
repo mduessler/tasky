@@ -1,6 +1,12 @@
 output "kubes" {
   description = "Set of all kubes grouped by there vpc id"
   value = {
-    for kube in module.kubes : vpc_id => { conroller = kube.controller, workers = kube.workers }
+    for kube in module.kubes : kube.vpc_id => { conroller = kube.controller, workers = kube.workers }
   }
+}
+
+output "db_volumes" {
+  description = "Set of all db volumes grouped by availability zone"
+  value       = { for az, ebs in module.db_volumes : az => ebs.ids }
+
 }

@@ -22,13 +22,13 @@ module "kubes" {
   clustername   = var.clustername
 }
 
-resource "aws_ebs_volume" "postgres" {
-  availability_zone = module.worker["01"].availability_zone
-  size              = 10
-  type              = "gp3"
-  tags = {
-    Name = "postgres-data"
-  }
+module "db_volumes" {
+  for_each = var.workers_by_availability_zone
+
+  source = "./modules/db-volumes"
+  availability_zone = each.key
+  size = each.value.size
+  name = each.value.name
 }
 
 resource "aws_lb" "nginx" {
