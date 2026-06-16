@@ -25,38 +25,17 @@ module "kubes" {
 module "db_volumes" {
   for_each = var.workers_by_availability_zone
 
-  source = "./modules/db-volumes"
+  source            = "./modules/db-volumes"
   availability_zone = each.key
-  size = each.value.size
-  name = each.value.name
+  size              = each.value.size
+  name              = each.value.name
 }
 
-resource "aws_lb" "nginx" {
-  name               = "nginx-nlb"
-  load_balancer_type = "network"
-  subnets            = [module.network.public_subnet]
-}
+module "aws_lb_nginx" {
+  for_each = module.kubes.workers
+  source   = "./modules/loadbalancer"
 
-resource "aws_lb_target_group" "nginx" {
-  name     = "nginx-tg"
-  port     = 30443
-  protocol = "TCP"
-  vpc_id   = module.network.vpc_id
-}
-
-resource "aws_lb_listener" "nginx" {
-  load_balancer_arn = aws_lb.nginx.arn
-  port              = 443
-  protocol          = "TCP"
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.nginx.arn
-  }
-}
-
-resource "aws_lb_target_group_attachment" "nginx" {
-  for_each         = var.workers
-  target_group_arn = aws_lb_target_group.nginx.arn
-  target_id        = module.worker[each.key].id
-  port             = 30443
+  vpc_id        = each.value.vpc_id
+  public_subnet = data.terraform_remote_state.network.outputs.subnets[each.value.vpc_id]
+  workers       = each.value.workers
 }
