@@ -41,16 +41,9 @@ variable "workers_by_availability_zone" {
   type = map(object({
     instance_type = string
     nodes         = list(string)
+    db_volumes = list(object({
+      size = number
+      name = string
+    }))
   }))
-
-  default = {
-    "eu-central-1a" = {
-      instance_type = "node-group-a"
-      nodes         = ["node-a1", "node-a2"]
-    }
-    "eu-central-1b" = {
-      name  = "node-group-b"
-      nodes = ["node-b1"]
-    }
-  }
 }
