@@ -32,10 +32,10 @@ module "db_volumes" {
 }
 
 module "aws_lb_nginx" {
-  for_each = module.kubes.workers
+  for_each = var.workers_by_availability_zone
   source   = "./modules/loadbalancer"
 
-  vpc_id        = each.value.vpc_id
-  public_subnet = data.terraform_remote_state.network.outputs.public_subnets[each.value.vpc_id]
-  workers       = each.value.workers
+  vpc_id        = data.terraform_remote_state.network.outputs.ids[each.key]
+  public_subnet = data.terraform_remote_state.network.outputs.public_subnets[data.terraform_remote_state.network.outputs.ids[each.key]]
+  workers       = module.kubes[each.key].workers
 }
