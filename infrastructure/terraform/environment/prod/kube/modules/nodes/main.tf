@@ -8,7 +8,7 @@ data "terraform_remote_state" "network" {
 }
 
 module "iam" {
-  source = "./modules/iam"
+  source = "../iam"
 }
 
 data "aws_ami" "kube_node" {
@@ -37,7 +37,7 @@ module "controller" {
 module "workers" {
   for_each = var.workers
 
-  source               = "../../../modules/compute"
+  source               = "../../../../../modules/compute"
   instance_type        = var.worker_instance_type
   instance_profile     = module.iam.worker_profile_name
   image_owner          = ["self"]
