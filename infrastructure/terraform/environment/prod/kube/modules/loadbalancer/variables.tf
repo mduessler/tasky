@@ -9,6 +9,6 @@ variable "public_subnet_id" {
 }
 
 variable "workers" {
-  description = "List of worker instance IDs to register with the load balancer."
-  type        = list(string)
+  description = "Map of worker names to instance IDs to register with the load balancer."
+  type        = map(string)
 }
