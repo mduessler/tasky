@@ -14,6 +14,6 @@ variable "availability_zones" {
 }
 
 variable "clustername" {
-  description = "Name of the cluster"
+  description = "Name of the Kubernetes cluster."
   type        = string
 }

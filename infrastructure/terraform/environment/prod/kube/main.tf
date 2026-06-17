@@ -9,7 +9,7 @@ data "terraform_remote_state" "network" {
 
 
 module "kubes" {
-  for_each = var.workers_by_availability_zone
+  for_each = var.workers_by_availability_zones
 
   source = "./modules/nodes"
 
@@ -23,7 +23,7 @@ module "kubes" {
 }
 
 module "db_volumes" {
-  for_each = var.workers_by_availability_zone
+  for_each = var.workers_by_availability_zones
 
   source            = "./modules/db-volumes"
   availability_zone = each.key
@@ -32,7 +32,7 @@ module "db_volumes" {
 }
 
 module "aws_lb_nginx" {
-  for_each = var.workers_by_availability_zone
+  for_each = var.workers_by_availability_zones
   source   = "./modules/loadbalancer"
 
   vpc_id        = data.terraform_remote_state.network.outputs.ids[each.key]

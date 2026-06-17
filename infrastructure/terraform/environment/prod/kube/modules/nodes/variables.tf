@@ -19,16 +19,16 @@ variable "instance_type" {
 }
 
 variable "vpc_id" {
-  description = "VPC ID."
+  description = "ID of the VPC."
   type        = string
 }
 
 variable "workers" {
-  description = "The set of worker nodes"
+  description = "The set of worker nodes."
   type        = set(string)
 }
 
 variable "clustername" {
-  description = "Name of the cluster"
+  description = "Name of the Kubernetes cluster."
   type        = string
 }

@@ -32,11 +32,11 @@ variable "workers" {
 }
 
 variable "clustername" {
-  description = "Name of the cluster"
+  description = "Name of the Kubernetes cluster."
   type        = string
 }
 
-variable "workers_by_availability_zone" {
+variable "workers_by_availability_zones" {
   description = "Mapping of zone to the names of the workers"
   type = map(object({
     instance_type = string

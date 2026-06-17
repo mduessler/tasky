@@ -1,4 +1,4 @@
-workers_by_availability_zone = {
+workers_by_availability_zones = {
   "eu-central-1a" = {
     instance_type = "t3.micro"
     nodes         = ["node-a1", "node-a2"]
