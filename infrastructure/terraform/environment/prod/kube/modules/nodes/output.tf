@@ -9,6 +9,6 @@ output "controller_endpoint" {
 }
 
 output "workers" {
-  description = "List of worker instance IDs."
-  value       = [for mod in module.workers : mod.id]
+  description = "Map of worker names to instance IDs."
+  value       = { for k, mod in module.workers : k => mod.id }
 }
