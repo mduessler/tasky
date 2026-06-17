@@ -13,7 +13,7 @@ data "aws_iam_policy_document" "assume_role" {
 # Controller role
 resource "aws_iam_role" "controller" {
   name               = "kube-controller-role"
-  assume_role_policy = data.data.aws_iam_policy_document.assume_role.json.assume_role.json
+  assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
 resource "aws_iam_role_policy_attachment" "controller_ssm" {
@@ -35,7 +35,7 @@ resource "aws_iam_instance_profile" "controller" {
 # Worker role
 resource "aws_iam_role" "worker" {
   name               = "kube-worker-role"
-  assume_role_policy = data.data.aws_iam_policy_document.assume_role.json.assume_role.json
+  assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
 resource "aws_iam_role_policy_attachment" "worker_ssm" {
