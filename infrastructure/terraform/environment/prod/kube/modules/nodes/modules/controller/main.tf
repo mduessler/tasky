@@ -41,7 +41,7 @@ resource "aws_security_group_rule" "controller_from_nlb" {
 }
 
 resource "aws_lb" "this" {
-  name               = "kube-controller-nlb-${var.availability_zone}"
+  name               = "kube-ctrl-nlb-${var.availability_zone}"
   load_balancer_type = "network"
   internal           = true
   subnets            = [var.subnet_id]
