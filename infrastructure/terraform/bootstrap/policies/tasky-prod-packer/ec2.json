@@ -1,0 +1,67 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["ec2:CreateTags"],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "sts:GetCallerIdentity",
+        "ec2:DescribeRegions",
+        "ec2:DescribeImages",
+        "ec2:DescribeVpcs",
+        "ec2:DescribeSubnets",
+        "ec2:DescribeSecurityGroups",
+        "ec2:DescribeInstances",
+        "ec2:DescribeVolumes"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["ec2:CreateKeyPair", "ec2:DeleteKeyPair"],
+      "Resource": "arn:aws:ec2:${region}:${account_id}:key-pair/*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:CreateSecurityGroup",
+        "ec2:AuthorizeSecurityGroupIngress",
+        "ec2:DeleteSecurityGroup"
+      ],
+      "Resource": [
+        "arn:aws:ec2:${region}:${account_id}:security-group/*",
+        "arn:aws:ec2:${region}:${account_id}:vpc/*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["ec2:RunInstances"],
+      "Resource": [
+        "arn:aws:ec2:${region}:${account_id}:instance/*",
+        "arn:aws:ec2:${region}:${account_id}:network-interface/*",
+        "arn:aws:ec2:${region}:${account_id}:security-group/*",
+        "arn:aws:ec2:${region}:${account_id}:subnet/*",
+        "arn:aws:ec2:${region}:${account_id}:volume/*",
+        "arn:aws:ec2:${region}::image/*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["ec2:StopInstances", "ec2:TerminateInstances"],
+      "Resource": "arn:aws:ec2:${region}:${account_id}:instance/*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["ec2:CreateImage"],
+      "Resource": [
+        "arn:aws:ec2:${region}:${account_id}:instance/*",
+        "arn:aws:ec2:${region}::image/*",
+        "arn:aws:ec2:${region}::snapshot/*"
+      ]
+    }
+  ]
+}
