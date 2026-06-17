@@ -36,7 +36,7 @@ module "workers" {
   ami_filter_values    = ["kube-node-*"]
   instance_type        = var.instance_type
   subnet_id            = data.terraform_remote_state.network.outputs.private_subnets[var.vpc_id]
-  security_groups      = [data.terraform_remote_state.network.outputs.controller_sgs[var.vpc_id]]
+  security_groups      = [data.terraform_remote_state.network.outputs.worker_sgs[var.vpc_id]]
   iam_instance_profile = module.iam.worker_profile_name
   http_hops            = 2
   root_volume_size     = 50
