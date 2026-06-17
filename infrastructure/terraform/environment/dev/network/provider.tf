@@ -22,7 +22,7 @@ locals {
 }
 
 provider "aws" {
-  region = var.aws_region
+  region = var.backend_location
   default_tags {
     tags = local.tags
   }

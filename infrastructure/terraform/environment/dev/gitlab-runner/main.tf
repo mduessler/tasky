@@ -3,7 +3,7 @@ data "terraform_remote_state" "network" {
   config = {
     bucket = "tasky-tf-state-${var.owner_id}-${var.environment}"
     key    = "network/terraform.tfstate"
-    region = var.aws_region
+    region = var.backend_location
   }
 }
 
@@ -12,7 +12,7 @@ data "terraform_remote_state" "ssm_transfer_bucket" {
   config = {
     bucket = "tasky-tf-state-${var.owner_id}-${var.environment}"
     key    = "ssm-transfer/terraform.tfstate"
-    region = var.aws_region
+    region = var.backend_location
   }
 }
 

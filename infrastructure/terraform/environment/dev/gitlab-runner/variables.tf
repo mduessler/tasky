@@ -1,5 +1,5 @@
-variable "aws_region" {
-  description = "AWS Region where the backend is deployed."
+variable "backend_location" {
+  description = "Location where the backend is deployed."
   type        = string
 }
 

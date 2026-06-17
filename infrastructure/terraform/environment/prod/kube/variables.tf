@@ -1,3 +1,8 @@
+variable "backend_location" {
+  description = "Location where the backend is deployed."
+  type        = string
+}
+
 variable "availability_zones" {
   description = "AWS Regions where to deploy the development networks"
   type        = list(string)
@@ -18,12 +23,6 @@ variable "instance_type" {
 variable "workers" {
   type    = set(string)
   default = ["01", "02"]
-}
-
-variable "aws_region" {
-  description = "AWS Region where all resources will be deployed."
-  type        = string
-  default     = "eu-central-1"
 }
 
 variable "clustername" {

@@ -1,3 +1,8 @@
+variable "backend_location" {
+  description = "Location where the backend is deployed."
+  type        = string
+}
+
 variable "environment" {
   description = "Deployment environment."
   type        = string
@@ -5,11 +10,6 @@ variable "environment" {
 
 variable "owner_id" {
   description = "ID of the account owner."
-  type        = string
-}
-
-variable "aws_region" {
-  description = "AWS Region where all resources will be deployed."
   type        = string
 }
 

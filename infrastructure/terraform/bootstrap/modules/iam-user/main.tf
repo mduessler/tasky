@@ -7,7 +7,7 @@ resource "aws_iam_policy" "this" {
   name     = "permission-${trimsuffix(each.value, ".json")}"
   policy = templatefile("${var.policies}/${each.value}", {
     account_id = var.owner_id
-    region     = var.aws_region
+    region     = var.backend_location
     aws-user   = var.user_name
   })
 }

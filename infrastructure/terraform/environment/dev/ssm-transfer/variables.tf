@@ -1,10 +1,10 @@
-variable "environment" {
-  description = "Deployment environment."
+variable "backend_location" {
+  description = "Location where the backend is deployed."
   type        = string
 }
 
-variable "aws_region" {
-  description = "Deployment name of the environment."
+variable "environment" {
+  description = "Deployment environment."
   type        = string
 }
 
