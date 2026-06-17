@@ -41,9 +41,9 @@ variable "workers_by_availability_zone" {
   type = map(object({
     instance_type = string
     nodes         = list(string)
-    db_volumes = list(object({
-      size = list(number)
-      name = list(string)
-    }))
+    db_volumes = object({
+      sizes = list(number)
+      names = list(string)
+    })
   }))
 }

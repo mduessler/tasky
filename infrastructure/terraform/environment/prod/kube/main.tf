@@ -27,8 +27,8 @@ module "db_volumes" {
 
   source            = "./modules/db-volumes"
   availability_zone = each.key
-  size              = each.value.size
-  name              = each.value.name
+  sizes              = each.value.db_volumes.sizes
+  names              = each.value.db_volumes.names
 }
 
 module "aws_lb_nginx" {
