@@ -20,7 +20,7 @@ variable "instance_type" {
 
 variable "vpc_id" {
   description = "VPC ID."
-  type        = number
+  type        = string
 }
 
 variable "workers" {
