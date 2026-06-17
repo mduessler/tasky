@@ -11,13 +11,14 @@
       "Action": [
         "s3:GetObject",
         "s3:GetObjectVersion",
-        "s3:ListMultipartUploadParts"
+        "s3:PutObject",
+        "s3:DeleteObject"
       ],
       "Resource": "arn:aws:s3:::tasky-tf-state-${account_id}-dev/network/terraform.tfstate"
     },
     {
       "Effect": "Allow",
-      "Action": ["s3:ListMultipartUploadParts", "s3:DeleteObject"],
+      "Action": ["s3:GetObject", "s3:PutObject", "s3:DeleteObject"],
       "Resource": "arn:aws:s3:::tasky-tf-state-${account_id}-dev/network/terraform.tfstate.tflock"
     },
     {
@@ -25,7 +26,8 @@
       "Action": [
         "s3:GetObject",
         "s3:GetObjectVersion",
-        "s3:ListMultipartUploadParts"
+        "s3:PutObject",
+        "s3:DeleteObject"
       ],
       "Resource": "arn:aws:s3:::tasky-tf-state-${account_id}-dev/ssm-transfer/terraform.tfstate"
     },
@@ -60,7 +62,7 @@
     },
     {
       "Effect": "Allow",
-      "Action": ["s3:ListMultipartUploadParts", "s3:DeleteObject"],
+      "Action": ["s3:GetObject", "s3:PutObject", "s3:DeleteObject"],
       "Resource": "arn:aws:s3:::tasky-tf-state-${account_id}-dev/ssm-transfer/terraform.tfstate.tflock"
     },
     {
@@ -68,13 +70,14 @@
       "Action": [
         "s3:GetObject",
         "s3:GetObjectVersion",
-        "s3:ListMultipartUploadParts"
+        "s3:PutObject",
+        "s3:DeleteObject"
       ],
       "Resource": "arn:aws:s3:::tasky-tf-state-${account_id}-dev/runner/*/terraform.tfstate"
     },
     {
       "Effect": "Allow",
-      "Action": ["s3:ListMultipartUploadParts", "s3:DeleteObject"],
+      "Action": ["s3:GetObject", "s3:PutObject", "s3:DeleteObject"],
       "Resource": "arn:aws:s3:::tasky-tf-state-${account_id}-dev/runner/*/terraform.tfstate.tflock"
     }
   ]

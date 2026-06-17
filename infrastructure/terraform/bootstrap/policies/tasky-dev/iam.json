@@ -19,6 +19,8 @@
         "iam:DeleteRolePolicy",
         "iam:DetachRolePolicy",
         "iam:ListInstanceProfilesForRole",
+        "iam:TagRole",
+        "iam:PassRole",
         "iam:DeleteRole"
       ],
       "Resource": "arn:aws:iam::${account_id}:role/*"
@@ -28,6 +30,7 @@
       "Action": [
         "iam:CreateInstanceProfile",
         "iam:GetInstanceProfile",
+        "iam:TagInstanceProfile",
         "iam:AddRoleToInstanceProfile",
         "iam:RemoveRoleFromInstanceProfile",
         "iam:DeleteInstanceProfile"

@@ -3,6 +3,11 @@
   "Statement": [
     {
       "Effect": "Allow",
+      "Action": ["ec2:CreateTags"],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
       "Action": [
         "sts:GetCallerIdentity",
         "ec2:DescribeVpcs",
@@ -23,7 +28,8 @@
         "ec2:DescribeVolumes",
         "ec2:DescribeInstanceCreditSpecifications",
         "ec2:DescribeNetworkInterfaces",
-        "ec2:ReleaseAddress"
+        "ec2:ReleaseAddress",
+        "DisassociateAddress"
       ],
       "Resource": "*"
     },
@@ -83,19 +89,27 @@
         "ec2:AssociateRouteTable",
         "ec2:DeleteRouteTable"
       ],
-      "Resource": "arn:aws:ec2:${region}:${account_id}:route-table/*"
+      "Resource": [
+        "arn:aws:ec2:${region}:${account_id}:route-table/*",
+        "arn:aws:ec2:${region}:${account_id}:subnet/*"
+      ]
     },
     {
       "Effect": "Allow",
       "Action": ["ec2:CreateNatGateway", "ec2:DeleteNatGateway"],
-      "Resource": "arn:aws:ec2:${region}:${account_id}:natgateway/*"
+      "Resource": [
+        "arn:aws:ec2:${region}:${account_id}:natgateway/*",
+        "arn:aws:ec2:${region}:${account_id}:elastic-ip/*",
+        "arn:aws:ec2:${region}:${account_id}:subnet/*"
+      ]
     },
     {
       "Effect": "Allow",
       "Action": ["ec2:CreateVpcEndpoint"],
       "Resource": [
         "arn:aws:ec2:${region}:${account_id}:vpc-endpoint/*",
-        "arn:aws:ec2:${region}:${account_id}:vpc/*"
+        "arn:aws:ec2:${region}:${account_id}:vpc/*",
+        "arn:aws:ec2:${region}:${account_id}:route-table/*"
       ]
     },
     {
@@ -116,7 +130,10 @@
         "ec2:AuthorizeSecurityGroupEgress",
         "ec2:DeleteSecurityGroup"
       ],
-      "Resource": "arn:aws:ec2:${region}:${account_id}:security-group/*"
+      "Resource": [
+        "arn:aws:ec2:${region}:${account_id}:security-group/*",
+        "arn:aws:ec2:${region}:${account_id}:vpc/*"
+      ]
     },
     {
       "Effect": "Allow",
