@@ -36,7 +36,11 @@ variable "workers_by_availability_zones" {
     controller_instance_type = string
     worker_instance_type     = string
     nodes         = list(string)
-    db_volumes = object({
+    postgres_volumes = object({
+      sizes = list(number)
+      names = list(string)
+    })
+    etcd_volumes = object({
       sizes = list(number)
       names = list(string)
     })

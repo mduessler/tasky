@@ -5,7 +5,12 @@ output "kubes" {
   }
 }
 
-output "db_volumes" {
-  description = "Set of all database volumes grouped by availability zone."
-  value       = { for az, ebs in module.db_volumes : az => ebs.ids }
+output "postgres_volumes" {
+  description = "Set of all PostgreSQL volumes grouped by availability zone."
+  value       = { for az, ebs in module.postgres_volumes : az => ebs.ids }
+}
+
+output "etcd_volumes" {
+  description = "Set of all etcd volumes grouped by availability zone."
+  value       = { for az, ebs in module.etcd_volumes : az => ebs.ids }
 }

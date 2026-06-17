@@ -1,9 +1,9 @@
 resource "aws_ebs_volume" "volume" {
-  count = length(var.sizes)
+  count             = length(var.sizes)
   availability_zone = var.availability_zone
   size              = var.sizes[count.index]
   type              = "gp3"
   tags = {
-    Name = "postgres-data-${var.names[count.index]}"
+    Name = "${var.prefix}-${var.names[count.index]}"
   }
 }

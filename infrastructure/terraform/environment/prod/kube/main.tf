@@ -23,13 +23,24 @@ module "kubes" {
   clustername   = var.clustername
 }
 
-module "db_volumes" {
+module "postgres_volumes" {
   for_each = var.workers_by_availability_zones
 
-  source            = "./modules/db-volumes"
+  source            = "./modules/block_volumes"
   availability_zone = each.key
-  sizes              = each.value.db_volumes.sizes
-  names              = each.value.db_volumes.names
+  prefix            = "postgres"
+  sizes             = each.value.postgres_volumes.sizes
+  names             = each.value.postgres_volumes.names
+}
+
+module "etcd_volumes" {
+  for_each = var.workers_by_availability_zones
+
+  source            = "./modules/block_volumes"
+  availability_zone = each.key
+  prefix            = "etcd"
+  sizes             = each.value.etcd_volumes.sizes
+  names             = each.value.etcd_volumes.names
 }
 
 module "aws_lb_nginx" {
