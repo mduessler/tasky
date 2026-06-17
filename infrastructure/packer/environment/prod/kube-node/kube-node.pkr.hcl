@@ -8,7 +8,7 @@ packer {
 }
 
 source "amazon-ebs" "ubuntu" {
-  ami_name = "kube-note-${formatdate("YYYYMMDD-HHmmss", timestamp())}"
+  ami_name = "kube-node-${formatdate("YYYYMMDD-HHmmss", timestamp())}"
   instance_type = "t3.micro"
   region        = "eu-central-1"
   source_ami_filter {
@@ -24,7 +24,7 @@ source "amazon-ebs" "ubuntu" {
 }
 
 build {
-  name = "kube-note"
+  name = "kube-node"
   sources = [
     "source.amazon-ebs.ubuntu"
   ]
