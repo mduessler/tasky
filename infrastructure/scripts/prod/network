@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+function help() {
+	cat <<EOF
+Usage:
+  $(basename "$0") <command>
+
+Commands:
+  help          Shows this help message
+  install       Install network
+  update        Update network
+  destroy       Destroy network
+
+EOF
+}
+
+function terraform_init() {
+	if [[ -z "${TF_VAR_account_id:-}" || -z "${AWS_PROFILE:-}" ]]; then
+		if [[ -z "${TF_VAR_account_id:-}" ]]; then
+			echo "ERROR: TF_VAR_account_id is not set"
+		else
+			echo "ERROR: AWS_PROFILE is not set"
+		fi
+		help && exit 1
+	fi
+
+	SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+	cd "$SCRIPT_DIR/../../terraform/environment/prod/network" || exit 2
+
+	terraform init \
+		-backend-config="bucket=tasky-tf-state-${TF_VAR_account_id}-prod" \
+		-backend-config="key=network/terraform.tfstate"
+}
+
+function install_or_update() {
+	terraform_init
+	terraform apply -var-file=../default.tfvars
+}
+
+function destroy() {
+	terraform_init
+	terraform destroy -var-file=../default.tfvars
+}
+
+if [[ $# -ne 1 ]]; then
+	echo "ERROR: exactly 1 argument needed."
+	help && exit 1
+elif [[ "$1" == "help" ]]; then
+	help
+elif [[ "$1" == "install" || "$1" == "update" ]]; then
+	install_or_update
+elif [[ "$1" == "destroy" ]]; then
+	destroy
+else
+	echo "ERROR: Unknown command."
+	help && exit 1
+fi
+exit 0
