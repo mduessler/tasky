@@ -1,10 +1,10 @@
 data "aws_ami" "this" {
   most_recent = true
-  owners      = var.ami_owners
+  owners      = var.image_owner
 
   filter {
     name   = "name"
-    values = var.ami_filter_values
+    values = var.image_filter_values
   }
 }
 
@@ -12,13 +12,13 @@ resource "aws_instance" "this" {
   ami                    = data.aws_ami.this.id
   instance_type          = var.instance_type
   subnet_id              = var.subnet_id
-  vpc_security_group_ids = var.security_groups
-  iam_instance_profile   = var.iam_instance_profile
+  vpc_security_group_ids = var.security_group_ids
+  iam_instance_profile   = var.instance_profile
 
   metadata_options {
     http_tokens                 = "required"
     http_endpoint               = "enabled"
-    http_put_response_hop_limit = var.http_hops
+    http_put_response_hop_limit = var.metadata_hop_limit
   }
 
   root_block_device {

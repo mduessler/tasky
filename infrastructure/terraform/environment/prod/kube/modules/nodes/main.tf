@@ -13,13 +13,13 @@ module "iam" {
 
 module "controller" {
   source               = "../../../modules/compute"
-  ami_owners           = ["self"]
-  ami_filter_values    = ["kube-node-*"]
   instance_type        = var.instance_type
+  instance_profile     = module.iam.controller_profile_name
+  image_owner          = ["self"]
+  image_filter_values  = ["kube-node-*"]
   subnet_id            = data.terraform_remote_state.network.outputs.private_subnets[var.vpc_id]
-  security_groups      = [data.terraform_remote_state.network.outputs.controller_sgs[var.vpc_id]]
-  iam_instance_profile = module.iam.controller_profile_name
-  http_hops            = 2
+  security_group_ids   = [data.terraform_remote_state.network.outputs.controller_sgs[var.vpc_id]]
+  metadata_hop_limit   = 2
   root_volume_size     = 20
   tags = {
     Name                                       = "kube-controller"
@@ -32,13 +32,13 @@ module "workers" {
   for_each = var.workers
 
   source               = "../../../modules/compute"
-  ami_owners           = ["self"]
-  ami_filter_values    = ["kube-node-*"]
   instance_type        = var.instance_type
+  instance_profile     = module.iam.worker_profile_name
+  image_owner          = ["self"]
+  image_filter_values  = ["kube-node-*"]
   subnet_id            = data.terraform_remote_state.network.outputs.private_subnets[var.vpc_id]
-  security_groups      = [data.terraform_remote_state.network.outputs.worker_sgs[var.vpc_id]]
-  iam_instance_profile = module.iam.worker_profile_name
-  http_hops            = 2
+  security_group_ids   = [data.terraform_remote_state.network.outputs.worker_sgs[var.vpc_id]]
+  metadata_hop_limit   = 2
   root_volume_size     = 50
   tags = {
     Name                                       = "kube-worker-${each.value}"

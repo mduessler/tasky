@@ -1,45 +1,45 @@
-variable "ami_owners" {
-  description = "Owner how owns the ami"
-  type        = list(string)
-}
-
-variable "ami_filter_values" {
-  description = "List of values, how to identify the ami"
-  type        = list(string)
-}
-
 variable "instance_type" {
-  description = "EC2 instance type."
+  description = "Hardware configuration for the instance."
   type        = string
+}
+
+variable "instance_profile" {
+  description = "Name of the instance profile attached to the instance."
+  type        = string
+}
+
+variable "image_owner" {
+  description = "Owner of the machine image."
+  type        = list(string)
+}
+
+variable "image_filter_values" {
+  description = "List of values used to identify the machine image."
+  type        = list(string)
 }
 
 variable "subnet_id" {
-  description = "ID of the subnet, should be private."
+  description = "ID of the subnet to deploy the instance into."
   type        = string
 }
 
-variable "security_groups" {
-  description = "ID of the security group of the resource."
+variable "security_group_ids" {
+  description = "List of security group IDs attached to the instance."
   type        = list(string)
 }
 
-variable "iam_instance_profile" {
-  description = "Name of the permission profile."
-  type        = string
-}
-
-variable "http_hops" {
-  description = "Number of hops allowed"
-  type        = number
-  default     = 1
-}
-
 variable "root_volume_size" {
-  description = "Storage size for the volume."
+  description = "Storage size of the root volume in GB."
   type        = number
 }
 
 variable "tags" {
-  description = "Map of tags to adapt to the instance"
+  description = "Map of tags applied to the instance."
   type        = map(string)
+}
+
+variable "metadata_hop_limit" {
+  description = "Maximum number of network hops allowed for instance metadata requests."
+  type        = number
+  default     = 1
 }

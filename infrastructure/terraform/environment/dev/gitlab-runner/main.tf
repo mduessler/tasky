@@ -45,13 +45,13 @@ module "security" {
 
 module "compute" {
   source               = "../../../modules/compute"
-  ami_owners           = ["self"]
-  ami_filter_values    = ["gitlab-runner-*"]
   instance_type        = var.instance_type
+  instance_profile     = module.security.iam_instance_profile
+  image_owner          = ["self"]
+  image_filter_values  = ["gitlab-runner-*"]
   subnet_id            = data.terraform_remote_state.network.outputs.private_subnets[var.availability_zone]
-  security_groups      = [aws_security_group.runner.id]
-  iam_instance_profile = module.security.iam_instance_profile
-  http_hops            = 2
+  security_group_ids   = [aws_security_group.runner.id]
+  metadata_hop_limit   = 2
   root_volume_size     = 20
   tags = {
     Name = "instance-${var.environment}-${var.runner_name}"
