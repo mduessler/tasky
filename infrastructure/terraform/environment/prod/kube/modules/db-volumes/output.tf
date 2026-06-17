@@ -1,4 +1,4 @@
 output "ids" {
   description = "Id of the data-base volume"
-  value       = [for id in aws_ebs_volume.postgres.ids : id]
+  value       = [for volume in aws_ebs_volume.volume : volume.id]
 }
