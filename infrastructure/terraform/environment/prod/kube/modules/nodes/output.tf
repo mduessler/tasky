@@ -5,10 +5,10 @@ output "vpc_id" {
 
 output "controller" {
   description = "ID of the controller instance."
-  value       = module.controller_id
+  value       = module.controller.id
 }
 
 output "workers" {
   description = "List of the worker instances IDs."
-  value       = [for mod in module.workers : mod.instance_id]
+  value       = [for mod in module.workers : mod.id]
 }
