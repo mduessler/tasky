@@ -1,0 +1,47 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "elasticloadbalancing:DescribeTargetGroups",
+        "elasticloadbalancing:DescribeTargetGroupAttributes",
+        "elasticloadbalancing:DescribeTargetHealth",
+        "elasticloadbalancing:DescribeLoadBalancers",
+        "elasticloadbalancing:DescribeLoadBalancerAttributes",
+        "elasticloadbalancing:DescribeListeners",
+        "elasticloadbalancing:DescribeListenerAttributes"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "elasticloadbalancing:CreateLoadBalancer",
+        "elasticloadbalancing:ModifyLoadBalancerAttributes",
+        "elasticloadbalancing:DeleteLoadBalancer"
+      ],
+      "Resource": "arn:aws:elasticloadbalancing:${region}:${account_id}:loadbalancer/*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "elasticloadbalancing:CreateTargetGroup",
+        "elasticloadbalancing:ModifyTargetGroupAttributes",
+        "elasticloadbalancing:RegisterTargets",
+        "elasticloadbalancing:DeregisterTargets",
+        "elasticloadbalancing:DeleteTargetGroup"
+      ],
+      "Resource": "arn:aws:elasticloadbalancing:${region}:${account_id}:targetgroup/*/*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["elasticloadbalancing:DeleteListener"],
+      "Resource": [
+        "arn:aws:elasticloadbalancing:${region}:${account_id}:listener/app/*/*/*",
+        "arn:aws:elasticloadbalancing:${region}:${account_id}:listener/gwy/*/*/*",
+        "arn:aws:elasticloadbalancing:${region}:${account_id}:listener/net/*/*/*"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "sts:GetCallerIdentity",
+        "ec2:DescribeImages",
+        "ec2:DescribeSecurityGroups",
+        "ec2:DescribeSecurityGroupRules",
+        "ec2:DescribeVolumes",
+        "ec2:DescribeLaunchTemplates",
+        "ec2:DescribeLaunchTemplateVersions",
+        "ec2:DescribeInstances",
+        "ec2:DescribeInstanceTypes",
+        "ec2:DescribeInstanceCreditSpecifications",
+        "ec2:DescribeTags",
+        "ec2:DescribeVpcs",
+        "ec2:DescribeNetworkInterfaces"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:GetInstanceUefiData",
+        "ec2:DescribeInstanceAttribute",
+        "ec2:ModifyInstanceAttribute",
+        "ec2:TerminateInstances"
+      ],
+      "Resource": "arn:aws:ec2:${region}:${account_id}:instance/*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["ec2:CreateVolume", "ec2:DeleteVolume"],
+      "Resource": "arn:aws:ec2:${region}:${account_id}:volume/*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:CreateSecurityGroup",
+        "ec2:RevokeSecurityGroupEgress",
+        "ec2:AuthorizeSecurityGroupIngress",
+        "ec2:AuthorizeSecurityGroupEgress",
+        "ec2:RevokeSecurityGroupIngress",
+        "ec2:DeleteSecurityGroup"
+      ],
+      "Resource": "arn:aws:ec2:${region}:${account_id}:security-group/*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:CreateLaunchTemplate",
+        "ec2:CreateLaunchTemplateVersion",
+        "ec2:DeleteLaunchTemplate"
+      ],
+      "Resource": "arn:aws:ec2:${region}:${account_id}:launch-template/*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["ec2:RunInstances"],
+      "Resource": [
+        "arn:aws:ec2:${region}:${account_id}:instance/*",
+        "arn:aws:ec2:${region}:${account_id}:network-interface/*",
+        "arn:aws:ec2:${region}:${account_id}:security-group/*",
+        "arn:aws:ec2:${region}:${account_id}:subnet/*",
+        "arn:aws:ec2:${region}:${account_id}:volume/*",
+        "arn:aws:ec2:${region}::image/*"
+      ]
+    }
+  ]
+}
