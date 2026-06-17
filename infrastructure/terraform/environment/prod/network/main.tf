@@ -37,7 +37,7 @@ resource "aws_security_group" "controllers" {
   }
 
   egress {
-    description = "HTTPS to AWS APIs and registries"
+    description = "HTTPS for pulling container images from registries"
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
@@ -92,7 +92,7 @@ resource "aws_security_group" "worker" {
   }
 
   egress {
-    description = "HTTPS to registries and AWS APIs"
+    description = "HTTPS for pulling container images from registries"
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
