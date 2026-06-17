@@ -2,7 +2,7 @@ data "aws_caller_identity" "current" {}
 
 module "log_bucket" {
   source = "../../../modules/s3_bucket"
-  name   = "tasky-tf-state-logs-${var.account_id}-${var.environment}"
+  bucket_name = "tasky-tf-state-logs-${var.account_id}-${var.environment}"
   tags = {
     Component   = "tf-state"
     Environment = var.environment

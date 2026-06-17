@@ -1,6 +1,6 @@
 module "s3" {
   source = "../s3_bucket"
-  name   = "ssm-transfer-${var.account_id}-${var.environment}"
+  bucket_name = "ssm-transfer-${var.account_id}-${var.environment}"
   tags = {
     Component   = "ssm-transfer-bucket"
     Environment = var.environment

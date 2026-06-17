@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "this" {
-  bucket = var.name
+  bucket = var.bucket_name
   tags   = var.tags
 
   # lifecycle {
@@ -8,10 +8,10 @@ resource "aws_s3_bucket" "this" {
 }
 
 resource "aws_s3_bucket_versioning" "this" {
-  count  = var.version_status != null ? 1 : 0
+  count  = var.versioning_status != null ? 1 : 0
   bucket = aws_s3_bucket.this.id
   versioning_configuration {
-    status = var.version_status
+    status = var.versioning_status
   }
 }
 
@@ -20,7 +20,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "this" {
 
   rule {
     apply_server_side_encryption_by_default {
-      sse_algorithm = var.sse_algorithm
+      sse_algorithm = var.encryption_algorithm
     }
   }
 }

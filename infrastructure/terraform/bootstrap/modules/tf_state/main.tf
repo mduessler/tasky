@@ -1,7 +1,7 @@
 module "tf_state" {
   source         = "../../../modules/s3_bucket"
-  name           = "tasky-tf-state-${var.account_id}-${var.environment}"
-  version_status = "Enabled"
+  bucket_name       = "tasky-tf-state-${var.account_id}-${var.environment}"
+  versioning_status = "Enabled"
   tags = {
     Component   = "tf-state"
     Environment = var.environment
