@@ -1,9 +1,9 @@
 output "ids" {
-  description = "Set of all created vpcs id for the development"
+  description = "Map of availability zones to VPC IDs."
   value       = { for az, vpc in module.vpcs : az => vpc.id }
 }
 
 output "private_subnets" {
-  description = "Set of all created private subnet ids for the development"
+  description = "Map of availability zones to private subnet IDs."
   value       = { for az, vpc in module.vpcs : az => vpc.private_subnet }
 }

@@ -1,4 +1,4 @@
 output "runner_instance_id" {
-  description = "Instance ID des GitLab Runners (für SSM)."
+  description = "ID of the GitLab Runner instance."
   value       = module.compute.id
 }

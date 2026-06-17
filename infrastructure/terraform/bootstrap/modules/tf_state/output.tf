@@ -1,3 +1,4 @@
 output "id" {
-  value = module.tf_state.id
+  description = "ID of the Terraform state storage bucket."
+  value       = module.tf_state.id
 }
