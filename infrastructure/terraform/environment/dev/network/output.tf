@@ -4,6 +4,6 @@ output "ids" {
 }
 
 output "private_subnets" {
-  description = "Map of availability zones to private subnet IDs."
-  value       = { for az, vpc in module.vpcs : az => vpc.private_subnet }
+  description = "Map of VPC IDs to private subnet IDs."
+  value       = { for _, vpc in module.vpcs : vpc.id => vpc.private_subnet }
 }

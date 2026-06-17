@@ -49,7 +49,7 @@ module "compute" {
   instance_profile     = module.security.instance_profile
   image_owner          = ["self"]
   image_filter_values  = ["gitlab-runner-*"]
-  subnet_id            = data.terraform_remote_state.network.outputs.private_subnets[var.availability_zone]
+  subnet_id            = data.terraform_remote_state.network.outputs.private_subnets[data.terraform_remote_state.network.outputs.ids[var.availability_zone]]
   security_group_ids   = [aws_security_group.runner.id]
   metadata_hop_limit   = 2
   root_volume_size     = 20
