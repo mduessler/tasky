@@ -4,11 +4,11 @@ module "vpcs" {
   source            = "../../../modules/network"
   availability_zone = each.value
 
-  private_tags = {
+  private_subnet_tags = {
     "kubernetes.io/cluster/${var.clustername}" = "owned"
     "kubernetes.io/role/internal-elb"          = "1"
   }
-  public_tags = {
+  public_subnet_tags = {
     "kubernetes.io/cluster/${var.clustername}" = "owned"
     "kubernetes.io/role/elb"                   = "1"
   }
