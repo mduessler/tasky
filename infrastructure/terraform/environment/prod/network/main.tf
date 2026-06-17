@@ -21,36 +21,14 @@ resource "aws_security_group" "controllers" {
   vpc_id      = each.value.id
 
   ingress {
-    from_port   = 6443
-    to_port     = 6443
-    protocol    = "tcp"
-    cidr_blocks = [each.value.vpc_cidr]
+    description     = "Kubernetes API server from workers"
+    from_port       = 6443
+    to_port         = 6443
+    protocol        = "tcp"
+    security_groups = [aws_security_group.worker[each.key].id]
   }
-  ingress {
-    from_port   = 2379
-    to_port     = 2380
-    protocol    = "tcp"
-    cidr_blocks = [each.value.vpc_cidr]
-  }
-  ingress {
-    from_port   = 10250
-    to_port     = 10250
-    protocol    = "tcp"
-    cidr_blocks = [each.value.vpc_cidr]
-  }
-  ingress {
-    from_port   = 10257
-    to_port     = 10257
-    protocol    = "tcp"
-    cidr_blocks = [each.value.vpc_cidr]
-  }
-  ingress {
-    from_port   = 10259
-    to_port     = 10259
-    protocol    = "tcp"
-    cidr_blocks = [each.value.vpc_cidr]
-  }
-  egress { # In a real secure environment, define the outgoing connections better.
+
+  egress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
@@ -65,17 +43,29 @@ resource "aws_security_group" "worker" {
   vpc_id      = each.value.id
 
   ingress {
-    from_port   = 10250
-    to_port     = 10250
-    protocol    = "tcp"
-    cidr_blocks = [each.value.vpc_cidr]
+    description     = "Kubelet API from controller"
+    from_port       = 10250
+    to_port         = 10250
+    protocol        = "tcp"
+    security_groups = [aws_security_group.controllers[each.key].id]
   }
+
   ingress {
+    description     = "Pod-to-pod traffic between workers"
+    from_port       = 0
+    to_port         = 0
+    protocol        = "-1"
+    security_groups = [aws_security_group.worker[each.key].id]
+  }
+
+  ingress {
+    description = "HTTPS ingress from internet via NLB"
     from_port   = 30443
     to_port     = 30443
     protocol    = "tcp"
-    cidr_blocks = [each.value.vpc_cidr]
+    cidr_blocks = ["0.0.0.0/0"]
   }
+
   egress {
     from_port   = 0
     to_port     = 0
