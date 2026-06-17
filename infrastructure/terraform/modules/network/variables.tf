@@ -3,6 +3,11 @@ variable "availability_zone" {
   type        = string
 }
 
+variable "environment" {
+  description = "Target environment for this deployment."
+  type        = string
+}
+
 variable "vpc_cidr" {
   description = "IP range for the VPC in CIDR notation."
   type        = string

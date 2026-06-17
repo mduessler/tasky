@@ -8,7 +8,7 @@ packer {
 }
 
 source "amazon-ebs" "ubuntu" {
-  ami_name = "kube-node-${formatdate("YYYYMMDD-HHmmss", timestamp())}"
+  ami_name      = "kube-node-${formatdate("YYYYMMDD-HHmmss", timestamp())}"
   instance_type = "t3.micro"
   region        = "eu-central-1"
   source_ami_filter {
@@ -19,6 +19,17 @@ source "amazon-ebs" "ubuntu" {
     }
     most_recent = true
     owners      = ["099720109477"]
+  }
+  vpc_filter {
+    filters = {
+      "tag:Environment" = "dev"
+    }
+  }
+  subnet_filter {
+    filters = {
+      "mapPublicIpOnLaunch" = "true"
+    }
+    most_free = true
   }
   ssh_username = "ubuntu"
 }
