@@ -15,7 +15,7 @@ variable "account_id" {
 }
 
 variable "availability_zones" {
-  description = "AWS Regions where to deploy the development networks"
+  description = "Availability zones where resources will be deployed."
   type        = list(string)
 }
 

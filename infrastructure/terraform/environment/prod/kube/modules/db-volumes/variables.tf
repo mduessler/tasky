@@ -1,5 +1,5 @@
 variable "availability_zone" {
-  description = "Availability Zone in which to deploy the volume"
+  description = "Availability zone where resources will be deployed."
   type        = string
 }
 

@@ -14,7 +14,7 @@ variable "account_id" {
 }
 
 variable "availability_zone" {
-  description = "Zone in which VPC the runner should be deployed"
+  description = "Availability zone where resources will be deployed."
   type        = string
 }
 

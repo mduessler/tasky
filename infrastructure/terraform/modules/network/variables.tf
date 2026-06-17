@@ -5,7 +5,7 @@ variable "vpc_cidr" {
 }
 
 variable "availability_zone" {
-  description = "AWS Region where the network will be deployed."
+  description = "Availability zone where resources will be deployed."
   type        = string
 }
 
