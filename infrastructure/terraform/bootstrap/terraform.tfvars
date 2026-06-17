@@ -1,2 +1,5 @@
-backend_location = "eu-central-1"
-user_dev   = "tasky-dev"
+backend_location  = "eu-central-1"
+user_dev          = "tasky-dev"
+user_prod_network = "tasky-prod-network"
+user_prod_kube    = "tasky-prod-kube"
+user_prod_packer  = "tasky-prod-packer"
