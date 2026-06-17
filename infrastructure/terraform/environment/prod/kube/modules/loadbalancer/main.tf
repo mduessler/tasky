@@ -1,7 +1,7 @@
 resource "aws_lb" "nginx" {
   name               = "nginx-nlb"
   load_balancer_type = "network"
-  subnets            = [var.public_subnet]
+  subnets            = [var.public_subnet_id]
 }
 
 resource "aws_lb_target_group" "nginx" {

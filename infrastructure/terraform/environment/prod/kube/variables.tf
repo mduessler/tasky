@@ -20,14 +20,15 @@ variable "availability_zones" {
 }
 
 variable "instance_type" {
-  description = "EC2 instance type."
+  description = "Hardware configuration for the instance."
   type        = string
   default     = "t3.micro"
 }
 
 variable "workers" {
-  type    = set(string)
-  default = ["01", "02"]
+  description = "The set of worker nodes."
+  type        = set(string)
+  default     = ["01", "02"]
 }
 
 variable "clustername" {

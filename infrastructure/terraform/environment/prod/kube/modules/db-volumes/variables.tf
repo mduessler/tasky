@@ -4,11 +4,11 @@ variable "availability_zone" {
 }
 
 variable "sizes" {
-  description = "Configuration of the volume (sizes and names)"
+  description = "Sizes of the volumes in GB."
   type        = list(number)
 }
 
 variable "names" {
-  description = "Suffic of the volume name"
+  description = "Suffix of the volume name."
   type        = list(string)
 }

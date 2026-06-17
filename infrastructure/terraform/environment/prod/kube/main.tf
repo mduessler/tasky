@@ -36,6 +36,6 @@ module "aws_lb_nginx" {
   source   = "./modules/loadbalancer"
 
   vpc_id        = data.terraform_remote_state.network.outputs.ids[each.key]
-  public_subnet = data.terraform_remote_state.network.outputs.public_subnets[data.terraform_remote_state.network.outputs.ids[each.key]]
+  public_subnet_id = data.terraform_remote_state.network.outputs.public_subnets[data.terraform_remote_state.network.outputs.ids[each.key]]
   workers       = module.kubes[each.key].workers
 }
