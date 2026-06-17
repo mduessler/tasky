@@ -29,9 +29,18 @@ resource "aws_security_group" "controllers" {
   }
 
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
+    description     = "Kubelet API to workers"
+    from_port       = 10250
+    to_port         = 10250
+    protocol        = "tcp"
+    security_groups = [aws_security_group.worker[each.key].id]
+  }
+
+  egress {
+    description = "HTTPS to AWS APIs and registries"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
@@ -67,9 +76,26 @@ resource "aws_security_group" "worker" {
   }
 
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
+    description     = "Pod-to-pod traffic to other workers"
+    from_port       = 0
+    to_port         = 0
+    protocol        = "-1"
+    security_groups = [aws_security_group.worker[each.key].id]
+  }
+
+  egress {
+    description     = "Kubernetes API server to controller"
+    from_port       = 6443
+    to_port         = 6443
+    protocol        = "tcp"
+    security_groups = [aws_security_group.controllers[each.key].id]
+  }
+
+  egress {
+    description = "HTTPS to registries and AWS APIs"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
