@@ -19,7 +19,7 @@ resource "aws_s3_bucket_ownership_controls" "logs" {
 }
 
 resource "aws_s3_bucket_logging" "source" {
-  bucket        = var.target_id
+  bucket        = var.target_bucket_id
   target_bucket = module.log_bucket.id
   target_prefix = "logs/"
 }
@@ -39,7 +39,7 @@ data "aws_iam_policy_document" "log_bucket" {
     condition {
       test     = "ArnLike"
       variable = "aws:SourceArn"
-      values   = [var.target_arn]
+      values   = [var.target_bucket_arn]
     }
 
     condition {

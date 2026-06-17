@@ -56,8 +56,8 @@ resource "aws_s3_bucket_lifecycle_configuration" "state" {
 
 module "logging" {
   source      = "../logging"
-  target_id   = module.tf_state.id
-  target_arn  = module.tf_state.arn
+  target_bucket_id  = module.tf_state.id
+  target_bucket_arn = module.tf_state.arn
   environment = var.environment
   account_id    = var.account_id
 }

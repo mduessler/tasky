@@ -8,12 +8,12 @@ variable "account_id" {
   type        = string
 }
 
-variable "target_id" {
-  description = "The ID of the S3 bucket to enable logging for."
+variable "target_bucket_id" {
+  description = "ID of the target storage bucket to log to."
   type        = string
 }
 
-variable "target_arn" {
-  description = "The arn of the S3 bucket to enable logging for."
+variable "target_bucket_arn" {
+  description = "ARN of the target storage bucket to log to."
   type        = string
 }

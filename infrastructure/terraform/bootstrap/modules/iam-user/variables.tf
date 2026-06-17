@@ -9,11 +9,11 @@ variable "account_id" {
 }
 
 variable "user_name" {
-  description = "Name des anzulegenden IAM-Users"
+  description = "Name of the IAM user to create."
   type        = string
 }
 
 variable "policies" {
-  description = "Pfad zum Ordner mit den Policy-JSON-Dateien"
+  description = "Path to the folder containing the policy JSON files."
   type        = string
 }

@@ -9,6 +9,6 @@ variable "account_id" {
 }
 
 variable "user_dev" {
-  description = "Username of the user for development"
+  description = "Username of the development user."
   type        = string
 }
