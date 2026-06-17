@@ -38,6 +38,9 @@ docker-socket = $(shell docker context inspect --format '{{.Endpoints.docker.Hos
 packer-root = ./infrastructure/packer
 aws-user-admin=tasky-admin
 aws-user-dev=tasky-dev
+aws-user-prod-network=tasky-admin
+aws-user-prod-kube=tasky-admin
+aws-user-prod-packer=tasky-admin
 
 # Development
 packer-runner-dir=$(packer-root)/environment/dev/gitlab-runner/
@@ -304,10 +307,48 @@ destroy-gitlab-runner:
 	export AWS_PROFILE=$(aws-user-dev)
 	./infrastructure/scripts/gitlab-runner destroy
 
-# Production backend
+# Production infrastructure
 #
+
+# Create AMI kube-node image
 create-node-img:
 	cd $(packer-node-dir)
-	export AWS_PROFILE=$(aws-user-admin)
+	export AWS_PROFILE=$(aws-user-prod-packer)
 	packer init .
 	packer build kube-node.pkr.hcl
+
+# Create production network
+create-network-prod:
+	export TF_VAR_account_id=$(owner_id)
+	export AWS_PROFILE=$(aws-user-prod-network)
+	./infrastructure/scripts/prod/network install
+
+# Update production network
+update-network-prod:
+	export TF_VAR_account_id=$(owner_id)
+	export AWS_PROFILE=$(aws-user-prod-network)
+	./infrastructure/scripts/prod/network update
+
+# Destroy production network
+destroy-network-prod:
+	export TF_VAR_account_id=$(owner_id)
+	export AWS_PROFILE=$(aws-user-prod-network)
+	./infrastructure/scripts/prod/network destroy
+
+# Create production kube environment
+create-kube-prod:
+	export TF_VAR_account_id=$(owner_id)
+	export AWS_PROFILE=$(aws-user-prod-kube)
+	./infrastructure/scripts/prod/kube install
+
+# Update production kube environment
+update-kube-prod:
+	export TF_VAR_account_id=$(owner_id)
+	export AWS_PROFILE=$(aws-user-prod-kube)
+	./infrastructure/scripts/prod/kube update
+
+# Destroy production kube environment
+destroy-kube-prod:
+	export TF_VAR_account_id=$(owner_id)
+	export AWS_PROFILE=$(aws-user-prod-kube)
+	./infrastructure/scripts/prod/kube destroy
