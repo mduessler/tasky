@@ -8,7 +8,6 @@ module "tf_state_dev" {
 module "tf_state_prod" {
   source = "./modules/tf_state"
 
-  backend_location  = var.backend_location
   environment = "prod"
   account_id    = var.account_id
 }

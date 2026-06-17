@@ -4,7 +4,7 @@ variable "backend_location" {
 }
 
 variable "environment" {
-  description = "Deployment environment."
+  description = "Target environment for this deployment."
   type        = string
 }
 

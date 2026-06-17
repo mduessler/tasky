@@ -3,6 +3,12 @@ variable "backend_location" {
   type        = string
 }
 
+variable "environment" {
+  description = "Target environment for this deployment."
+  type        = string
+  default     = "prod"
+}
+
 variable "account_id" {
   description = "Unique identifier of the cloud account."
   type        = string
@@ -11,12 +17,6 @@ variable "account_id" {
 variable "availability_zones" {
   description = "AWS Regions where to deploy the development networks"
   type        = list(string)
-}
-
-variable "environment" {
-  description = "Deployment environment."
-  type        = string
-  default     = "prod"
 }
 
 variable "instance_type" {

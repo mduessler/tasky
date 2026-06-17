@@ -1,5 +1,5 @@
 variable "environment" {
-  description = "Environment for which to deploy the backend"
+  description = "Target environment for this deployment."
   type        = string
 }
 
