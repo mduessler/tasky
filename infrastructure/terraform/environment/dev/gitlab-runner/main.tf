@@ -46,7 +46,7 @@ module "security" {
 module "compute" {
   source               = "../../../modules/compute"
   instance_type        = var.instance_type
-  instance_profile     = module.security.iam_instance_profile
+  instance_profile     = module.security.instance_profile
   image_owner          = ["self"]
   image_filter_values  = ["gitlab-runner-*"]
   subnet_id            = data.terraform_remote_state.network.outputs.private_subnets[var.availability_zone]

@@ -19,7 +19,7 @@ variable "availability_zone" {
 }
 
 variable "instance_type" {
-  description = "EC2 instance type."
+  description = "Hardware configuration for the instance."
   type        = string
 }
 

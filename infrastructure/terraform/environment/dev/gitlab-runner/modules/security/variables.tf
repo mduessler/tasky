@@ -9,5 +9,6 @@ variable "runner_name" {
 }
 
 variable "ssm_bucket_arn" {
-  type = string
+  description = "ARN of the SSM transfer bucket."
+  type        = string
 }
