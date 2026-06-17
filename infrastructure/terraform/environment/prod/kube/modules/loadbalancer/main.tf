@@ -8,7 +8,7 @@ resource "aws_lb_target_group" "nginx" {
   name     = "nginx-tg"
   port     = 30443
   protocol = "TCP"
-  vpc_id   = var.network.vpc_id
+  vpc_id   = var.vpc_id
 }
 
 resource "aws_lb_listener" "nginx" {
