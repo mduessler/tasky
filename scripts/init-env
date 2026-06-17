@@ -22,7 +22,7 @@ EMAIL_PORT=2525
 EMAIL_HOST_USER=<your-mailtrap-user>
 EMAIL_HOST_PASSWORD=<your-mailtrap-password>
 
-TF_VAR_owner_id=<owner_id>
+TF_VAR_account_id=<account_id>
 TF_VAR_aws_region=<aws-server-region>
 EOF
 

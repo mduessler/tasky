@@ -41,10 +41,10 @@ aws-user-dev=tasky-dev
 
 # Development
 packer-runner-dir=$(packer-root)/environment/dev/gitlab-runner/
-owner_id:=$(shell grep -m1 '^TF_VAR_owner_id=' $(env-file) | cut -d= -f2-)
+owner_id:=$(shell grep -m1 '^TF_VAR_account_id=' $(env-file) | cut -d= -f2-)
 
 # Production
-packer-node-dir=$(packer-root)/environment/prod/kube-note/
+packer-node-dir=$(packer-root)/environment/prod/kube-node/
 
 prod-image=tasky:test
 nginx-image=tasky-nginx:test
@@ -232,7 +232,7 @@ pre-commit:
 
 # Create backend
 create-backend:
-	export TF_VAR_owner_id=$(owner_id)
+	export TF_VAR_account_id=$(owner_id)
 	export AWS_PROFILE=$(aws-user-admin)
 	./infrastructure/scripts/bootstrap create
 
@@ -251,56 +251,56 @@ create-runner-img:
 
 # Create development network
 create-network-dev:
-	export TF_VAR_owner_id=$(owner_id)
+	export TF_VAR_account_id=$(owner_id)
 	export AWS_PROFILE=$(aws-user-dev)
 	./infrastructure/scripts/network install dev
 
 # Update development network
 update-network-dev:
-	export TF_VAR_owner_id=$(owner_id)
+	export TF_VAR_account_id=$(owner_id)
 	export AWS_PROFILE=$(aws-user-dev)
 	./infrastructure/scripts/network update dev
 
 # Destroy development network
 destroy-network-dev:
-	export TF_VAR_owner_id=$(owner_id)
+	export TF_VAR_account_id=$(owner_id)
 	export AWS_PROFILE=$(aws-user-dev)
 	./infrastructure/scripts/network destroy dev
 
 # Create development ssm-transfer-bucket
 create-ssm-transfer-bucket-dev:
-	export TF_VAR_owner_id=$(owner_id)
+	export TF_VAR_account_id=$(owner_id)
 	export AWS_PROFILE=$(aws-user-dev)
 	./infrastructure/scripts/ssm-transfer install dev
 
 # Update development ssm-transfer-bucket
 update-ssm-transfer-bucket-dev:
-	export TF_VAR_owner_id=$(owner_id)
+	export TF_VAR_account_id=$(owner_id)
 	export AWS_PROFILE=$(aws-user-dev)
 	./infrastructure/scripts/ssm-transfer update dev
 
 # Destroy development ssm-transfer-bucket
 destroy-ssm-transfer-bucket-dev:
-	export TF_VAR_owner_id=$(owner_id)
+	export TF_VAR_account_id=$(owner_id)
 	export AWS_PROFILE=$(aws-user-dev)
 	./infrastructure/scripts/ssm-transfer destroy dev
 
 
 # Commands to install or destroy a gitlab-runner
 install-gitlab-runner:
-	export TF_VAR_owner_id=$(owner_id)
+	export TF_VAR_account_id=$(owner_id)
 	export AWS_PROFILE=$(aws-user-dev)
 	./infrastructure/scripts/gitlab-runner install
 
 # Commands to install or destroy a gitlab-runner
 update-gitlab-runner:
-	export TF_VAR_owner_id=$(owner_id)
+	export TF_VAR_account_id=$(owner_id)
 	export AWS_PROFILE=$(aws-user-dev)
 	./infrastructure/scripts/gitlab-runner update
 
 # Commands to destroy gitlab-runner
 destroy-gitlab-runner:
-	export TF_VAR_owner_id=$(owner_id)
+	export TF_VAR_account_id=$(owner_id)
 	export AWS_PROFILE=$(aws-user-dev)
 	./infrastructure/scripts/gitlab-runner destroy
 
@@ -310,4 +310,4 @@ create-node-img:
 	cd $(packer-node-dir)
 	export AWS_PROFILE=$(aws-user-admin)
 	packer init .
-	packer build kube-note.pkr.hcl
+	packer build kube-node.pkr.hcl

@@ -16,9 +16,9 @@ EOF
 }
 
 function prepare_operations() {
-	if [[ -z "${TF_VAR_owner_id:-}" || -z "${AWS_PROFILE:-}" ]]; then
-		if [[ -z "${TF_VAR_owner_id:-}" ]]; then
-			echo "ERROR: TF_VAR_owner_id is not set"
+	if [[ -z "${TF_VAR_account_id:-}" || -z "${AWS_PROFILE:-}" ]]; then
+		if [[ -z "${TF_VAR_account_id:-}" ]]; then
+			echo "ERROR: TF_VAR_account_id is not set"
 		else
 			echo "ERROR: AWS_PROFILE is not set"
 		fi
@@ -41,7 +41,7 @@ function install() {
 	export TF_VAR_availability_zone=${availability_zone}
 
 	terraform init -reconfigure \
-		-backend-config="bucket=tasky-tf-state-${TF_VAR_owner_id}-dev" \
+		-backend-config="bucket=tasky-tf-state-${TF_VAR_account_id}-dev" \
 		-backend-config="key=runner/${availability_zone}/${runner_name}/terraform.tfstate"
 	terraform apply -var-file=../default.tfvars -var-file=terraform.tfvars || exit 3
 
@@ -55,7 +55,7 @@ function install() {
 		-e runner_name="${runner_name}" \
 		-e availability_zone="${availability_zone}" \
 		-e runner_token="${runner_token}" \
-		-e owner_id="${TF_VAR_owner_id}"
+		-e owner_id="${TF_VAR_account_id}"
 }
 
 function update() {
@@ -68,7 +68,7 @@ function update() {
 	export TF_VAR_availability_zone=${availability_zone}
 
 	terraform init -reconfigure \
-		-backend-config="bucket=tasky-tf-state-${TF_VAR_owner_id}-dev" \
+		-backend-config="bucket=tasky-tf-state-${TF_VAR_account_id}-dev" \
 		-backend-config="key=runner/${availability_zone}/${runner_name}/terraform.tfstate"
 	terraform apply -var-file=../default.tfvars -var-file=terraform.tfvars || exit 3
 }
@@ -83,7 +83,7 @@ function destroy() {
 	export TF_VAR_availability_zone=${availability_zone}
 
 	terraform init -reconfigure \
-		-backend-config="bucket=tasky-tf-state-${TF_VAR_owner_id}-dev" \
+		-backend-config="bucket=tasky-tf-state-${TF_VAR_account_id}-dev" \
 		-backend-config="key=runner/${availability_zone}/${runner_name}/terraform.tfstate"
 	terraform destroy --auto-approve \
 		-var-file=../default.tfvars -var-file=terraform.tfvars ||

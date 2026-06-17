@@ -21,9 +21,9 @@ EOF
 }
 
 function terraform_init() {
-	if [[ -z "${TF_VAR_owner_id:-}" || -z "${AWS_PROFILE:-}" ]]; then
-		if [[ -z "${TF_VAR_owner_id:-}" ]]; then
-			echo "ERROR: TF_VAR_owner_id is not set"
+	if [[ -z "${TF_VAR_account_id:-}" || -z "${AWS_PROFILE:-}" ]]; then
+		if [[ -z "${TF_VAR_account_id:-}" ]]; then
+			echo "ERROR: TF_VAR_account_id is not set"
 		else
 			echo "ERROR: AWS_PROFILE is not set"
 		fi
@@ -33,7 +33,7 @@ function terraform_init() {
 	change_dir "$1"
 
 	terraform init \
-		-backend-config="bucket=tasky-tf-state-${TF_VAR_owner_id}-$1" \
+		-backend-config="bucket=tasky-tf-state-${TF_VAR_account_id}-$1" \
 		-backend-config="key=network/terraform.tfstate"
 }
 
