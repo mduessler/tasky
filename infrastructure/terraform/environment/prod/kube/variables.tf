@@ -19,12 +19,6 @@ variable "availability_zones" {
   type        = list(string)
 }
 
-variable "instance_type" {
-  description = "Hardware configuration for the instance."
-  type        = string
-  default     = "t3.micro"
-}
-
 variable "workers" {
   description = "The set of worker nodes."
   type        = set(string)
@@ -39,7 +33,8 @@ variable "clustername" {
 variable "workers_by_availability_zones" {
   description = "Mapping of zone to the names of the workers"
   type = map(object({
-    instance_type = string
+    controller_instance_type = string
+    worker_instance_type     = string
     nodes         = list(string)
     db_volumes = object({
       sizes = list(number)

@@ -13,7 +13,7 @@ module "iam" {
 
 module "controller" {
   source               = "../../../modules/compute"
-  instance_type        = var.instance_type
+  instance_type        = var.controller_instance_type
   instance_profile     = module.iam.controller_profile_name
   image_owner          = ["self"]
   image_filter_values  = ["kube-node-*"]
@@ -32,7 +32,7 @@ module "workers" {
   for_each = var.workers
 
   source               = "../../../modules/compute"
-  instance_type        = var.instance_type
+  instance_type        = var.worker_instance_type
   instance_profile     = module.iam.worker_profile_name
   image_owner          = ["self"]
   image_filter_values  = ["kube-node-*"]

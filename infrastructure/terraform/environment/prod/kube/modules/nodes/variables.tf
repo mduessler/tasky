@@ -13,8 +13,13 @@ variable "account_id" {
   type        = string
 }
 
-variable "instance_type" {
-  description = "Hardware configuration for the instance."
+variable "controller_instance_type" {
+  description = "Hardware configuration for the controller instance."
+  type        = string
+}
+
+variable "worker_instance_type" {
+  description = "Hardware configuration for the worker instances."
   type        = string
 }
 

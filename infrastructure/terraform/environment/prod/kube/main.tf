@@ -16,7 +16,8 @@ module "kubes" {
   environment   = var.environment
   account_id      = var.account_id
   backend_location    = var.backend_location
-  instance_type = each.value.instance_type
+  controller_instance_type = each.value.controller_instance_type
+  worker_instance_type     = each.value.worker_instance_type
   vpc_id        = data.terraform_remote_state.network.outputs.ids[each.key]
   workers       = each.value.nodes
   clustername   = var.clustername
