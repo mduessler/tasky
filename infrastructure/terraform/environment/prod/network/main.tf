@@ -3,6 +3,7 @@ module "vpcs" {
 
   source            = "../../../modules/network"
   availability_zone = each.value
+  environment       = var.environment
 
   private_subnet_tags = {
     "kubernetes.io/cluster/${var.clustername}" = "owned"
@@ -21,14 +22,6 @@ resource "aws_security_group" "controllers" {
   vpc_id      = each.value.id
 
   egress {
-    description     = "Kubelet API to workers"
-    from_port       = 10250
-    to_port         = 10250
-    protocol        = "tcp"
-    security_groups = [aws_security_group.worker[each.key].id]
-  }
-
-  egress {
     description = "HTTPS for pulling container images from registries"
     from_port   = 443
     to_port     = 443
@@ -44,19 +37,11 @@ resource "aws_security_group" "worker" {
   vpc_id      = each.value.id
 
   ingress {
-    description     = "Kubelet API from controller"
-    from_port       = 10250
-    to_port         = 10250
-    protocol        = "tcp"
-    security_groups = [aws_security_group.controllers[each.key].id]
-  }
-
-  ingress {
-    description     = "Pod-to-pod traffic between workers"
-    from_port       = 0
-    to_port         = 0
-    protocol        = "-1"
-    security_groups = [aws_security_group.worker[each.key].id]
+    description = "Pod-to-pod traffic between workers"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    self        = true
   }
 
   ingress {
@@ -68,11 +53,11 @@ resource "aws_security_group" "worker" {
   }
 
   egress {
-    description     = "Pod-to-pod traffic to other workers"
-    from_port       = 0
-    to_port         = 0
-    protocol        = "-1"
-    security_groups = [aws_security_group.worker[each.key].id]
+    description = "Pod-to-pod traffic to other workers"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    self        = true
   }
 
   egress {
@@ -82,4 +67,26 @@ resource "aws_security_group" "worker" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+}
+
+resource "aws_security_group_rule" "controller_to_worker_kubelet" {
+  for_each                 = module.vpcs
+  type                     = "egress"
+  description              = "Kubelet API to workers"
+  from_port                = 10250
+  to_port                  = 10250
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.controllers[each.key].id
+  source_security_group_id = aws_security_group.worker[each.key].id
+}
+
+resource "aws_security_group_rule" "worker_from_controller_kubelet" {
+  for_each                 = module.vpcs
+  type                     = "ingress"
+  description              = "Kubelet API from controller"
+  from_port                = 10250
+  to_port                  = 10250
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.worker[each.key].id
+  source_security_group_id = aws_security_group.controllers[each.key].id
 }
