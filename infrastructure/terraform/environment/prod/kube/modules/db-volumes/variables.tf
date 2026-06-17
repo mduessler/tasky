@@ -3,12 +3,12 @@ variable "availability_zone" {
   type        = string
 }
 
-variable "size" {
+variable "sizes" {
   description = "Configuration of the volume (sizes and names)"
-  type        = number
+  type        = list(number)
 }
 
-variable "name" {
+variable "names" {
   description = "Suffic of the volume name"
-  type        = string
+  type        = list(string)
 }

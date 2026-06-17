@@ -42,8 +42,8 @@ variable "workers_by_availability_zone" {
     instance_type = string
     nodes         = list(string)
     db_volumes = list(object({
-      size = number
-      name = string
+      size = list(number)
+      name = list(string)
     }))
   }))
 }
