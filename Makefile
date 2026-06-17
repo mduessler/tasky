@@ -3,8 +3,6 @@ root-dir=$(shell pwd)
 env-file=.env.dev
 project-name=tasky
 
-
-
 # Base
 #
 chart = deploy/helm/tasky
