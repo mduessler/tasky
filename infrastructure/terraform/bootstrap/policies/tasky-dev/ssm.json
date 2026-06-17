@@ -4,27 +4,7 @@
     {
       "Effect": "Allow",
       "Action": ["ssm:StartSession"],
-      "Resource": "i-0440afee488ade10c"
-    },
-    {
-      "Effect": "Allow",
-      "Action": ["ssm:TerminateSession"],
-      "Resource": "arn:aws:ssm:${region}:${account_id}:session/${aws-user}-*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": ["ssm:TerminateSession"],
-      "Resource": "arn:aws:ssm:${region}:${account_id}:session/${aws-user}-*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": ["ssm:TerminateSession"],
-      "Resource": "arn:aws:ssm:${region}:${account_id}:session/${aws-user}-*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": ["ssm:TerminateSession"],
-      "Resource": "arn:aws:ssm:${region}:${account_id}:session/${aws-user}-*"
+      "Resource": "arn:aws:ec2:${region}:${account_id}:instance/*"
     },
     {
       "Effect": "Allow",
