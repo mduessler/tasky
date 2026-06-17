@@ -5,6 +5,7 @@ dev/certs/
 .env.dev
 .env.prod
 logs/
+REVIEW.md
 
 # Terraform
 **/.terraform/*
