@@ -1,7 +1,7 @@
 data "terraform_remote_state" "network" {
   backend = "s3"
   config = {
-    bucket = "tasky-tf-state-${var.owner_id}-${var.environment}"
+    bucket = "tasky-tf-state-${var.account_id}-${var.environment}"
     key    = "network/terraform.tfstate"
     region = var.backend_location
   }
@@ -14,7 +14,7 @@ module "kubes" {
   source = "./modules/nodes"
 
   environment   = var.environment
-  owner_id      = var.owner_id
+  account_id      = var.account_id
   backend_location    = var.backend_location
   instance_type = each.value.instance_type
   vpc_id        = data.terraform_remote_state.network.outputs.ids[each.key]

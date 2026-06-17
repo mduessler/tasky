@@ -1,3 +1,8 @@
+variable "account_id" {
+  description = "Unique identifier of the cloud account."
+  type        = string
+}
+
 variable "target_id" {
   description = "The ID of the S3 bucket to enable logging for."
   type        = string
@@ -10,10 +15,5 @@ variable "target_arn" {
 
 variable "environment" {
   description = "Environment for which to deploy the backend"
-  type        = string
-}
-
-variable "owner_id" {
-  description = "ID of the owner."
   type        = string
 }

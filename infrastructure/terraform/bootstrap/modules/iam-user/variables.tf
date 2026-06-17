@@ -3,8 +3,8 @@ variable "backend_location" {
   type        = string
 }
 
-variable "owner_id" {
-  description = "ID of the owner."
+variable "account_id" {
+  description = "Unique identifier of the cloud account."
   type        = string
 }
 

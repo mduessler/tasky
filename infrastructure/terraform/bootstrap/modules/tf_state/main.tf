@@ -1,6 +1,6 @@
 module "tf_state" {
   source         = "../../../modules/s3_bucket"
-  name           = "tasky-tf-state-${var.owner_id}-${var.environment}"
+  name           = "tasky-tf-state-${var.account_id}-${var.environment}"
   version_status = "Enabled"
   tags = {
     Component   = "tf-state"
@@ -59,5 +59,5 @@ module "logging" {
   target_id   = module.tf_state.id
   target_arn  = module.tf_state.arn
   environment = var.environment
-  owner_id    = var.owner_id
+  account_id    = var.account_id
 }

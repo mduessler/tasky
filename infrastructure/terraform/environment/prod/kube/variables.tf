@@ -3,6 +3,11 @@ variable "backend_location" {
   type        = string
 }
 
+variable "account_id" {
+  description = "Unique identifier of the cloud account."
+  type        = string
+}
+
 variable "availability_zones" {
   description = "AWS Regions where to deploy the development networks"
   type        = list(string)
@@ -27,11 +32,6 @@ variable "workers" {
 
 variable "clustername" {
   description = "Name of the cluster"
-  type        = string
-}
-
-variable "owner_id" {
-  description = "ID of the account owner."
   type        = string
 }
 

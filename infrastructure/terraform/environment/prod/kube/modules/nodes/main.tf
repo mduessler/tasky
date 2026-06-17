@@ -1,7 +1,7 @@
 data "terraform_remote_state" "network" {
   backend = "s3"
   config = {
-    bucket = "tasky-tf-state-${var.owner_id}-${var.environment}"
+    bucket = "tasky-tf-state-${var.account_id}-${var.environment}"
     key    = "network/terraform.tfstate"
     region = var.backend_location
   }
