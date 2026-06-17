@@ -13,6 +13,16 @@ variable "account_id" {
   type        = string
 }
 
+variable "availability_zone" {
+  description = "Availability zone where resources will be deployed."
+  type        = string
+}
+
+variable "vpc_id" {
+  description = "ID of the VPC."
+  type        = string
+}
+
 variable "controller_instance_type" {
   description = "Hardware configuration for the controller instance."
   type        = string
@@ -20,11 +30,6 @@ variable "controller_instance_type" {
 
 variable "worker_instance_type" {
   description = "Hardware configuration for the worker instances."
-  type        = string
-}
-
-variable "vpc_id" {
-  description = "ID of the VPC."
   type        = string
 }
 

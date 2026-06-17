@@ -1,7 +1,7 @@
 output "kubes" {
   description = "Set of all kubes grouped by their VPC ID."
   value = {
-    for kube in module.kubes : kube.vpc_id => { controller = kube.controller, workers = kube.workers }
+    for kube in module.kubes : kube.vpc_id => { controller_endpoint = kube.controller_endpoint, workers = kube.workers }
   }
 }
 

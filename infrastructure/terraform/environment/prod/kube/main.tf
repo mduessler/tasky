@@ -13,14 +13,15 @@ module "kubes" {
 
   source = "./modules/nodes"
 
-  environment   = var.environment
-  account_id      = var.account_id
-  backend_location    = var.backend_location
+  backend_location         = var.backend_location
+  environment              = var.environment
+  account_id               = var.account_id
+  availability_zone        = each.key
+  vpc_id                   = data.terraform_remote_state.network.outputs.ids[each.key]
   controller_instance_type = each.value.controller_instance_type
   worker_instance_type     = each.value.worker_instance_type
-  vpc_id        = data.terraform_remote_state.network.outputs.ids[each.key]
-  workers       = each.value.nodes
-  clustername   = var.clustername
+  workers                  = each.value.nodes
+  clustername              = var.clustername
 }
 
 module "postgres_volumes" {

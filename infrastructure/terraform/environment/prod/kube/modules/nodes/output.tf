@@ -3,9 +3,9 @@ output "vpc_id" {
   value       = var.vpc_id
 }
 
-output "controller" {
-  description = "ID of the controller instance."
-  value       = module.controller.id
+output "controller_endpoint" {
+  description = "DNS name of the internal load balancer for the controller API server."
+  value       = module.controller.endpoint
 }
 
 output "workers" {

@@ -17,16 +17,8 @@ module "vpcs" {
 resource "aws_security_group" "controllers" {
   for_each    = module.vpcs
   name        = "kube-controller-sg-${each.key}"
-  description = "Security Group for the controller of the kubernetes"
+  description = "Security group for the Kubernetes controller."
   vpc_id      = each.value.id
-
-  ingress {
-    description     = "Kubernetes API server from workers"
-    from_port       = 6443
-    to_port         = 6443
-    protocol        = "tcp"
-    security_groups = [aws_security_group.worker[each.key].id]
-  }
 
   egress {
     description     = "Kubelet API to workers"
@@ -48,7 +40,7 @@ resource "aws_security_group" "controllers" {
 resource "aws_security_group" "worker" {
   for_each    = module.vpcs
   name        = "kube-worker-sg-${each.key}"
-  description = "Security Group for the workers of the kubernetes"
+  description = "Security group for the Kubernetes workers."
   vpc_id      = each.value.id
 
   ingress {
@@ -81,14 +73,6 @@ resource "aws_security_group" "worker" {
     to_port         = 0
     protocol        = "-1"
     security_groups = [aws_security_group.worker[each.key].id]
-  }
-
-  egress {
-    description     = "Kubernetes API server to controller"
-    from_port       = 6443
-    to_port         = 6443
-    protocol        = "tcp"
-    security_groups = [aws_security_group.controllers[each.key].id]
   }
 
   egress {
