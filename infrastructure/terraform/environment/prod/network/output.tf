@@ -8,6 +8,11 @@ output "private_subnets" {
   value       = { for _, vpc in module.vpcs : vpc.id => vpc.private_subnet }
 }
 
+output "public_subnets" {
+  description = "Set of all created public subnet ids for the production"
+  value       = { for _, vpc in module.vpcs : vpc.id => vpc.public_subnet }
+}
+
 output "controller_sgs" {
   description = "Map of vpc id to controller security group id"
   value       = { for _, sg in aws_security_group.controllers : sg.vpc_id => sg.id }
